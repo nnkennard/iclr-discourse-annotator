@@ -1,0 +1,174 @@
+<head>
+   <title> Alignment Annotation </title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
+   ">
+{% load static %}
+{% load fine_align_extras %}
+<link rel="stylesheet" type="text/css" href="{% static '/index.css' %}">
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.4/umd/popper.min.js'></script>
+<body onload="hello({{ review_text | length }}, {{ rebuttal_text | length }})">
+   <br />
+   <div class="row">
+      <div class="col-5 offset-1">
+         Paper title:
+         <h3> {{ paper_title }} </h3>
+         <br />
+         <button id="generate" name="generate" class="btn btn-primary"
+                                               onclick="generateJson({{
+                                               review_text | length }}, {{
+                                               rebuttal_text | length }})">Validate annotations</button> 
+      </div>
+      <div class="col-4 offset-1">
+         <br />
+         <div class="row">
+            <div class="col-4">
+               Your initials
+               <input id="initials" type="text" class="form-control input-md">
+            </div>
+            <div class="col-8">
+               Comments
+               <input id="comments" type="text" class="form-control input-md">
+            </div>
+         </div>
+         <br >
+         <form action="/alignments/submitted/" method="post">
+            {% csrf_token %}
+            <div class="row">
+               <div class="col-10">
+                  <input id="annotation" class="form-control input-md" type="text" name="annotation" placeholder="JSON-ified annotation will appear here once validated">
+               </div>
+               <div class="col-2">
+                  <input id="submitBtn" class="btn btn-primary" type="submit" value="Submit">
+               </div>
+            </div>
+             
+         </form>
+         <br />
+         </form>
+      </div>
+   </div>
+   {% for rebuttal_chunk in rebuttal %}
+   <div class="tab">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-5 offset-1">
+               <h2>Review</h2>
+               <table class="table" >
+                  <thead>
+                     <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Responds to review chunk #... (total {{
+                          review_text | length }} chunks) </th>
+                        <th scope="col"></th>
+                     </tr>
+                  </thead>
+                  <tbody id="reviewtablebody_{{forloop.counter0}}">
+                     {% for review_chunk in review %}
+                     {% with forloop.parentloop.counter0|addstr:"-"|addstr:forloop.counter0 as chunk_id %}
+                     <tr id="reviewrow_{{ chunk_id }}" class="table-secondary">
+                        <th scope="row">{{ forloop.counter0  | add:1 }}</th>
+                        <td> {{ review_chunk }} </td>
+
+
+
+
+
+                        <td>
+                           <input type="radio" id="radios-{{ chunk_id }}-Yes" name="radios-{{ chunk_id }}"
+                              onclick="handleClick({{ forloop.parentloop.counter0 }})" value="Yes" checked="false"> Yes
+                           <input type="radio" id="radios-{{ chunk_id }}-No" name="radios-{{ chunk_id }}"
+                              onclick="handleClick({{ forloop.parentloop.counter0 }})" value="No" checked="true"> No
+                        </td>
+                     </tr>
+                     {% endwith %}
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+            <div class="col-4 offset-1">
+               <h2>Rebuttal</h2>
+               Select which chunk(s) of the review the following chunk of text is responding to. <br /><br />
+
+
+                        <div class="row">
+               <div class="col-1">
+                  <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal | length }}, -1)"> &lt; </button>
+               </div>
+               <div class="col-2 offset-1">
+                  {{ forloop.counter0  | add:1 }} / {{ rebuttal | length}}
+               </div>
+               <div class="col-1">
+                  <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal | length }}, 1)"> &gt; </button>
+               </div>
+               <div class="col-4 offset-3">
+                  <button id="singlebutton" name="singlebutton" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+               Show full rebuttal</button></div>
+            </div>
+
+               
+                <br />
+               <br />
+               <table class="table">
+                  <tbody>
+                     <tr>
+                        <td>{{ rebuttal_chunk }}</td>
+                     </tr>
+                  </tbody>
+               </table>
+               <br />
+               This rebuttal chunk should have been <b>subdivided </b> into multiple chunks <br />
+               <input type="radio" id="rebuttalradios-{{ forloop.counter0 }}-Yes" name="rebuttalradios-{{ forloop.counter0 }}"
+                  onclick="updateError({{ forloop.counter0 }}, 0, 0)" value="Yes"> Yes
+               <input type="radio" id="rebuttalradios-{{ forloop.counter0 }}-No" name="rebuttalradios-{{ forloop.counter0 }}"
+                  onclick="updateError({{ forloop.counter0 }}, 0, 1)"  value="No" checked="true"> No <br />
+               This rebuttal chunk only responds to <b> only a part </b> of one or more review chunk(s) <br />
+               <input type="radio" id="reviewradios-{{ forloop.counter0 }}-Yes" name="reviewradios-{{ forloop.counter0 }}"
+                  onclick="updateError({{ forloop.counter0 }}, 1, 0)" value="Yes"> Yes
+               <input type="radio" id="reviewradios-{{ forloop.counter0 }}-No" name="reviewradios-{{ forloop.counter0 }}"
+                  onclick="updateError({{ forloop.counter0 }}, 1, 1)" 
+                  value="No" checked="true"> No <br />
+               <br /> <br />
+            </div>
+         </div>
+      </div>
+   </div>
+   {% endfor %}
+   </div>
+   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Full rebuttal</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <div class="modal-body">
+               <table class="table">
+                  <tbody>
+                     {% for rebuttal_chunk in rebuttal %}
+                     <tr>
+                        <td> {{ forloop.counter0  | add:1 }}  </td>
+                        <td>
+                           {{ rebuttal_chunk }} <br /> <br />
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <span id="review_supernote" style="display:none">{{ review_supernote }}</span>
+   <span id="rebuttal_supernote" style="display:none">{{ rebuttal_supernote }}</span>
+   <script src="{% static '/index.js' %}"></script>
+</body>
+
+

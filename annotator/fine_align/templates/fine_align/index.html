@@ -1,0 +1,28 @@
+<head>
+   <title> Alignment Annotation </title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
+   ">
+<body>
+   <div class="container">
+   <table class="table">
+      <tr>
+         <td> Reviewer </td>
+         <td> Title </td>
+         <td> Already annotated by </td>
+      </tr>
+      {% for example in examples %}
+      <tr>
+         <td> {{ example.reviewer }} </td>
+         <td><a href="/fine_align/{{ example.review_supernote }}_{{ example.rebuttal_supernote }}">
+            {{ example.title }}</a>
+         </td>
+         <td> {{ example.previous_annotators }} </td>
+      </tr>
+      </li>
+      {% endfor %}
+   </table>
+</div>
+</body>
+
+
