@@ -37,25 +37,33 @@ def crunch_supernote(supernote):
         if current_chunk_idx == row.chunk_idx:
             current_chunk.append(row.token)
         else:
-            if current_chunk:
+            if current_chunk == ["NEWLINE"]:
+                chunks.append([])
+            else:
                 chunks.append(current_chunk)
             current_chunk = [row.token]
             current_chunk_idx = row.chunk_idx
-    if current_chunk:
+
+    if current_chunk == ["NEWLINE"]:
+        chunks.append([])
+    else:
         chunks.append(current_chunk)
 
-    #return [" ".join(chunk_tokens) for chunk_tokens in chunks]
-    return chunks
+    return zip(*[(i, " ".join(chunk))
+        for i, chunk in enumerate(chunks)
+        if chunk])
 
 def detail(request, review, rebuttal):
-    review_text = crunch_supernote(review)
-    rebuttal_text = crunch_supernote(rebuttal)
+    review_indices, review_text = crunch_supernote(review)
+    rebuttal_indices, rebuttal_text = crunch_supernote(rebuttal)
     title = AnnotatedPair.objects.get(
             review_supernote=review, rebuttal_supernote=rebuttal).title
     context = {
             "paper_title":title,
             "review_text": review_text,
             "rebuttal_text": rebuttal_text,
+            "review_indices": review_indices,
+            "rebuttal_indices": rebuttal_indices,
             "review": review,
             "rebuttal": rebuttal}
     template = loader.get_template('fine_align/detail.html')

@@ -9,7 +9,7 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.4/umd/popper.min.js'></script>
-<body onload="hello({{ review_text | length }}, {{ rebuttal_text | length }})">
+<body>
    <br />
    <div class="row">
       <div class="col-5 offset-1">
@@ -17,9 +17,9 @@
          <h3> {{ paper_title }} </h3>
          <br />
          <button id="generate" name="generate" class="btn btn-primary"
-                                               onclick="generateJson({{
-                                               review_text | length }}, {{
-                                               rebuttal_text | length }})">Validate annotations</button> 
+            onclick="generateJson({{
+            review_indices | length }}, {{
+            rebuttal_indices | length }})">Validate annotations</button> 
       </div>
       <div class="col-4 offset-1">
          <br />
@@ -44,93 +44,88 @@
                   <input id="submitBtn" class="btn btn-primary" type="submit" value="Submit">
                </div>
             </div>
-             
          </form>
          <br />
          </form>
       </div>
    </div>
-   {% for rebuttal_chunk in rebuttal %}
+   {% for rebuttal_chunk in rebuttal_text %}
    <div class="tab">
       <div class="container-fluid">
          <div class="row">
             <div class="col-5 offset-1">
                <h2>Review</h2>
-               <table class="table" >
-                  <thead>
-                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Responds to review chunk #... (total {{
-                          review_text | length }} chunks) </th>
-                        <th scope="col"></th>
-                     </tr>
-                  </thead>
-                  <tbody id="reviewtablebody_{{forloop.counter0}}">
-                     {% for review_chunk in review %}
-                     {% with forloop.parentloop.counter0|addstr:"-"|addstr:forloop.counter0 as chunk_id %}
-                     <tr id="reviewrow_{{ chunk_id }}" class="table-secondary">
-                        <th scope="row">{{ forloop.counter0  | add:1 }}</th>
-                        <td> {{ review_chunk }} </td>
-
-
-
-
-
-                        <td>
-                           <input type="radio" id="radios-{{ chunk_id }}-Yes" name="radios-{{ chunk_id }}"
-                              onclick="handleClick({{ forloop.parentloop.counter0 }})" value="Yes" checked="false"> Yes
-                           <input type="radio" id="radios-{{ chunk_id }}-No" name="radios-{{ chunk_id }}"
-                              onclick="handleClick({{ forloop.parentloop.counter0 }})" value="No" checked="true"> No
-                        </td>
-                     </tr>
-                     {% endwith %}
+               <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-3 bg-light" style="max-height:450px;">
+                  <p id="reviewtablecell_{{forloop.counter0}}" onMouseUp="consumeSelection({{ forloop.counter0 }})">
+                     {% for review_chunk in review_text %}
+                     {{ review_chunk }}
+                     <br />
                      {% endfor %}
-                  </tbody>
-               </table>
+                  </p>
+               </div>
+               <br>
+               <i>Currently selected span: </i>
+               <div class="row">
+                  <div class="col-8">
+                     <p id="highlightedCardSpan_{{forloop.counter0}}">Please select a context span from the review on the left.</p>
+                  </div>
+                  <div class="col-4">
+                     <button id="confirmQuestionButton_{{ forloop.counter0 }}" name="confirmQuestionButton" class="btn btn-success" onClick="confirmSpan({{ forloop.counter0 }})"> Confirm</button>
+                  </div>
+               </div>
+               <div class="row">
+                  
+                  <div class="col-6">
+                     <span id="highlightedSpanStartIndex_{{forloop.counter0}}" hidden="true"></span>
+                  </div>
+                  
+                  <div class="col-6">
+                     <span id="highlightedSpanEndIndex_{{forloop.counter0}}" hidden="true"></span>
+                  </div>
+               </div>
             </div>
             <div class="col-4 offset-1">
                <h2>Rebuttal</h2>
-               Select which chunk(s) of the review the following chunk of text is responding to. <br /><br />
-
-
-                        <div class="row">
-               <div class="col-1">
-                  <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal | length }}, -1)"> &lt; </button>
+               Select a span of the review the following chunk of text is responding to. <br />
+               (You may select multiple if very necessary) <br/> <br />
+               <div class="row">
+                  <div class="col-1">
+                     <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal_indices | length }}, -1)"> &lt; </button>
+                  </div>
+                  <div class="col-2 offset-1">
+                     {{ forloop.counter0  | add:1 }} / {{ rebuttal_indices | length}}
+                  </div>
+                  <div class="col-1">
+                     <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal_indices | length }}, 1)"> &gt; </button>
+                  </div>
+                  <div class="col-4 offset-3">
+                     <button id="singlebutton" name="singlebutton" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                     Show full rebuttal</button>
+                  </div>
                </div>
-               <div class="col-2 offset-1">
-                  {{ forloop.counter0  | add:1 }} / {{ rebuttal | length}}
-               </div>
-               <div class="col-1">
-                  <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal | length }}, 1)"> &gt; </button>
-               </div>
-               <div class="col-4 offset-3">
-                  <button id="singlebutton" name="singlebutton" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-               Show full rebuttal</button></div>
-            </div>
-
-               
-                <br />
+               <br />
                <br />
                <table class="table">
                   <tbody>
                      <tr>
-                        <td>{{ rebuttal_chunk }}</td>
-                     </tr>
+                        <td colspan="2">
+                           {{ rebuttal_chunk }}
+                        </td>
                   </tbody>
                </table>
-               <br />
-               This rebuttal chunk should have been <b>subdivided </b> into multiple chunks <br />
-               <input type="radio" id="rebuttalradios-{{ forloop.counter0 }}-Yes" name="rebuttalradios-{{ forloop.counter0 }}"
-                  onclick="updateError({{ forloop.counter0 }}, 0, 0)" value="Yes"> Yes
-               <input type="radio" id="rebuttalradios-{{ forloop.counter0 }}-No" name="rebuttalradios-{{ forloop.counter0 }}"
-                  onclick="updateError({{ forloop.counter0 }}, 0, 1)"  value="No" checked="true"> No <br />
-               This rebuttal chunk only responds to <b> only a part </b> of one or more review chunk(s) <br />
-               <input type="radio" id="reviewradios-{{ forloop.counter0 }}-Yes" name="reviewradios-{{ forloop.counter0 }}"
-                  onclick="updateError({{ forloop.counter0 }}, 1, 0)" value="Yes"> Yes
-               <input type="radio" id="reviewradios-{{ forloop.counter0 }}-No" name="reviewradios-{{ forloop.counter0 }}"
-                  onclick="updateError({{ forloop.counter0 }}, 1, 1)" 
-                  value="No" checked="true"> No <br />
-               <br /> <br />
+               <div class="col-4">
+               </div>
+               <br>
+               <table class="table">
+                  <thead>
+                     <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">Context spans</th>
+                     </tr>
+                  </thead>
+                  <tbody id="selectedSpanTable_{{ forloop.counter0 }}">
+                  </tbody>
+               </table>
             </div>
          </div>
       </div>
@@ -170,5 +165,4 @@
    <span id="rebuttal_supernote" style="display:none">{{ rebuttal_supernote }}</span>
    <script src="{% static '/index.js' %}"></script>
 </body>
-
 
