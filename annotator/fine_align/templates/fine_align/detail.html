@@ -1,8 +1,7 @@
 <head>
    <title> Alignment Annotation </title>
 </head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
-   ">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
 {% load static %}
 {% load fine_align_extras %}
 <link rel="stylesheet" type="text/css" href="{% static '/index.css' %}">
@@ -15,11 +14,10 @@
       <div class="col-5 offset-1">
          Paper title:
          <h3> {{ paper_title }} </h3>
+         {{ rebuttal_indices | json_script:"reb_id"}}
          <br />
          <button id="generate" name="generate" class="btn btn-primary"
-            onclick="generateJson({{
-            review_indices | length }}, {{
-            rebuttal_indices | length }})">Validate annotations</button> 
+            onclick="generateJson()">Validate annotations</button> 
       </div>
       <div class="col-4 offset-1">
          <br />
@@ -67,10 +65,10 @@
                <i>Currently selected span: </i>
                <div class="row">
                   <div class="col-8">
-                     <p id="highlightedCardSpan_{{forloop.counter0}}">Please select a context span from the review on the left.</p>
+                     <p id="highlightedSpan_{{forloop.counter0}}">Please select a context span from the review on the left.</p>
                   </div>
                   <div class="col-4">
-                     <button id="confirmQuestionButton_{{ forloop.counter0 }}" name="confirmQuestionButton" class="btn btn-success" onClick="confirmSpan({{ forloop.counter0 }})"> Confirm</button>
+                     <button id="confirmSpanButton_{{ forloop.counter0 }}" name="confirmSpanButton" disabled="true" class="btn btn-success" onClick="confirmSpan({{ forloop.counter0 }})"> Confirm</button>
                   </div>
                </div>
                <div class="row">
@@ -116,16 +114,38 @@
                <div class="col-4">
                </div>
                <br>
-               <table class="table">
-                  <thead>
-                     <tr>
-                        <th scope="col"> </th>
-                        <th scope="col">Context spans</th>
-                     </tr>
-                  </thead>
-                  <tbody id="selectedSpanTable_{{ forloop.counter0 }}">
-                  </tbody>
-               </table>
+               <i>Confirmed context span:</i> <br>
+               <span id="contextSpan_{{ forloop.counter0 }}"> No span confirmed -- please select a span on the left </span> <br > <br >
+
+               <div class="form-group">
+  <div class="checkbox">
+    <label for="errors_{{ forloop.counter0 }}-0">
+      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-0" value="should-split">
+      This rebuttal chunk should have been split into multiple chunks
+    </label>
+   </div>
+  <div class="checkbox">
+    <label for="errors_{{ forloop.counter0 }}-1">
+      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-1" value="should-merge">
+      This rebuttal chunk should have been combined with another chunk
+    </label>
+   </div>
+  <div class="checkbox">
+    <label for="errors_{{ forloop.counter0 }}-2">
+      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-2" value="multiple-spans">
+      There are multiple non-contiguous spans that form the context for this chunk
+    </label>
+   </div>
+   <div class="checkbox">
+    <label for="errors_{{ forloop.counter0 }}-3">
+      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-3" value="no-context" onChange="updateNoContext({{ forloop.counter0 }})">
+      There is no relevant context span for this rebuttal chunk
+    </label>
+   </div>
+  </div>
+
+
+               
             </div>
          </div>
       </div>
