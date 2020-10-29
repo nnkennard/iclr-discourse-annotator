@@ -9,12 +9,12 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.4/umd/popper.min.js'></script>
 <body>
+   {{ rebuttal_indices | json_script:"reb_id"}}
    <br />
    <div class="row">
       <div class="col-5 offset-1">
          Paper title:
          <h3> {{ paper_title }} </h3>
-         {{ rebuttal_indices | json_script:"reb_id"}}
          <br />
          <button id="generate" name="generate" class="btn btn-primary"
             onclick="generateJson()">Validate annotations</button> 
@@ -32,7 +32,7 @@
             </div>
          </div>
          <br >
-         <form action="/alignments/submitted/" method="post">
+         <form action="/fine_align/submitted/" method="post">
             {% csrf_token %}
             <div class="row">
                <div class="col-10">
@@ -53,11 +53,16 @@
          <div class="row">
             <div class="col-5 offset-1">
                <h2>Review</h2>
-               <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-3 bg-light" style="max-height:450px;">
+               <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-3 bg-light" style="max-height:700px;">
                   <p id="reviewtablecell_{{forloop.counter0}}" onMouseUp="consumeSelection({{ forloop.counter0 }})">
                      {% for review_chunk in review_text %}
-                     {{ review_chunk }}
-                     <br />
+
+                     {% if review_chunk == "<br>" %}
+                       <br>
+                     {% else %}
+                     {{ review_chunk}} <br>
+                     {% endif %}
+
                      {% endfor %}
                   </p>
                </div>
@@ -84,8 +89,7 @@
             </div>
             <div class="col-4 offset-1">
                <h2>Rebuttal</h2>
-               Select a span of the review the following chunk of text is responding to. <br />
-               (You may select multiple if very necessary) <br/> <br />
+               Select a span of the review the following chunk of text is responding to. <br/> <br />
                <div class="row">
                   <div class="col-1">
                      <button id="singlebutton" name="singlebutton" class="btn btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal_indices | length }}, -1)"> &lt; </button>
@@ -118,33 +122,17 @@
                <span id="contextSpan_{{ forloop.counter0 }}"> No span confirmed -- please select a span on the left </span> <br > <br >
 
                <div class="form-group">
-  <div class="checkbox">
-    <label for="errors_{{ forloop.counter0 }}-0">
-      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-0" value="should-split">
-      This rebuttal chunk should have been split into multiple chunks
-    </label>
-   </div>
-  <div class="checkbox">
-    <label for="errors_{{ forloop.counter0 }}-1">
-      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-1" value="should-merge">
-      This rebuttal chunk should have been combined with another chunk
-    </label>
-   </div>
-  <div class="checkbox">
-    <label for="errors_{{ forloop.counter0 }}-2">
-      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-2" value="multiple-spans">
-      There are multiple non-contiguous spans that form the context for this chunk
-    </label>
-   </div>
-   <div class="checkbox">
-    <label for="errors_{{ forloop.counter0 }}-3">
-      <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-3" value="no-context" onChange="updateNoContext({{ forloop.counter0 }})">
-      There is no relevant context span for this rebuttal chunk
-    </label>
-   </div>
-  </div>
 
+               {% for category, code_items in codes %}
+                  <h5>{{ category }}</h5>
 
+                  {% for code_item in code_items %}
+                  <div class="checkbox">
+                  <label for="errors_{{ forloop.counter0 }}-{{code_item.code}}"> <input type="checkbox" name="checkboxes" id="errors_{{ forloop.counter0 }}-{{code_item.code}}" value="{{code_item.code}}"> {{code_item.label}}
+                  </label>
+                  </div>
+                  {% endfor %}
+               {% endfor %}
                
             </div>
          </div>

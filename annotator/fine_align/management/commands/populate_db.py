@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
         for text_row in tqdm(json_obj["tokens"]):
             textnode = Text(
-                    comment_supernote=text_row["comment_supernote"],
+                    comment_supernote=text_row["sid"],
                     chunk_idx=int(text_row["chunk_idx"]),
                     sentence_idx=int(text_row["sentence_idx"]),
                     token_idx=int(text_row["token_idx"]),
@@ -42,6 +42,6 @@ class Command(BaseCommand):
                 review_supernote = node["review"],
                 rebuttal_supernote = node["rebuttal"],
                 title=node["title"],
-                reviewer="Gotta get authors"
+                reviewer=node["review_author"]
                     )
             annotated_pair.save()        
