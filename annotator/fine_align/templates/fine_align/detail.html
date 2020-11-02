@@ -1,5 +1,3 @@
-
-
 <head>
    <title> Alignment Annotation </title>
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
@@ -14,6 +12,7 @@
    {{ rebuttal_indices | json_script:"reb_id"}}
    {{ rebuttal | json_script:"rebuttal"}}
    {{ review | json_script:"review"}}
+
    <br />
    <div class="row">
       <div class="col-5 offset-1">
@@ -126,9 +125,16 @@
                   {% for category, code_items in codes %}
                   <h5>{{ category }}</h5>
                   {% for code_item in code_items %}
-                  <div class="checkbox">
-                     <label for="errors_{{ chunk_idx }}-{{code_item.code}}"> <input type="checkbox" name="checkboxes" id="errors_{{ chunk_idx }}-{{code_item.code}}" value="{{code_item.code}}"> {{code_item.label}}
-                     </label>
+                  <div class="row">
+                     <div class="col-4">
+                        <div class="checkbox">
+                           <label for="errors-{{ chunk_idx }}-{{code_item.code}}">
+                           <input type="checkbox" name="checkboxes" id="errors-{{ chunk_idx }}-{{code_item.code}}" value="{{code_item.code}}"> {{code_item.code}}
+                        </div>
+                     </div>
+                     <div class="col-8">
+                        <small> {{code_item.label}} </small>
+                     </div>
                   </div>
                   {% endfor %}
                   {% endfor %}
