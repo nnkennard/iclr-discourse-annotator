@@ -79,10 +79,13 @@ def detail(request, review, rebuttal):
     rebuttal_indices, rebuttal_text = crunch_supernote(rebuttal)
     title = AnnotatedPair.objects.get(
             review_supernote=review, rebuttal_supernote=rebuttal).title
+    reviewer = AnnotatedPair.objects.get(
+            review_supernote=review, rebuttal_supernote=rebuttal).reviewer
     context = {
             "paper_title":title,
+            "reviewer": reviewer,
             "review_text": review_text,
-            "rebuttal_text": rebuttal_text,
+            "rebuttal_text": [chunk for chunk in rebuttal_text if not chunk == "<br>"],
             "review_indices": review_indices,
             "rebuttal_indices": rebuttal_indices,
             "review": review,

@@ -1,12 +1,7 @@
 // INITIALIZATIONS
 switchTab(-1, 1, 1); // Display the first tab
-document.getElementById("submitBtn").disabled = "true";
-window.error_map = {
-    "review_errors": Array(),
-    "rebuttal_errors": Array()
-}
+document.getElementById("submitBtn").disabled = "true"
 CONTEXT_SPANS = {}
-
 
 
 function switchTab(current_tab, total_tabs, direction) {
@@ -21,6 +16,7 @@ function switchTab(current_tab, total_tabs, direction) {
 function isNoContextChecked(index){
     return document.getElementById("errors_" + index + "-3").checked
 }
+
 function getErrors(index){
     error_list = []
     for(var i=0;i<3;i++){
@@ -77,6 +73,8 @@ function generateJson() {
 }
 
 function confirmSpan(index) {
+    var inputs = document.getElementsByName('checkboxes');
+    console.log(inputs)
     confirmedSpan = document.getElementById("contextSpan_" + index);
     spanText = document.getElementById("highlightedSpan_" + index)
     confirmedSpan.innerHTML = spanText.innerHTML;
@@ -98,7 +96,7 @@ function consumeSelection(rebuttal_chunk_idx) {
         if (review_tokens.slice(i, i + selection_tokens.length).join(" ") === selection_tokens.join(" ")) {
             span_found = true;
             confirmSpanButton.disabled = false;
-            highlightSpan.innerHTML = selectionText.fontcolor("green");
+            highlightSpan.innerHTML = selectionText.fontcolor("#82e0aa");
             document.getElementById("highlightedSpanStartIndex_" + rebuttal_chunk_idx).innerHTML = i
             document.getElementById("highlightedSpanEndIndex_" + rebuttal_chunk_idx).innerHTML = i + selection_tokens.length
             break;
@@ -106,7 +104,7 @@ function consumeSelection(rebuttal_chunk_idx) {
     }
     if (!span_found) {
         confirmSpanButton.disabled = true;
-        highlightSpan.innerHTML = selectionText.fontcolor("red");
+        highlightSpan.innerHTML = selectionText.fontcolor("#f1948a");
     }
 
 }
