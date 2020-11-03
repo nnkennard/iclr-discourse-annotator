@@ -52,7 +52,7 @@
          </form>
       </div>
    </div>
-   {% for rebuttal_chunk in rebuttal_text %}
+   {% for rebuttal_chunk in nonempty_rebuttal_chunks %}
    <div class="tab">
       <div class="container-fluid">
          <div class="row">
@@ -79,7 +79,7 @@
                <br >
                <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-0  bg-dark text-white" style="max-height:700px;">
                   <p id="reviewtablecell_{{forloop.counter0}}" onMouseUp="consumeSelection({{ forloop.counter0 }})">
-                     {% for review_chunk in review_text %}
+                     {% for review_chunk in review_chunks %}
                      {% if review_chunk == "<br>" %}
                      <br>
                      {% else %}
@@ -95,13 +95,13 @@
                Select a span of the review the following chunk of text is responding to. <br/> <br />
                <div class="row">
                   <div class="col-3">
-                     <button class="btn btn-sm btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal_text | length }}, -1)"> &lt; </button>
+                     <button class="btn btn-sm btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{nonempty_rebuttal_chunks | length }}, -1)"> &lt; </button>
                   </div>
                   <div class="col-6 text-center">
-                     Rebuttal chunk &nbsp; {{ forloop.counter0  | add:1 }} / {{ rebuttal_text | length}}
+                     Rebuttal chunk &nbsp; {{ forloop.counter0  | add:1 }} / {{ nonempty_rebuttal_chunks | length}}
                   </div>
                   <div class="col-3 text-right">
-                     <button class="btn btn-sm btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{rebuttal_text | length }}, 1)"> &gt; </button>
+                     <button class="btn btn-sm btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{nonempty_rebuttal_chunks | length }}, 1)"> &gt; </button>
                   </div>
                   <div class="col-3 offset-1">
                   </div>

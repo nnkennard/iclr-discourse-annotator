@@ -20,12 +20,9 @@ function isNoContextChecked(index, errors){
 function getErrors(rebuttal_indices){
     checkboxes = document.getElementsByName('checkboxes');
     errors = {}
-    console.log("Reb id ", rebuttal_indices)
     for (var i=0; i<rebuttal_indices.length; i++){
-        console.log("***", i)
         errors[i] = Array();
     }
-    console.log("Errors ", errors)
     for (checkbox of checkboxes) {
         if (checkbox.checked){
             parts = checkbox.id.split("-")
@@ -58,7 +55,6 @@ function generateJson() {
 
         for (var reb_idx_str in rebuttal_indices) {
             reb_idx = parseInt(reb_idx_str)
-            console.log("Checking rebuttal index ", reb_idx)
             orig_idx = parseInt(rebuttal_indices[reb_idx])
             if (CONTEXT_SPANS.hasOwnProperty(reb_idx_str)) {
                 if(isNoContextChecked(reb_idx, errors)){
@@ -66,23 +62,22 @@ function generateJson() {
                     return
                 } else {
                 value = CONTEXT_SPANS[reb_idx_str]
-                alignments.push([orig_idx, value[1], value[2]])
+                alignments.push([orig_idx, value[1], value[2], errors[reb_idx].join("|")])
                 }
             } else {
                 if(isNoContextChecked(reb_idx, errors)){
-                    alignments.push([orig_idx, -1, -1])
+                    alignments.push([orig_idx, -1, -1, errors[reb_idx].join("|")])
                 } else {
                    alert("Please annotate rebuttal chunk "+(reb_idx + 1))
                    return
                 }
             }
         }
-        alert(alignments)
         result = {"alignments": alignments,
-                  "errors": errors,
                   "review_sid": review_sid,
                   "rebuttal_sid": rebuttal_sid,
-                  "annotator": document.getElementById("initials").textContent,
+                  "annotator": document.getElementById("initials").value,
+                  "comment": document.getElementById("comments").value,
               }
         document.getElementById("annotation").value = JSON.stringify(result)
         alert("Good to go! Please review then submit")
@@ -110,7 +105,6 @@ function consumeSelection(rebuttal_chunk_idx) {
     review_tokens = document.getElementById("reviewtablecell_0").innerHTML.replace(/\<br\>/g, " ").trim().split(/[\s]+/) // This is actually the same text for any rebuttal chunk...
     span_found = false;
     for (var i = 0; i <= review_tokens.length - selection_tokens.length; i++) {
-        console.log(i, review_tokens[i])
         if (review_tokens.slice(i, i + selection_tokens.length).join(" ") === selection_tokens.join(" ")) {
             span_found = true;
             confirmSpanButton.disabled = false;

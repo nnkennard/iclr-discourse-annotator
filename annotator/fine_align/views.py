@@ -36,14 +36,14 @@ def index(request):
     for obj in pair_list:
         temp = dict(obj.__dict__)
         del temp["_state"]
-        #temp["previous_annotators"] =  ", ".join([
-        #        sorted(set(x["annotator"]
-        #        for x in AlignmentAnnotation.objects.values("annotator").filter(
-        #            review_supernote=temp["review"],
-        #            rebuttal_supernote=temp["rebuttal"],
-        #        ).values()
-        #       ))])
-        temp["previous_annotators"] = ""
+        prev_annotators = sorted(set([x["annotator"] for x in AlignmentAnnotation.objects.values("annotator").filter(
+                   review_sid=temp["review_sid"],
+                   rebuttal_sid=temp["rebuttal_sid"],
+               )]))
+        if prev_annotators:
+            temp["previous_annotators"] = "|".join(prev_annotators)
+        else:
+            temp["previous_annotators"] = ""
         examples.append(temp)
     template = loader.get_template('fine_align/index.html')
     context = {"examples": examples,}
@@ -51,6 +51,8 @@ def index(request):
 
 
 def crunch_supernote(supernote):
+    """Given a supernote id, returns a list of list of tokens.
+    """
     rows = Text.objects.filter(comment_sid=supernote)
     chunks = []
     current_chunk = []
@@ -59,41 +61,30 @@ def crunch_supernote(supernote):
         if current_chunk_idx == row.chunk_idx:
             current_chunk.append(row.token)
         else:
-            if current_chunk == ["NEWLINE"]:
-                dsds
-                chunks.append([])
-            else:
-                chunks.append(current_chunk)
+            chunks.append(current_chunk)
             current_chunk = [row.token]
             current_chunk_idx = row.chunk_idx
-
-    if current_chunk == ["NEWLINE"]:
-        dsds
-        chunks.append([])
-    else:
-        chunks.append(current_chunk)
-
-    return zip(*[(i, " ".join(chunk))
-        for i, chunk in enumerate(chunks)
-        if chunk])
+    chunks.append(current_chunk)
+    return chunks
 
 def detail(request, review, rebuttal):
-    review_indices, review_text = crunch_supernote(review)
-    rebuttal_indices, rebuttal_text = crunch_supernote(rebuttal)
+    review_chunks = [" ".join(chunk) for chunk in crunch_supernote(review)]
+    rebuttal_chunks = crunch_supernote(rebuttal)
     title = AnnotatedPair.objects.get(
             review_sid=review, rebuttal_sid=rebuttal).title
     reviewer = AnnotatedPair.objects.get(
             review_sid=review, rebuttal_sid=rebuttal).reviewer
 
-    print("%%%%", review, rebuttal)
-
-    nonempty_rebuttal = [(i, chunk) for i, chunk in enumerate(rebuttal_text) if not chunk == "<br>"]
+    nonempty_rebuttal = [(i, " ".join(chunk))
+                         for i, chunk in enumerate(rebuttal_chunks)
+                         if not chunk == ["<br>"]]
+    assert not len(rebuttal_chunks) == len(nonempty_rebuttal)
     nonempty_rebuttal_indices, nonempty_rebuttal_chunks = zip(*nonempty_rebuttal)
     context = {
-            "paper_title":title,
+            "paper_title": title,
             "reviewer": reviewer,
-            "review_text": review_text,
-            "rebuttal_text": nonempty_rebuttal_chunks,
+            "review_chunks": review_chunks,
+            "nonempty_rebuttal_chunks": nonempty_rebuttal_chunks,
             "rebuttal_indices": nonempty_rebuttal_indices,
             "review": review,
             "rebuttal": rebuttal,
@@ -107,26 +98,19 @@ def submitted(request):
     form = AnnotationForm(request.POST)
     if form.is_valid():
         annotation_obj = json.loads(form.cleaned_data["annotation"])
-        print(annotation_obj)
-
-
         for alignment in annotation_obj["alignments"]:
-          rebuttal_chunk_idx, start_token, end_token = alignment
-          review_tokens = sum([chunk.split()
-                               for chunk in list(crunch_supernote(annotation_obj["review_sid"]))[1]], [])
+          rebuttal_chunk_idx, start_token, end_token, error = alignment
+          review_tokens = sum(crunch_supernote(annotation_obj["review_sid"]), [])
           nonempty_review_tokens = [token for token in review_tokens if not token == "<br>"]
-          print(review_tokens)
-          print(nonempty_review_tokens[start_token:end_token])
           annotation = AlignmentAnnotation(
             review_sid = annotation_obj["review_sid"],
             rebuttal_sid = annotation_obj["rebuttal_sid"],
             annotator = annotation_obj["annotator"],
-            comment = "no comment",
+            comment = annotation_obj["comment"],
             rebuttal_chunk_idx = rebuttal_chunk_idx,
             review_start_idx = start_token,
             review_exclusive_end_idx = end_token,
-            error=0,
-
+            error=error,
             )
           annotation.save()
     return HttpResponse(template.render({}, request))
