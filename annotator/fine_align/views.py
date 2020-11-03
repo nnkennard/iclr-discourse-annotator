@@ -92,16 +92,50 @@ def detail(request, review, rebuttal):
     template = loader.get_template('fine_align/detail.html')
     return HttpResponse(template.render(context, request))
 
+def get_review_substring(review_sid, start_token, end_token):
+    review_chunks = crunch_supernote(review_sid)
+    nonempty_review_tokens = [token for token in sum(review_chunks, []) if not token == "<br>"]
+    matched_tokens = nonempty_review_tokens[start_token:end_token]
+
+def get_review_metadata(review_sid):    
+    review_chunks = crunch_supernote(review_sid)
+
+    all_tokens = sum(review_chunks, [])
+    nonempty_tokens = [token for token in all_tokens if not token == "<br>"]
+
+    start_map = list(range(len(nonempty_tokens)))
+    end_map = list(range(len(nonempty_tokens)))
+
+    token_offset = 0
+
+    for i, token in enumerate(nonempty_tokens):
+        if all_tokens[i] == "<br>":
+            token_offset +=1
+            end_map[i] -= 1
+        start_map[i] += token_offset
+        end_map[i] += token_offset
+
+    k = 0
+
+    for i, token in enumerate(all_tokens):
+        print(k, start_map[k], nonempty_tokens[start_map[k]])
+        print(k, end_map[k], nonempty_tokens[end_map[k]])
+        print(i, token)
+        if not i == "<br>":
+            k += 1
+
+    return review_chunks, start_map, end_map
+
+
 
 def submitted(request):
     template = loader.get_template('fine_align/submitted.html')
     form = AnnotationForm(request.POST)
     if form.is_valid():
         annotation_obj = json.loads(form.cleaned_data["annotation"])
+        review_chunks, start_map, end_map = get_review_metadata(annotation_obj["review_sid"])
         for alignment in annotation_obj["alignments"]:
           rebuttal_chunk_idx, start_token, end_token, error = alignment
-          review_tokens = sum(crunch_supernote(annotation_obj["review_sid"]), [])
-          nonempty_review_tokens = [token for token in review_tokens if not token == "<br>"]
           annotation = AlignmentAnnotation(
             review_sid = annotation_obj["review_sid"],
             rebuttal_sid = annotation_obj["rebuttal_sid"],
