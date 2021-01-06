@@ -14,7 +14,10 @@ function switchTab(current_tab, total_tabs, direction) {
 }
 
 function isNoContextChecked(index, errors){
-    return errors[index].includes("no_context")
+    return errors[index].includes(
+        "no_context") || errors[index].includes(
+        "global_context") || errors[index].includes(
+        "mult_spans")
 }
 
 function getErrors(rebuttal_indices){
@@ -130,4 +133,23 @@ function updateNoContext(index){
         document.getElementById("contextSpan_" + index).innerHTML = "No span confirmed -- please select a span on the left."
     }
 
+}
+
+highlighted = Array(2 + 1).fill(0);
+
+function clicked(ele){
+  index = parseInt(ele.attributes.num.value);
+  highlighted[index] =  1 - highlighted[index];
+  repaint();
+}
+
+function repaint() {
+  var spans = document.getElementsByTagName('span');
+  for (index in spans) {
+    if (highlighted[index] == 1) {
+      spans[index].style="background-color:#d5f5e3"
+    } else {
+      spans[index].style=""
+    }
+  }
 }

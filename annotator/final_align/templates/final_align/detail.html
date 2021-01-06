@@ -1,0 +1,151 @@
+<head>
+   <title> Alignment Annotation </title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+</head>
+<body>
+   {% load static %}
+   <link rel="stylesheet" type="text/css" href="{% static '/index.css' %}">
+   {% load final_align_extras %}
+   {{ rebuttal_indices | json_script:"reb_id"}}
+   {{ rebuttal | json_script:"rebuttal"}}
+   {{ review | json_script:"review"}}
+
+   <br />
+   <div class="row">
+      <div class="col-5 offset-1">
+         Paper title:
+         <h3>{{ paper_title }} </h3>
+         {{ reviewer }}
+         <br />
+         <br />
+         <button id="generate" name="generate" class="btn btn-primary"
+            onclick="generateJson()">Validate annotations</button> 
+      </div>
+      <div class="col-4 offset-1">
+         <br />
+         <div class="row">
+            <div class="col-4">
+               Your initials
+               <input id="initials" type="text" class="form-control input-md">
+            </div>
+            <div class="col-8">
+               Comments
+               <input id="comments" type="text" class="form-control input-md">
+            </div>
+         </div>
+         <br >
+         <form action="/fine_align/submitted/" method="post">
+            {% csrf_token %}
+            <div class="row">
+               <div class="col-10">
+                  <input id="annotation" class="form-control input-md" type="text" name="annotation" placeholder="JSON-ified annotation will appear here once validated">
+               </div>
+               <div class="col-2">
+                  <input id="submitBtn" class="btn btn-primary" type="submit" value="Submit">
+               </div>
+            </div>
+         </form>
+         <br />
+         </form>
+      </div>
+   </div>
+   {% for rebuttal_chunk in nonempty_rebuttal_chunks %}
+   <div class="tab">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-5 offset-1">
+               <h2>Review</h2>
+               <i>Currently selected span: </i>
+               <div class="row">
+                  <div class="col-10">
+                     <div id="highlightedSpan_{{forloop.counter0}}" class="overflow-auto p-3 mb-3 mb-md-0 mr-md-3  bg-dark text-white" style="height:100px;">Please select a context span from the review below.</div>
+                  </div>
+                  <div class="col-2">
+                     <button id="confirmSpanButton_{{ forloop.counter0 }}" name="confirmSpanButton" disabled="true" class="btn btn-success" onClick="confirmSpan({{ forloop.counter0 }})"> Confirm</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-6">
+                     <span id="highlightedSpanStartIndex_{{forloop.counter0}}" hidden="true"></span>
+                  </div>
+                  <div class="col-6">
+                     <span id="highlightedSpanEndIndex_{{forloop.counter0}}" hidden="true"></span>
+                  </div>
+               </div>
+               <br >
+               <br >
+               <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-0" style="max-height:700px;">
+                  <p id="reviewtablecell_{{forloop.counter0}}" onMouseUp="consumeSelection({{ forloop.counter0 }})">
+                     {% for review_chunk in review_chunks %}
+                       {% for review_sentence in review_chunk %}
+                       <span class="sentence" num={{ forloop.counter0 }}
+                             highlight=0 onclick="clicked(this)">
+                         {{ review_sentence }} </span>
+                       {% endfor %}
+                       <br><br>
+                     {% endfor %}
+                  </p>
+               </div>
+               <br>
+            </div>
+            <div class="col-4 offset-1">
+               <h2>Rebuttal</h2>
+               Select a span of the review the following chunk of text is responding to. <br/> <br />
+               <div class="row">
+                  <div class="col-3">
+                     <button class="btn btn-sm btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{nonempty_rebuttal_chunks | length }}, -1)"> &lt; </button>
+                  </div>
+                  <div class="col-6 text-center">
+                     Rebuttal chunk &nbsp; {{ forloop.counter0  | add:1 }} / {{ nonempty_rebuttal_chunks | length}}
+                  </div>
+                  <div class="col-3 text-right">
+                     <button class="btn btn-sm btn-secondary" onClick="switchTab({{ forloop.counter0 }}, {{nonempty_rebuttal_chunks | length }}, 1)"> &gt; </button>
+                  </div>
+                  <div class="col-3 offset-1">
+                  </div>
+               </div>
+               <br >
+               <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-0 bg-dark text-white" style="max-height:300px;">
+                  <p id="rebuttalcell_{{forloop.counter0}}"">
+                     {{ rebuttal_chunk }}
+                  </p>
+               </div>
+               <br>
+               <h5>Confirmed context span:</h5>
+               <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md0  bg-dark text-white" style="max-height:300px;">
+                  <p id="contextSpan_{{ forloop.counter0 }}">
+                     No span confirmed -- please select a span on the left
+                  </p>
+               </div>
+               <br>
+               {% with chunk_idx=forloop.counter0 %}
+               <div class="form-group">
+                  {% for category, code_items in codes %}
+                  <h5>{{ category }}</h5>
+                  {% for code_item in code_items %}
+                  <div class="row">
+                     <div class="col-4">
+                        <div class="checkbox">
+                           <label for="errors-{{ chunk_idx }}-{{code_item.code}}">
+                           <input type="checkbox" name="checkboxes" id="errors-{{ chunk_idx }}-{{code_item.code}}" value="{{code_item.code}}"> {{code_item.code}}
+                        </div>
+                     </div>
+                     <div class="col-8">
+                        <small> {{code_item.label}} </small>
+                     </div>
+                  </div>
+                  {% endfor %}
+                  {% endfor %}
+                  {% endwith %}
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   {% endfor %}
+   <script src="{% static '/index.js' %}"></script>
+</body>
+

@@ -30,3 +30,11 @@ div {
   height: 400px;
   margin: 0 auto;
 }
+
+.x {
+  text-decoration: underline;
+}
+
+.sentence:hover {
+    background-color:  #fcf3cf;
+}

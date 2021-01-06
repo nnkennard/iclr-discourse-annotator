@@ -8,6 +8,7 @@ from django.template import loader
 from .models import AlignmentAnnotation, AnnotatedPair, Text
 from .forms import AnnotationForm
 
+
 Code = collections.namedtuple("Code", ["code", "label"])
 CodeList = collections.namedtuple("CodeList", ["list_name", "codes"])
 
@@ -16,18 +17,12 @@ CODES = [
     ["Context", [
         Code("no_context", "There is no relevant context span for this rebuttal chunk")._asdict(),
         Code("global_context", "This rebuttal chunk is a response to the review as a whole ")._asdict(),
-        Code("mult_spans", "There are multiple non-contiguous spans that form the context for this chunk")._asdict(),
-        ]],
-    ["Chunking",  [
-        Code("merge_next", "Should merge with next chunk")._asdict(),
-        Code("merge_prev", "Should merge with previous chunk")._asdict(),
-        Code("should_split", "Should be split into multiple chunks")._asdict(),
         ]],
     ["Deixis", [
         Code("review_deixis", "There exists a deictic mention referring to this chunk's context")._asdict(),
         Code("rebuttal_deixis", "This rebuttal chunk refers to another part of the rebuttal")._asdict(),
     ]]
-    ]
+]
 
 
 def index(request):
@@ -45,31 +40,86 @@ def index(request):
         else:
             temp["previous_annotators"] = ""
         examples.append(temp)
-    template = loader.get_template('fine_align/index.html')
+    template = loader.get_template('final_align/index.html')
     context = {"examples": examples,}
     return HttpResponse(template.render(context, request))
 
+def get_supernote_sentences(supernote):
+    return crunch_rows(supernote, lambda x:x.sentence_idx) 
+    
+def get_supernote_chunks(supernote):
+    return crunch_rows(supernote, lambda x:x.chunk_idx) 
 
-def crunch_supernote(supernote):
-    """Given a supernote id, returns a list of list of tokens.
-    """
+def crunch_rows(supernote, index_getter):
+    rows = Text.objects.filter(comment_sid=supernote)
+    units = []
+    current_unit = []
+    current_unit_idx = 0
+    for row in rows:
+        if current_unit_idx == index_getter(row):
+            current_unit.append(row.token)
+        else:
+            units.append(current_unit)
+            current_unit = [row.token]
+            current_unit_idx = index_getter(row)
+    units.append(current_unit)
+    return units
+
+def double_crunch_rows(supernote):
     rows = Text.objects.filter(comment_sid=supernote)
     chunks = []
     current_chunk = []
     current_chunk_idx = 0
+    current_sentence = []
+    current_sentence_idx = 0
     for row in rows:
         if current_chunk_idx == row.chunk_idx:
-            current_chunk.append(row.token)
+            if current_sentence_idx == row.sentence_idx:
+                current_sentence.append(row.token)
+            else:
+                current_chunk.append(" " .join(current_sentence))
+                current_sentence = [row.token]
+                current_sentence_idx = row.sentence_idx
         else:
+            current_chunk.append(" ".join(current_sentence))
             chunks.append(current_chunk)
-            current_chunk = [row.token]
+            current_chunk = []
+            current_sentence = [row.token]
             current_chunk_idx = row.chunk_idx
-    chunks.append(current_chunk)
+            assert row.sentence_idx == 0
+            current_sentence_idx = 0
+
     return chunks
 
+
+_unused = """
+def chunkify_sentences(tokenized_sentences):
+    chunks = []
+    current_chunk = []
+    for sentence in tokenized_sentences:
+        if sentence == ["<br>"]:
+            chunks.append(current_chunk)
+            chunks.append(sentence)
+            current_chunk = []
+        else:
+            current_chunk.append(" ".join(sentence))
+    chunks.append(current_chunk)
+    return chunks
+"""
+
+def prepare_chunk_text(tokenized_chunks):
+    return [" ".join(chunk) for chunk in tokenized_chunks]
+
 def detail(request, review, rebuttal):
-    review_chunks = [" ".join(chunk) for chunk in crunch_supernote(review)]
-    rebuttal_chunks = crunch_supernote(rebuttal)
+    review_chunks = double_crunch_rows(review)
+    rebuttal_chunks = prepare_chunk_text(get_supernote_chunks(rebuttal))
+
+    print("Review chunks")
+    print(review_chunks)
+    print("*" * 80)
+    print("Rebuttal chunks")
+    print(rebuttal_chunks)
+
     title = AnnotatedPair.objects.get(
             review_sid=review, rebuttal_sid=rebuttal).title
     reviewer = AnnotatedPair.objects.get(
@@ -78,7 +128,7 @@ def detail(request, review, rebuttal):
     nonempty_rebuttal = [(i, " ".join(chunk))
                          for i, chunk in enumerate(rebuttal_chunks)
                          if not chunk == ["<br>"]]
-    assert not len(rebuttal_chunks) == len(nonempty_rebuttal)
+    #assert not len(rebuttal_chunks) == len(nonempty_rebuttal)
     nonempty_rebuttal_indices, nonempty_rebuttal_chunks = zip(*nonempty_rebuttal)
     context = {
             "paper_title": title,
@@ -89,7 +139,7 @@ def detail(request, review, rebuttal):
             "review": review,
             "rebuttal": rebuttal,
             "codes": CODES}
-    template = loader.get_template('fine_align/detail.html')
+    template = loader.get_template('final_align/detail.html')
     return HttpResponse(template.render(context, request))
 
 def get_review_substring(review_chunks, start_map, end_map, start_token, end_token):
@@ -98,6 +148,7 @@ def get_review_substring(review_chunks, start_map, end_map, start_token, end_tok
     print(nonempty_review_tokens[start_token:end_token])
     print(all_tokens[start_map[start_token]:end_map[end_token]])
 
+_hopefully_unused = """
 def get_review_metadata(review_sid):    
     review_chunks = crunch_supernote(review_sid)
 
@@ -122,12 +173,12 @@ def get_review_metadata(review_sid):
             nonempty_i += 1
 
     print("Got metadata")
-    return review_chunks, start_map, end_map
+    return review_chunks, start_map, end_map"""
 
 
 
 def submitted(request):
-    template = loader.get_template('fine_align/submitted.html')
+    template = loader.get_template('final_align/submitted.html')
     form = AnnotationForm(request.POST)
     if form.is_valid():
         annotation_obj = json.loads(form.cleaned_data["annotation"])
