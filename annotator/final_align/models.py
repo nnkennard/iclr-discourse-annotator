@@ -26,6 +26,7 @@ class AnnotatedPair(models.Model):
 class Text(models.Model):
     class Meta:
         app_label = "final_align"
+    dataset = models.CharField(max_length=30)
     comment_sid = models.CharField(max_length=30)
     chunk_idx = models.IntegerField()
     sentence_idx = models.IntegerField()

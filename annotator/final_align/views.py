@@ -18,7 +18,11 @@ CODES = [
         Code("no_context", "There is no relevant context span for this rebuttal chunk")._asdict(),
         Code("global_context", "This rebuttal chunk is a response to the review as a whole ")._asdict(),
         ]],
+    ["Chunking", [
+        Code("chunk_error", "Major error in chunking (unrecoverable)")._asdict(),
+        ]],
     ["Deixis", [
+        Code("no_deixis", "No occurrences of deixis in this chunk")._asdict(),
         Code("review_deixis", "There exists a deictic mention referring to this chunk's context")._asdict(),
         Code("rebuttal_deixis", "This rebuttal chunk refers to another part of the rebuttal")._asdict(),
     ]]
