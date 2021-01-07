@@ -30,7 +30,7 @@ CODES = [
 
 
 def index(request):
-    pair_list = AnnotatedPair.objects.all()
+    pair_list = AnnotatedPair.objects.filter(dataset="traindev_train")
     examples = []
     for obj in pair_list:
         temp = dict(obj.__dict__)

@@ -13,10 +13,13 @@ class AlignmentAnnotation(models.Model):
     comment = models.CharField(max_length=200)
     annotator = models.CharField(max_length=30)
 
+    dataset = models.CharField(max_length=30)
+
 
 class AnnotatedPair(models.Model):
     class Meta:
         app_label = "final_align"
+    dataset = models.CharField(max_length=30)
     review_sid = models.CharField(max_length=30)
     rebuttal_sid = models.CharField(max_length=30)
     title = models.CharField(max_length=300)
