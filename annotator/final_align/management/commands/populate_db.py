@@ -24,15 +24,13 @@ class Command(BaseCommand):
         if not result == "Y":
             return
 
+        AnnotatedPair.objects.all().delete()
+        AlignmentAnnotation.objects.all().delete()
+        Text.objects.all().delete()
 
         for dataset in DATASETS:
             json_obj = self._load_data("".join([options["input_dir"], "/",
                 dataset, ".json"]))
-
-            AnnotatedPair.objects.all().delete()
-            AlignmentAnnotation.objects.all().delete()
-            Text.objects.all().delete()
-
             print("Entering dataset ", dataset)
             for pair in tqdm(json_obj["review_rebuttal_pairs"]):
                 annotated_pair=AnnotatedPair(
