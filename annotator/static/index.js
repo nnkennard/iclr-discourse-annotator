@@ -15,7 +15,11 @@ function switchTab(current_tab, total_tabs, direction) {
 function isNoContextChecked(index, errors) {
     return errors[index].includes(
         "no_context") || errors[index].includes(
-        "global_context")
+        "global_context") || errors[index].includes(
+        "signpost") || errors[index].includes(
+        "reference") || errors[index].includes(
+        "quote")
+
 }
 
 function getErrors(rebuttal_chunks) {
@@ -81,6 +85,7 @@ function generateJson() {
             "rebuttal_sid": rebuttal_sid,
             "annotator": document.getElementById("initials").value,
             "comment": document.getElementById("comments").value,
+            "metadata": getJsonified("metadata"),
         }
         document.getElementById("annotation").value = JSON.stringify(result)
         alert("Good to go! Please review then submit")

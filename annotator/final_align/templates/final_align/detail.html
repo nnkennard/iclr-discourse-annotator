@@ -14,6 +14,7 @@
    {{ rebuttal_chunks | json_script:"rebuttal_chunks"}}
    {{ review_sentences | json_script:"review_sentences"}}
    {{ review | json_script:"review"}}
+   {{ metadata | json_script:"metadata"}}
    <br />
    <div class="row">
       <div class="col-5 offset-1">
@@ -49,7 +50,7 @@
          </div>
          <br >
                   
-         <form action="/fine_align/submitted/" method="post">
+         <form action="/final_align/submitted/" method="post">
             {% csrf_token %}
             <div class="row">
                <div class="col-9">
