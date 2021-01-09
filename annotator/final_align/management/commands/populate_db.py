@@ -34,6 +34,7 @@ class Command(BaseCommand):
             for pair in tqdm(json_obj["review_rebuttal_pairs"][:30]):
                 annotated_pair=AnnotatedPair(
                     example_index=pair["index"],
+                    forum_id=pair["forum"],
                     dataset=dataset,
                     review_sid=pair["review_sid"],
                     rebuttal_sid=pair["rebuttal_sid"],

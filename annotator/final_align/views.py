@@ -28,7 +28,9 @@ CODES = [
 
     ["Chunking", [
         Code("should_split",
-            "Sentence contains multiple discourse units (please annotate context of both)")._asdict(),
+            "'Sentence' actually contains two or more sentences (please annotate context of both)")._asdict(),
+        Code("multiple_units",
+            "Single sentence contains multiple discourse units with different contexts (please annotate context of both)")._asdict(),
         Code("major_error",
             "Major error in chunking (unrecoverable) (please comment)")._asdict(),
         ]],
@@ -128,7 +130,9 @@ def detail(request, review, rebuttal):
     title = relevant_annotated_pair.title
     reviewer = relevant_annotated_pair.reviewer
     metadata = {"example_index":relevant_annotated_pair.example_index,
-                "dataset":relevant_annotated_pair.dataset}
+                "dataset":relevant_annotated_pair.dataset,
+                "forum_id":relevant_annotated_pair.forum_id,
+                "rebuttal_sid": relevant_annotated_pair.rebuttal_sid}
 
     context = {
             "metadata": metadata,

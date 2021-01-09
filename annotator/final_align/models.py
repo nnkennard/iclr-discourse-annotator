@@ -23,6 +23,7 @@ class AnnotatedPair(models.Model):
     dataset = models.CharField(max_length=30)
     example_index = models.IntegerField()
 
+    forum_id = models.CharField(max_length=30)
     review_sid = models.CharField(max_length=30)
     rebuttal_sid = models.CharField(max_length=30)
     title = models.CharField(max_length=300)
