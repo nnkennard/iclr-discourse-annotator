@@ -27,12 +27,9 @@ class Command(BaseCommand):
         AnnotatedPair.objects.all().delete()
         AlignmentAnnotation.objects.all().delete()
         Text.objects.all().delete()
-
-
         for dataset in DATASETS:
             json_obj = self._load_data("".join([options["input_dir"], "/",
                 dataset, ".json"]))
-
             print("Entering dataset ", dataset)
             for pair in tqdm(json_obj["review_rebuttal_pairs"][:30]):
                 annotated_pair=AnnotatedPair(
