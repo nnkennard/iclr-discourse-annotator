@@ -160,7 +160,6 @@ function checkKey(e) {
 
     current_tab = parseInt(document.getElementById("currentTab").innerHtml)
 
-
     e = e || window.event;
 
     if (e.keyCode == '37') {
