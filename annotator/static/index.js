@@ -33,8 +33,7 @@ function contextNotRequired(index, errors) {
         "no_context") || errors[index].includes(
         "global_context") || errors[index].includes(
         "signpost") || errors[index].includes(
-        "reference") || errors[index].includes(
-        "quote")
+        "reference")
 }
 
 function getErrors(rebuttal_chunks) {
