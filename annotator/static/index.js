@@ -2,6 +2,20 @@
 switchTab(-1, 1, 1); // Display the first tab
 document.getElementById("submitBtn").disabled = "true"
 
+// In ids, both rebuttal chunk and review chunk are 0-indexed
+
+rebuttal_chunks = getJsonified("rebuttal_chunks");
+review_sentences = getJsonified("review_sentences");
+num_nonempty_review_sentences = 0
+for (sentence of review_sentences){
+    if (sentence.idx > -1){
+        num_nonempty_review_sentences += 1
+    }
+}
+highlighted = new Array(rebuttal_chunks.length);
+for (var i = 0; i < highlighted.length; i++) {
+    highlighted[i] = new Array(num_nonempty_review_sentences).fill(0);
+}
 
 function switchTab(current_tab, total_tabs, direction) {
     new_tab = (current_tab + direction + total_tabs) % total_tabs;
@@ -12,14 +26,13 @@ function switchTab(current_tab, total_tabs, direction) {
     tabs.item(new_tab).style.display = "block";
 }
 
-function isNoContextChecked(index, errors) {
+function contextNotRequired(index, errors) {
     return errors[index].includes(
         "no_context") || errors[index].includes(
         "global_context") || errors[index].includes(
         "signpost") || errors[index].includes(
         "reference") || errors[index].includes(
         "quote")
-
 }
 
 function getErrors(rebuttal_chunks) {
@@ -30,6 +43,7 @@ function getErrors(rebuttal_chunks) {
     }
     for (checkbox of checkboxes) {
         if (checkbox.checked) {
+            // e.g. "errors-0-signpost"
             parts = checkbox.id.split("-")
             errors[parseInt(parts[1])].push(parts[2])
         }
@@ -66,11 +80,11 @@ function generateJson() {
                     matches.push(j)
                 }
             }
-            if (matches.length == 0 && !isNoContextChecked(i, errors)) {
+            if (matches.length == 0 && !contextNotRequired(i, errors)) {
 
                 alert("Please annotate rebuttal chunk " + (parseInt(i) + 1))
                 return
-            } else if (matches.length > 0 && isNoContextChecked(i, errors)) {
+            } else if (matches.length > 0 && contextNotRequired(i, errors)) {
 
                 alert("Conflicting annotations on rebuttal chunk " + (parseInt(i) + 1))
                 return
@@ -93,22 +107,53 @@ function generateJson() {
     }
 }
 
-rebuttal_chunks = getJsonified("rebuttal_chunks");
-review_sentences = getJsonified("review_sentences");
-highlighted = new Array(rebuttal_chunks.length);
-
-for (var i = 0; i < highlighted.length; i++) {
-    highlighted[i] = new Array(review_sentences.length).fill(0);
-}
-
 
 function clicked(ele) {
-    review_idx = parseInt(ele.attributes.review_idx.value);
-    rebuttal_idx = parseInt(ele.attributes.rebuttal_idx.value);
+    // e.g. "sentence-1-2" for rebuttal index 1 and review index 2
+    console.log("Trying")
+    console.log(ele.id)
+    parts = ele.id.split("-")
+    review_idx = parseInt(parts[2]);
+    rebuttal_idx = parseInt(parts[1]);
     highlighted[rebuttal_idx][review_idx] = 1 - highlighted[rebuttal_idx][review_idx];
+    console.log(highlighted[rebuttal_idx][review_idx])
     if (highlighted[rebuttal_idx][review_idx]) {
         ele.style = "background-color:#d5f5e3"
     } else {
         ele.style = ""
+    }
+}
+
+function copyPrevious(chunk_idx_str){
+    chunk_idx = parseInt(chunk_idx_str)
+    checkbox_container = document.getElementById("checkbox-container-"+chunk_idx_str)
+    // Clear errors
+    for (row of checkbox_container.children){
+        if (row.className != "row") {
+            continue
+        }
+        row.children[0].children[0].children[0].children[0].checked = false
+    }
+
+    // Copy errors
+    rebuttal_chunks = getJsonified("rebuttal_chunks");
+    errors = getErrors(rebuttal_chunks)
+    previous_errors = errors[chunk_idx - 1]
+    for (error_code of previous_errors) {
+        checkbox_id = "errors-" + chunk_idx_str + "-" + error_code
+        document.getElementById(checkbox_id).checked = true
+    }
+
+    review_sentences = getJsonified("review_sentences");
+    highlighted[chunk_idx] = highlighted[chunk_idx - 1]
+    for (i in highlighted[chunk_idx]){
+        console.log(review_sentences.length, i)
+        sentence = highlighted[chunk_idx][i]
+        sentence_element = document.getElementById("sentence-"+chunk_idx+"-"+i)
+        if (sentence){
+            sentence_element.style = "background-color:#d5f5e3"
+        } else {
+            sentence_element.style = ""
+        }
     }
 }

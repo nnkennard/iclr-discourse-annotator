@@ -81,8 +81,7 @@
                      {% else %}
 
                      <span class="sentence"
-                        rebuttal_idx="{{ forloop.parentloop.counter0 }}"
-                        review_idx="{{ review_sentence.idx }}"
+                        id="sentence-{{ forloop.parentloop.counter0 }}-{{ review_sentence.idx }}"
                         highlight=0 onclick="clicked(this)">
                      {{ review_sentence.text | linebreaksbr }} </span>
                      {% endif %}
@@ -114,9 +113,11 @@
                   </p>
                </div>
                <br>
+                <button id="generate" name="generate" class="btn btn-sml btn-secondary"
+            onClick="copyPrevious({{ forloop.counter0 }})">Copy previous chunk annotations</button>
                <br>
                {% with chunk_idx=forloop.counter0 %}
-               <div class="form-group">
+               <div class="form-group" id="checkbox-container-{{ chunk_idx }}">
                   {% for category, code_items in codes %}
                   <h5>{{ category }}</h5>
                   {% for code_item in code_items %}
