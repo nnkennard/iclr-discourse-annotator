@@ -6,6 +6,7 @@ document.getElementById("submitBtn").disabled = "true"
 
 rebuttal_chunks = getJsonified("rebuttal_chunks");
 review_sentences = getJsonified("review_sentences");
+TOTAL_TABS = rebuttal_chunks.length
 num_nonempty_review_sentences = 0
 for (sentence of review_sentences){
     if (sentence.idx > -1){
@@ -24,6 +25,7 @@ function switchTab(current_tab, total_tabs, direction) {
         tabs.item(current_tab).style.display = "none";
     }
     tabs.item(new_tab).style.display = "block";
+    document.getElementById("currentTab").innerHtml = new_tab
 }
 
 function contextNotRequired(index, errors) {
@@ -81,11 +83,9 @@ function generateJson() {
                 }
             }
             if (matches.length == 0 && !contextNotRequired(i, errors)) {
-
                 alert("Please annotate rebuttal chunk " + (parseInt(i) + 1))
                 return
             } else if (matches.length > 0 && contextNotRequired(i, errors)) {
-
                 alert("Conflicting annotations on rebuttal chunk " + (parseInt(i) + 1))
                 return
             }
@@ -110,13 +110,10 @@ function generateJson() {
 
 function clicked(ele) {
     // e.g. "sentence-1-2" for rebuttal index 1 and review index 2
-    console.log("Trying")
-    console.log(ele.id)
     parts = ele.id.split("-")
     review_idx = parseInt(parts[2]);
     rebuttal_idx = parseInt(parts[1]);
     highlighted[rebuttal_idx][review_idx] = 1 - highlighted[rebuttal_idx][review_idx];
-    console.log(highlighted[rebuttal_idx][review_idx])
     if (highlighted[rebuttal_idx][review_idx]) {
         ele.style = "background-color:#d5f5e3"
     } else {
@@ -147,7 +144,6 @@ function copyPrevious(chunk_idx_str){
     review_sentences = getJsonified("review_sentences");
     highlighted[chunk_idx] = highlighted[chunk_idx - 1]
     for (i in highlighted[chunk_idx]){
-        console.log(review_sentences.length, i)
         sentence = highlighted[chunk_idx][i]
         sentence_element = document.getElementById("sentence-"+chunk_idx+"-"+i)
         if (sentence){
@@ -157,3 +153,22 @@ function copyPrevious(chunk_idx_str){
         }
     }
 }
+
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    current_tab = parseInt(document.getElementById("currentTab").innerHtml)
+
+
+    e = e || window.event;
+
+    if (e.keyCode == '37') {
+       switchTab(current_tab, TOTAL_TABS, -1); 
+    }
+    else if (e.keyCode == '39') {
+       switchTab(current_tab, TOTAL_TABS, 1); 
+    }
+
+}
+
