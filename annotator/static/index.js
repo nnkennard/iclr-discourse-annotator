@@ -1,56 +1,61 @@
-// INITIALIZATIONS
-switchTab(-1, 1, 1); // Display the first tab
-document.getElementById("submitBtn").disabled = "true"
+goToTab("tab:align:0")
 
-// In ids, both rebuttal chunk and review chunk are 0-indexed
-
-rebuttal_chunks = getJsonified("rebuttal_chunks");
+rebuttal_sentences = getJsonified("rebuttal_sentences");
 review_sentences = getJsonified("review_sentences");
-TOTAL_TABS = rebuttal_chunks.length
-num_nonempty_review_sentences = 0
-for (sentence of review_sentences){
-    if (sentence.idx > -1){
-        num_nonempty_review_sentences += 1
-    }
-}
-highlighted = new Array(rebuttal_chunks.length);
+
+highlighted = new Array(rebuttal_sentences.length);
 for (var i = 0; i < highlighted.length; i++) {
-    highlighted[i] = new Array(num_nonempty_review_sentences).fill(0);
+    highlighted[i] = new Array(review_sentences.length).fill(0);
 }
 
-function switchTab(current_tab, total_tabs, direction) {
-    new_tab = (current_tab + direction + total_tabs) % total_tabs;
-    var tabs = document.getElementsByClassName("tab");
-    if (current_tab > -1) {
-        tabs.item(current_tab).style.display = "none";
+function switchTab() {
+    console.log("y no switching")
+    current_tab_name = document.getElementById("currentTab").innerText
+    console.log(current_tab_name)
+    if (current_tab_name.startsWith("tab:align")){
+        goToTab(current_tab_name.replace("align", "label"))
+    } else {
+        goToTab(current_tab_name.replace("label", "align"))
     }
-    tabs.item(new_tab).style.display = "block";
-    document.getElementById("currentTab").innerHtml = new_tab
 }
 
-function contextNotRequired(index, errors) {
-    return errors[index].includes(
-        "no_context") || errors[index].includes(
-        "global_context") || errors[index].includes(
-        "signpost") || errors[index].includes(
-        "reference")
+function goToTab(goto_tab_name) {
+    current_tab_name = document.getElementById("currentTab").innerText
+    console.log("Going to tab", current_tab_name, goto_tab_name)
+    document.getElementById(current_tab_name).style.display = "none"
+    document.getElementById(goto_tab_name).style.display = "block"
+    document.getElementById("currentTab").innerText = goto_tab_name
 }
 
-function getErrors(rebuttal_chunks) {
-    checkboxes = document.getElementsByName('checkboxes');
-    errors = {}
-    for (var i = 0; i < rebuttal_chunks.length; i++) {
-        errors[i] = Array();
-    }
-    for (checkbox of checkboxes) {
-        if (checkbox.checked) {
-            // e.g. "errors-0-signpost"
-            parts = checkbox.id.split("-")
-            errors[parseInt(parts[1])].push(parts[2])
+function last(l){
+    return l[l.length - 1]
+}
+
+function someHighlighted(rebuttal_index){
+    return highlighted[rebuttal_index].reduce(function(a, b) { return a + b; }, 0) > 0
+}
+
+function validateAlignment(button_element){
+    rebuttal_index = last(button_element.id.split("-"))
+    radio_id = "align:radios-"+rebuttal_index
+
+    if (document.getElementById(radio_id+"-3").checked){
+        if(someHighlighted(rebuttal_index)){
+            switchTab();
+        } else {
+            window.alert("You have indicated that sentences are highlighted, but none are highlighted. Please fix.")
         }
+    } else {
+        if(someHighlighted(rebuttal_index)){
+            window.alert("You have highlighted sentences, but selected a 'no context' option as well. Please fix.")
+        
+        } else {
+            switchTab();
+            }
     }
-    return errors
 }
+
+
 
 function getJsonified(label) {
     return JSON.parse(document.getElementById(label).textContent)
@@ -114,10 +119,24 @@ function clicked(ele) {
     rebuttal_idx = parseInt(parts[1]);
     highlighted[rebuttal_idx][review_idx] = 1 - highlighted[rebuttal_idx][review_idx];
     if (highlighted[rebuttal_idx][review_idx]) {
-        ele.style = "background-color:#d5f5e3"
+        ele.style = "background-color:#d4efdf"
     } else {
         ele.style = ""
     }
+    highlighted_sentences = ""
+    for (i in highlighted[rebuttal_idx]){
+        if(highlighted[rebuttal_idx][i]){
+sentence_text = document.getElementById("sentence-"+rebuttal_idx+"-"+i).innerText;
+        highlighted_sentences += "\n" + sentence_text;
+        }
+        
+    }
+    if(highlighted_sentences){
+        highlighted_sentences = highlighted_sentences.substring(1);
+    }
+    document.getElementById('review-box-'+rebuttal_idx).innerText = highlighted_sentences
+    document.getElementById('label-review-box-'+rebuttal_idx).innerText = highlighted_sentences
+
 }
 
 function copyPrevious(chunk_idx_str){
