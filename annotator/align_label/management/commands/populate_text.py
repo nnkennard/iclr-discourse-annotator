@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from final_align.models import *
+from align_label.models import *
 
 import json
 from tqdm import tqdm
@@ -24,15 +24,15 @@ class Command(BaseCommand):
         if not result == "Y":
             return
 
-        AnnotatedPair.objects.all().delete()
-        AlignmentAnnotation.objects.all().delete()
-        Text.objects.all().delete()
+        CommentPair.objects.all().delete()
+        #SentenceAnnotation.objects.all().delete()
+        Sentence.objects.all().delete()
         for dataset in DATASETS:
             json_obj = self._load_data("".join([options["input_dir"], "/",
                 dataset, ".json"]))
             print("Entering dataset ", dataset)
-            for pair in tqdm(json_obj["review_rebuttal_pairs"][:30]):
-                annotated_pair=AnnotatedPair(
+            for pair in tqdm(json_obj["review_rebuttal_pairs"]):
+                comment_pair=CommentPair(
                     example_index=pair["index"],
                     forum_id=pair["forum"],
                     dataset=dataset,
@@ -41,20 +41,21 @@ class Command(BaseCommand):
                     title=pair["title"],
                     reviewer=pair["review_author"]
                 )
-                annotated_pair.save()
+                comment_pair.save()
              
-                for text, sid  in [
+                for text_obj, sid  in [
                         (pair["review_text"], pair["review_sid"]),
                         (pair["rebuttal_text"], pair["rebuttal_sid"])]:
-                    for chunk_i, chunk in enumerate(text):
-                        for sentence_i, sentence in enumerate(chunk):
-                            for token_i, token in enumerate(sentence):
-                                textnode = Text(
-                                                dataset=dataset,
-                                                comment_sid=sid,
-                                                chunk_idx=chunk_i,
-                                                sentence_idx=sentence_i,
-                                                token_idx=token_i,
-                                                token=token,)
-                                textnode.save()
+                    for sentence_i, sentence in enumerate(text_obj["sentences"]):
+                        text = text_obj[
+                            "text"][
+                            sentence["start_index"]:sentence["end_index"]]
+                        sentence_node = Sentence(
+                                        dataset=dataset,
+                                        comment_sid=sid,
+                                        sentence_idx=sentence_i,
+                                        text=text,
+                                        suffix=sentence["suffix"]
+                                        )
+                        sentence_node.save()
 

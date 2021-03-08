@@ -1,0 +1,29 @@
+<head>
+  <title> {{ name }}'s annotation assignments </title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
+   ">
+<body>
+   <div class="container">
+   <table class="table">
+      <tr>
+         <td> Reviewer </td>
+         <td> Title </td>
+         <td> Status </td>
+      </tr>
+      {% for example in examples %}
+      <tr>
+         <td> {{ example.reviewer }} </td>
+         <td><a href="/align_label/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
+            {{ example.title }}</a>
+         </td>
+         <td> ?? </td>
+      </tr>
+      </li>
+      {% endfor %}
+   </table>
+
+   </div>
+</body>
+
+

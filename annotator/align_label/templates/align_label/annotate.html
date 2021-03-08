@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<title> Alignment Annotation </title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+		</head>
+		<body>
+      {% load static %}
+      <link rel="stylesheet" type="text/css" href="{% static '/align_label.css' %}">
+			<div class='lightblue'>
+				<section class="section" id="sec:nav"></section>
+				<!-- start tab here -->
+				<section class="section" id="sec:align">
+					<div class="container">
+						<div class="tile is-ancestor">
+							<div class="tile is-parent">
+								<article class="tile is-child white post" id="align:review">
+            Here is some stuff
+          </article>
+							</div>
+							<div class="tile is-parent">
+								<article class="tile is-child white post" id="align:rebuttal">
+            Here is some more stuff
+          </article>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="section" id="sec:label">
+					<div class="container">
+						<div class="tile is-ancestor">
+							<div class="tile is-parent is-5">
+								<article class="tile is-child white post" id="align:review">
+            Here is some stuff
+          </article>
+							</div>
+							<div class="tile is-parent is-5">
+								<article class="tile is-child white post" id="align:rebuttal">
+            Here is some more stuff
+          </article>
+							</div>
+							<div class="tile is-parent is-2">
+								<article class="tile is-child white post" id="align:rebuttal">
+            Here is some more stuff
+          </article>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!--- end tab here -->
+		</div>
+	</div>
+</body>
+</html>

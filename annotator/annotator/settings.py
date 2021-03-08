@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ["161.35.142.56", "localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-    'final_align.apps.FinalAlignConfig',
+    'align_label.apps.AlignLabelConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
