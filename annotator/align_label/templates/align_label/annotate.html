@@ -6,25 +6,48 @@
 <body>
 
 {% load static %}
+{{ metadata | json_script:"metadata"}}
 {{ rebuttal_sentences | json_script:"rebuttal_sentences"}}
 {{ review_sentences | json_script:"review_sentences"}}
+
 <span id="currentTab" style="display:none">tab:align:0</span>
 <link rel="stylesheet" type="text/css" href="{% static '/align_label.css' %}">
 			
 <div class='lightblue'>
-	<section class="section" id="sec:nav">
-	</section>
+
 	<section class="section" id="sec:title">
 		<div class="container">
 			<div class="tile is-ancestor">
-				<div class="tile is-parent white">
+				<div class="tile is-parent is-7 white">
 					<article class="tile is-child white post" id="align:review">
-						<h2 class="title is-3"> {{ paper_title }} </h2>
-        				{{ reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum </a> And add the form up here!!
+						<h2 class="title is-3"> {{ metadata.paper_title }} </h2>
+        				{{ metadata.reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> <br> <br>
+        				 {% for rebuttal_sentence in rebuttal_sentences %}
+							<button class="button is-outline" id="nav:{{forloop.counter0}}"
+			 					onclick="navSwitch(this)" style="width:20px"> {{ forloop.counter0 }}</button>
+							{% endfor %}
         			</article>
-    			</div>
-    		</div>
+        		</div>
+
+				<div class="tile is-parent is-5 white">
+        			<article class="tile is-child white post" id="align:review">
+            	<input class="input" id="initials" type="text" style="width:200px">
+							<label for="initials"> Your canonical initials </label> <br> <br>
+							<input class="input" id="comments" type="text" style="width:200px">
+							<label for="comments"> Overall comments (200 chars) </label> <br> <br>
+
+						<form action="/align_label/submitted/" method="post">
+							{% csrf_token %}
+							{{ form }}
+
+    <input type="submit" id="submitBtn" value="Submit">
+						</form>
+						<button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button>
+					</article>
+               </div>
+            </div>
     	</div>
+			
 	</section>
 	{% for rebuttal_sentence in rebuttal_sentences %}
   		<div class="tab" id="tab:align:{{forloop.counter0}}">
@@ -52,7 +75,10 @@
                 					{{ rebuttal_sentence.text }}
               					</div>
 
-              					Please select the sentences that form its context. You have selected: <br> <br>
+              					Please select the sentences that form its context. &nbsp;
+              					
+
+              					You have selected: <br> <br>
 
               					<div class="box" id="review-box-{{ forloop.counter0 }}">
                 
@@ -63,14 +89,14 @@
 
               					{% for reason in no_align_reasons %}
               						<label for="align:radios-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
-							      	<input type="radio" name="align:radios-{{ forloop.parentloop.counter0 }}"
+							      	<input class="radio" type="radio" name="align:radios-{{ forloop.parentloop.counter0 }}"
 							      	id="align:radios-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ reason.keyword}}" checked={{reason.checked}}>
 							      	{{ reason.label }}
 							    </label> <br>
               					{% endfor %}
-
+              					<br>
               					<button class="button is-outline" id="validate:align-{{forloop.counter0}}"
-              					 onclick="validateAlignment(this)"> Confirm alignment</button>
+              					 onclick="validateAlignment(this)"> Confirm and validate alignment</button>
           					</article>
 						</div>
 					</div>
@@ -94,7 +120,7 @@
               				</div>
 
               				<button class="button is-outline" id="goback:align-{{forloop.counter0}}"
-              					 onclick="switchTab()"> Change alignment</button>
+              					 onclick="switchTab()"> Go back and change alignment</button>
 						</article>
 					</div>
 					<div class="tile is-parent is-5">
@@ -104,10 +130,11 @@
 							<table>
 									{% for label_row in label_rows %}
 								<tr>
-					                <td><input type="radio"
- name="label:radios-{{ forloop.parentloop.counter0 }}"
- id="label:radios-{{ forloop.parentloop.counter0 }}-{{forloop.counter0}}"
- value="global"></td>
+					                <td>
+					                	<input type="radio" class="radio" 
+										name="label:radios-{{ forloop.parentloop.counter0 }}"
+										id="label:radios-{{ forloop.parentloop.counter0 }}-{{forloop.counter0}}"
+										value="{{label_row.label}}" checked="{{ label_row.checked }}"></td>
 					                <td> {{ label_row.label }} </td>
 					                <td class="{{label_row.color}}"> {{ label_row.subcategory }}</td>
 					                <td > {{ label_row.category }} </td>
@@ -119,7 +146,11 @@
 					</div>
 					<div class="tile is-parent is-2">
 						<article class="tile is-child white post" id="label:review-{{forloop.counter0}}">
-							<h4 class="title is-4"> Additional Info </h4>
+							<h4 class="title is-4"> Finalize </h4>
+							<label for="label:info-{{ forloop.counter0 }}">Any additional information (200 chars) </label>
+							<textarea class="textarea" id="label:info-{{ forloop.counter0 }}"> </textarea>
+							<button class="button is-outline" id="validate:align-{{forloop.counter0}}"
+              					 onclick="validateLabel(this)"> Confirm and validate label</button>
 						</article>
 					</div>
 				</div>
