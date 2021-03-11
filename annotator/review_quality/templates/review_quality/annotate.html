@@ -7,41 +7,37 @@
    </head>
    <body>
       {% load static %}
-      {{ rebuttal_sentences | json_script:"rebuttal_sentences"}}
-      {{ review_sentences | json_script:"review_sentences"}}
+      {{ metadata | json_script:"metadata"}}
       <link rel="stylesheet" type="text/css" href="{% static '/align_label.css' %}">
-      <script src="{% static '/index.js' %}"></script>
+      <script src="{% static '/review_quality.js' %}"></script>
       <div class='lightblue'>
          <div class='container'>
             <section class="section" id="sec:text">
                <div class="tile is-ancestor">
                   <div class="tile is-parent">
                      <article class="tile is-child white post" id="text:review">
-                        <h2 class="title is-3"> {{ paper_title }} </h2>
-                        {{ reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> <br> <br>
-                        <div class="field is-horizontal">
-                           <div class="field-label is-normal">
-                              <label class="label">Initials</label>
-                           </div>
-                           <div class="field-body">
-                              <div class="field">
-                                 <input class="input" type="text" id="initials">
-                              </div>
-                          </div>
-                          <div class="field-label is-normal">
-                              <label class="label">Comments</label>
-                          </div>
-                          <div class="field-body">
-                            <div class="field">
-                                    <input class="input" type="text" id="comments">
-                                  </div>
-                          </div>
-                           <button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button>
-                           <form action="/review_quality/submitted/" method="post">
+                        <h2 class="title is-3"> {{ metadata.paper_title }} </h2>
+                        {{ metadata.reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> <br> <br>
+                      </article>
+
+                     <article class="tile is-child is-4 white post" id="text:review">
+                      <label for="initials"> Initials </label><input class="input" type="text" id="initials">
+                      <label for="comments"> Comments </label><input class="input" type="text" id="comments">
+                      <br><br>
+
+
+                      <div class="columns">
+                        <div class="column is-4"><button class="button is-outline" id="validate:all" onclick="validate()"> Validate</button></div>
+                        <div class="column is-8">
+                          <form action="/review_quality/submitted/" method="post">
               {% csrf_token %}
-              <button id="submitBtn" class="button" type="submit" value="Submit"> Submit </button> <br> <br>
+              {{ form }}
+              <br>
+              <button id="submitBtn" class="button" type="submit" value="Submit"> Submit </button>
             </form>
-                           </div>
+                        </div>
+                      </div>
+                           
                      </article>
                   </div>
                </div>
@@ -62,24 +58,30 @@
                         <table>
                            {% for question in questions %}
                            <tr>
-                              <td> {{ question.text }} </td>
+                              <td colspan="3"> <b> {{ question.kw }} </b> </td>
                            </tr>
+                           
                            <tr>
                               <td>
                                 {{question.min}}
+                              </td><td style="width: 200px;">
                                  <div class="control">
                                     {% with '12345'|center:5 as range %}
                                     {% for i in range %}
-                                    <label class="radio">
-                                    <input type="radio" name="{{question.kw}}" value="{{ i }}">
+                                    <input class="radio" type="radio" name="{{question.kw}}" value="{{ i }}">
                                     {{ i }}
-                                    </label>
                                     {% endfor %}
                                     {% endwith %}
                                  </div>
+                               </td>
+                               <td>
                                  {{question.max}}
                               </td>
                            </tr>
+                           <tr>
+                              <td colspan="3"> {{ question.text }} </td>
+                           </tr>
+                           <tr><td colspan="3"></td></tr>
                            {% endfor %}
                         </table>
                      </article>

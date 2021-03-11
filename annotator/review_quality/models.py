@@ -57,3 +57,4 @@ class Annotation(models.Model):
 
     comment = models.CharField(max_length=500)
     annotator_initials = models.CharField(max_length=4)
+    review_sid = models.CharField(max_length=30)

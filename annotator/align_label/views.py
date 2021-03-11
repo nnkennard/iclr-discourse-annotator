@@ -56,10 +56,25 @@ def assignments(request, annotator_initials):
             annotator_initials=annotator_initials)
     examples = []
     for assignment in assignment_list:
-        examples.append(CommentPair.objects.get(dataset=assignment.dataset,
-            example_index=assignment.example_index))
+        relevant_comment_pair = CommentPair.objects.get(
+            dataset=assignment.dataset,
+            example_index=assignment.example_index)
+
+        maybe_done = SentenceAnnotation.objects.filter(
+        review_sid=relevant_comment_pair.review_sid,
+        rebuttal_sid=relevant_comment_pair.rebuttal_sid,
+        annotator_initials=annotator_initials)
+        if maybe_done:
+            is_done = "Completed"
+        else:
+            is_done = "Incomplete"
+        examples.append({"reviewer": relevant_comment_pair.reviewer,
+                        "title": relevant_comment_pair.title,
+                        "review_sid": relevant_comment_pair.review_sid,
+                         "rebuttal_sid": relevant_comment_pair.rebuttal_sid,
+                         "is_done": is_done})
     template = loader.get_template('align_label/assignment.html')
-    context = {"examples": examples, "name":name}
+    context = {"examples": examples, "name":name, "initials":annotator_initials}
     return HttpResponse(template.render(context, request))
 
 def get_htmlified_sentences(supernote_id):
@@ -119,8 +134,8 @@ def submitted(request):
                 if aligned:
                     alignment_label_collector.append(str(review_i))
             alignment_label = "|".join(alignment_label_collector)
-            alignment_error = label_map["align:radios-"+str(rebuttal_i)]
-            relation_label = label_map["label:radios-"+str(rebuttal_i)]
+            alignment_error = label_map["align:radios:"+str(rebuttal_i)]
+            relation_label = label_map["label:radios:"+str(rebuttal_i)]
             annotation = SentenceAnnotation(
                 review_sid = metadata["review_sid"],
                 rebuttal_sid = metadata["rebuttal_sid"],

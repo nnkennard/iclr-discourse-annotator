@@ -14,10 +14,10 @@
       {% for example in examples %}
       <tr>
          <td> {{ example.reviewer }} </td>
-         <td><a href="/align_label/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
+         <td><a href="/align_label/{{ example.review_sid }}/{{ example.rebuttal_sid }}?initials={{ initials }}">
             {{ example.title }}</a>
          </td>
-         <td> ?? </td>
+         <td> {{ example.is_done}} </td>
       </tr>
       </li>
       {% endfor %}
