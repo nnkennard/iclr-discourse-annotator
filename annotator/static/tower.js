@@ -2,7 +2,7 @@
 
 goToTab("tab:align:0")
 document.getElementById("submitBtn").disabled = "true"
-
+document.getElementById("initials").value = getUrlVars().initials
 // Utils
 
 function last(l){
@@ -28,7 +28,6 @@ function getUrlVars() {
     return vars;
   }
 
-document.getElementById("initials").value = getUrlVars().initials
 
 
 // Global vars

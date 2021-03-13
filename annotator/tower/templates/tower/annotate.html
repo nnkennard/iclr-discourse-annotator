@@ -1,0 +1,133 @@
+
+
+<html>
+   <head>
+      <title> Alignment Annotation </title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+   </head>
+   <body>
+      {% load static %}
+      {{ metadata | json_script:"metadata"}}
+      {{ rebuttal_sentences | json_script:"rebuttal_sentences"}}
+      {{ review_sentences | json_script:"review_sentences"}}
+      <span id="currentTab" style="display:none">tab:align:0</span>
+      <link rel="stylesheet" type="text/css" href="{% static '/align_label.css' %}">
+      <div class='lightblue'>
+         <section class="section" id="sec:title">
+            <div class="container">
+               <div class="tile is-ancestor">
+                  <div class="tile is-parent is-7 white">
+                     <article class="tile is-child white post">
+                        <h2 class="title is-3"> {{ metadata.paper_title }} </h2>
+                        {{ metadata.reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> &nbsp;
+                        <button class="button is-outline is-small" id="showmodal" onclick="toggleModal()"> See full rebuttal </button>
+                        <br> <br>
+                        {% for rebuttal_sentence in rebuttal_statuses %}
+                        <button class="button is-outline" id="nav:{{forloop.counter0}}"
+                           onclick="navSwitch(this)" style="width:20px"> {{ forloop.counter0 }}</button>
+                        {% endfor %}
+                     </article>
+                  </div>
+                  <div class="tile is-parent is-5 white">
+                     <article class="tile is-child white post">
+                        <input class="input" id="initials" type="text" style="width:200px">
+                        <label for="initials"> Your canonical initials </label> <br> <br>
+                        <input class="input" id="comments" type="text" style="width:200px">
+                        <label for="comments"> Overall comments (200 chars) </label> <br> <br>
+                        <button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button> <br><br>
+                        <form action="/align_label/submitted/" method="post">
+                           {% csrf_token %}
+                           <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
+                        </form>
+                     </article>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section class="section" id="sec:align:{{forloop.counter0}}">
+            <div class="container">
+               <div class="tile is-ancestor">
+                  <div class="tile is-parent is-6">
+                     <article class="tile is-child white post" id="align:review:{{forloop.counter0}}">
+                        <h4 class="title is-4"> Review </h4>
+                        {% for review_sentence in review_sentences %}
+                        <span class="sentence"
+                           id="sentence:{{ metadata.rebuttal_index }}:{{ review_sentence.idx }}"
+                           highlight=0 onclick="clicked(this)">
+                        {{ review_sentence.text | linebreaksbr }} </span>
+                        {% endfor %}
+                     </article>
+                  </div>
+                  <div class="tile is-parent is-6">
+                     <article class="tile is-child white post" id="align:rebuttal:{{forloop.counter0}}">
+                        <h4 class="title is-4"> Rebuttal </h4>
+                        For the rebuttal sentence highlighted below: <br> <br>
+                        <div class="box" >
+                           <span id="rebuttalbox:{{forloop.counter0 }}">
+                           {{ rebuttal_sentence.text }}</span>
+                        </div>
+                        Please select the sentences that form its context. &nbsp; 
+                        <button class="button is-outline is-small" id="copyBtn:{{ metadata.rebuttal_index }}" onclick="copyPrevious(this)"> Copy previous </button>
+                        <br><br>
+                        You have selected: <br> <br>
+                        <div class="box" >
+                           <span id="reviewbox:{{ forloop.counter0 }}"></span>
+                        </div>
+                        Please click to highlight the sentences that form the context for the current rebuttal sentence. <br>
+                        If no such context exists, please indicate why:<br><br>
+                        {% for reason in no_align_reasons %}
+                        <label for="align:radios:{{ metadata.rebuttal_index }}:{{ forloop.counter0 }}">
+                        <input class="radio" type="radio" name="align:radios:{{ metadata.rebuttal_index }}"
+                           id="align:radios:{{ metadata.rebuttal_index }}:{{ forloop.counter0 }}" value="{{ reason.keyword }}" checked={{reason.checked}}>
+                        {{ reason.label }}
+                        </label> <br>
+                        {% endfor %}
+                        <br>
+                        <table>
+                           {% for label_row in label_rows %}
+                           <tr onclick="rowClicked(this)" id="tablerow:{{ metadata.rebuttal_index }}:{{forloop.counter0}}">
+                              <td>
+                                 <input type="radio" class="radio" 
+                                    name="label:radios:{{ metadata.rebuttal_index }}"
+                                    id="label:radios:{{ metadata.rebuttal_index }}:{{forloop.counter0}}"
+                                    value="{{label_row.label}}" checked="{{ label_row.checked }}">
+                              </td>
+                              <td> {{ label_row.label }} </td>
+                              <td class="{{label_row.color}}" style="width:200px"> {{ label_row.subcategory }}</td>
+                              <td > {{ label_row.category }} </td>
+                           </tr>
+                           {% endfor %}
+                        </table>
+                        <button class="button is-outline" id="validate:align:{{forloop.counter0}}"
+                           onclick="validateAlignment(this)"> Confirm and validate alignment</button>
+                     </article>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+      <div class="modal" id="rebuttalmodal">
+         <div class="modal-background"></div>
+         <div class="modal-card">
+            <header class="modal-card-head">
+               <p class="modal-card-title">Full rebuttal text</p>
+               <button class="delete" aria-label="close" onclick="toggleModal()"></button>
+            </header>
+            <section class="modal-card-body">
+            {% for rebuttal_sentence in rebuttal_sentences %}
+            {% if forloop.counter0 == metadata.rebuttal_index %}
+            <span style="background-color:d4efdf">
+            {{ rebuttal_sentence.text | linebreaksbr }} 
+            </span>
+            {% else %}
+            {{ rebuttal_sentence.text | linebreaksbr }} 
+            {% endif %}
+            </span>
+            {% endfor %}
+            <br>
+         </div>
+      </div>
+      <script src="{% static '/tower.js' %}"></script>
+   </body>
+</html>
+
