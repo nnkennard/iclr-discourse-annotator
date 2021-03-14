@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     forum_id=pair["forum"],
                     dataset=dataset,
                     review_sid=pair["review_sid"],
-                    rebuttal_sid=pair["rebuttal_sid"],
+                    rebuttal_sid="",
                     title=pair["title"],
                     reviewer=pair["review_author"]
                 )
@@ -42,7 +42,8 @@ class Command(BaseCommand):
              
                 for text_obj, sid  in [
                         (pair["review_text"], pair["review_sid"]),
-                        (pair["rebuttal_text"], pair["rebuttal_sid"])]:
+                        #(pair["rebuttal_text"], pair["rebuttal_sid"])
+                        ]:
                     for sentence_i, sentence in enumerate(text_obj["sentences"]):
                         text = text_obj[
                             "text"][
