@@ -11,11 +11,12 @@ import json
 QUESTIONS = [
     ("importance", "Did the reviewer discuss the importance of the research question?", "Not at all", "Discussed extensively"),
     ("originality", "Did the reviewer discuss the originality of the paper?", "Not at all", "Discussed extensively with references" ),
-    ("strengths_weaknesses", "Did the reviewer clearly identify the strengths and weaknesses of the method (study design, data colletion and data analysis)?", "Not at all", "Comprehensive" ),
-    ("useful_comments", "Did the reviewer make specific useful comments on the writing, organisation, tables and figures of the manuscript?", "Not at all",  "Extensive"),
-    ("constructive", "Were the reviewer’s comments constructive?", "Not at all",  "Very constructive"),
+    ("method", "Did the reviewer clearly identify the strengths and weaknesses of the method (study design, data colletion and data analysis)?", "Not at all", "Comprehensive" ),
+    ("presentation", "Did the reviewer make specific useful comments on the writing, organisation, tables and figures of the manuscript?", "Not at all",  "Extensive"),
+    ("constructiveness", "Were the reviewer’s comments constructive?", "Not at all",  "Very constructive"),
     ("evidence", "Did the reviewer supply appropriate evidence using examples from the paper to substantiate their comments?", "No comments substantiated",  "All comments substantiated"),
     ("interpretation", "Did the reviewer comment on the author’s interpretation of the results?", "Not at all",  "Discussed extensively"),
+    ("reproducibility", "Did the reviewer comment on the reproducibility of the results?", "Not at all",  "Discussed extensively"),
     ("overall", "How would you rate the quality of this review overall?", "Poor", "Excellent" ),
     ]
 
@@ -97,12 +98,14 @@ def submitted(request):
         annotation = Annotation(
             importance=label_map["importance"],
             originality=label_map["originality"],
-            strengths_weaknesses=label_map["strengths_weaknesses"],
-            useful_comments=label_map["useful_comments"],
-            constructive=label_map["constructive"],
+            method=label_map["method"],
+            presentation=label_map["presentation"],
+            constructiveness=label_map["constructiveness"],
             evidence=label_map["evidence"],
             interpretation=label_map["interpretation"],
+            reproducibility=label_map["reproducibility"],
             overall=label_map["overall"],
+            meta_review=label_map["metareview"],
             comment=annotation_obj["comment"],
             annotator_initials=annotation_obj["annotator"],
             review_sid=metadata["review_sid"]

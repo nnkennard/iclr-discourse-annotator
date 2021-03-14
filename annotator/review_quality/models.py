@@ -48,12 +48,14 @@ class Annotation(models.Model):
         app_label = "review_quality"
     importance = get_likert_field()
     originality = get_likert_field()
-    strengths_weaknesses = get_likert_field()
-    useful_comments = get_likert_field()
-    constructive = get_likert_field()
+    method = get_likert_field()
+    presentation = get_likert_field()
+    constructiveness = get_likert_field()
     evidence = get_likert_field()
     interpretation = get_likert_field()
+    reproducibility = get_likert_field()
     overall = get_likert_field()
+    meta_review = models.CharField(max_length=30)
 
     comment = models.CharField(max_length=500)
     annotator_initials = models.CharField(max_length=4)
