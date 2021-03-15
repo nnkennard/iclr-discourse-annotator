@@ -4,8 +4,10 @@ from align_label.models import *
 import json
 from tqdm import tqdm
 
-DATASETS = ["truetest", "traindev_test", "traindev_train",
-            "traindev_dev"]
+#DATASETS = ["truetest", "traindev_test", "traindev_train",
+# "traindev_dev"]
+
+DATASETS = ["traindev_train"]
 
 class Command(BaseCommand):
     args = '<foo bar ...>'
@@ -31,7 +33,7 @@ class Command(BaseCommand):
             json_obj = self._load_data("".join([options["input_dir"], "/",
                 dataset, ".json"]))
             print("Entering dataset ", dataset)
-            for pair in tqdm(json_obj["review_rebuttal_pairs"]):
+            for pair in tqdm(json_obj["review_rebuttal_pairs"][:21]):
                 comment_pair=CommentPair(
                     example_index=pair["index"],
                     forum_id=pair["forum"],

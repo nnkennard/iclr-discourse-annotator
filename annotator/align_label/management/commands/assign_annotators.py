@@ -13,6 +13,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        print("Populating align_label assignments")
+
         result = input(
         ("Are you sure you want to delete all annotator "
          "assignments and repopulate the database? Y/N >"))
@@ -30,6 +32,8 @@ class Command(BaseCommand):
             for ann2 in annotators[i+1:]:
                 annotator_pairs.append((ann1, ann2))
 
+        print(len(examples), print(len(annotator_pairs)))
+
         examples_per_pair = int(len(examples) / len(annotator_pairs))
         random.shuffle(examples)
 
@@ -45,5 +49,6 @@ class Command(BaseCommand):
                         dataset=dataset,
                         example_index=example_index
                         )
+                print("saving")
                 assignment.save()
 

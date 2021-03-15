@@ -1,5 +1,5 @@
 function validate(){
-	console.log(document.getElementById("metadata").textContent)
+    console.log(document.getElementById("metadata").textContent)
     radio_buttons = document.getElementsByClassName("radio");
     labels = Array()
     for (radio_button of radio_buttons){
@@ -7,7 +7,8 @@ function validate(){
             labels.push(radio_button.name+"|"+radio_button.value)
         }
     }
-    if (labels.length < 8){
+    console.log(labels)
+    if (labels.length < 10){
     	alert("Some labels are missing! Please complete and run Validate again.")
     	return
     }
