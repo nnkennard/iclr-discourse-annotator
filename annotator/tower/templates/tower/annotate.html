@@ -1,5 +1,3 @@
-
-
 <html>
    <head>
       <title> Alignment Annotation </title>
@@ -8,9 +6,7 @@
    <body>
       {% load static %}
       {{ metadata | json_script:"metadata"}}
-      {{ rebuttal_sentences | json_script:"rebuttal_sentences"}}
       {{ review_sentences | json_script:"review_sentences"}}
-      <span id="currentTab" style="display:none">tab:align:0</span>
       <link rel="stylesheet" type="text/css" href="{% static '/align_label.css' %}">
       <div class='lightblue'>
          <section class="section" id="sec:title">
@@ -22,7 +18,7 @@
                         {{ metadata.reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> &nbsp;
                         <button class="button is-outline is-small" id="showmodal" onclick="toggleModal()"> See full rebuttal </button>
                         <br> <br>
-                        {% for rebuttal_sentence in rebuttal_statuses %}
+                        {% for rebuttal_sentence in metadata.rebuttal_statuses %}
                         <button class="button is-outline" id="nav:{{forloop.counter0}}"
                            onclick="navSwitch(this)" style="width:20px"> {{ forloop.counter0 }}</button>
                         {% endfor %}
@@ -52,7 +48,7 @@
                         <h4 class="title is-4"> Review </h4>
                         {% for review_sentence in review_sentences %}
                         <span class="sentence"
-                           id="sentence:{{ metadata.rebuttal_index }}:{{ review_sentence.idx }}"
+                           id="sentence:{{ review_sentence.idx }}"
                            highlight=0 onclick="clicked(this)">
                         {{ review_sentence.text | linebreaksbr }} </span>
                         {% endfor %}
@@ -60,21 +56,22 @@
                   </div>
                   <div class="tile is-parent is-6">
                      <article class="tile is-child white post" id="align:rebuttal:{{forloop.counter0}}">
-                        <h4 class="title is-4"> Rebuttal </h4>
                         For the rebuttal sentence highlighted below: <br> <br>
                         <div class="box" >
                            <span id="rebuttalbox:{{forloop.counter0 }}">
                            {{ rebuttal_sentence.text }}</span>
                         </div>
                         Please select the sentences that form its context. &nbsp; 
-                        <button class="button is-outline is-small" id="copyBtn:{{ metadata.rebuttal_index }}" onclick="copyPrevious(this)"> Copy previous </button>
+                        <button class="button is-outline is-small" id="copyBtn" onclick="copyPrevious(this)"> Copy previous </button>
                         <br><br>
                         You have selected: <br> <br>
                         <div class="box" >
-                           <span id="reviewbox:{{ forloop.counter0 }}"></span>
+                           <span id="reviewbox"></span>
                         </div>
                         Please click to highlight the sentences that form the context for the current rebuttal sentence. <br>
                         If no such context exists, please indicate why:<br><br>
+
+                        <h5 class="title is-5"> Alignment labels </h5>
                         {% for reason in no_align_reasons %}
                         <label for="align:radios:{{ metadata.rebuttal_index }}:{{ forloop.counter0 }}">
                         <input class="radio" type="radio" name="align:radios:{{ metadata.rebuttal_index }}"
@@ -83,13 +80,15 @@
                         </label> <br>
                         {% endfor %}
                         <br>
+
+                        <h5 class="title is-5"> Relation labels </h5>
                         <table>
                            {% for label_row in label_rows %}
-                           <tr onclick="rowClicked(this)" id="tablerow:{{ metadata.rebuttal_index }}:{{forloop.counter0}}">
+                           <tr onclick="rowClicked(this)" id="tablerow:{{forloop.counter0}}">
                               <td>
                                  <input type="radio" class="radio" 
-                                    name="label:radios:{{ metadata.rebuttal_index }}"
-                                    id="label:radios:{{ metadata.rebuttal_index }}:{{forloop.counter0}}"
+                                    name="label:radios"
+                                    id="label:radios:{{forloop.counter0}}"
                                     value="{{label_row.label}}" checked="{{ label_row.checked }}">
                               </td>
                               <td> {{ label_row.label }} </td>
@@ -115,18 +114,25 @@
             </header>
             <section class="modal-card-body">
             {% for rebuttal_sentence in rebuttal_sentences %}
-            {% if forloop.counter0 == metadata.rebuttal_index %}
-            <span style="background-color:d4efdf">
-            {{ rebuttal_sentence.text | linebreaksbr }} 
-            </span>
-            {% else %}
-            {{ rebuttal_sentence.text | linebreaksbr }} 
-            {% endif %}
-            </span>
+
+               {% if forloop.counter0 == metadata.rebuttal_index %}
+
+
+               <span style="background-color:#d5f5e3">
+               {{ rebuttal_sentence.text | linebreaksbr }} </span>
+
+
+               {% else %}
+
+               {{ rebuttal_sentence.text | linebreaksbr }} 
+
+               {% endif %}
+      
             {% endfor %}
             <br>
+         </section>
          </div>
-      </div>
+         </div>
       <script src="{% static '/tower.js' %}"></script>
    </body>
 </html>

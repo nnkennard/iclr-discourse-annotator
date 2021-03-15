@@ -37,9 +37,10 @@ for category, subcategory_map in LABELS.items():
                          "checked": checked})
 
 NO_ALIGN_REASONS = [
-{"label": "No context", "keyword": "no-context", "checked": True},
+{"label": "No context", "keyword": "no-context", "checked": False},
 {"label": "Global context", "keyword": "global-context", "checked": False},
 {"label": "Context is in rebuttal", "keyword": "rebuttal-context", "checked": False},
+{"label": "Cannot determine context", "keyword": "cant-determine", "checked": False},
 {"label": "Aligned sentences have been highlighted", "keyword": "some-align", "checked": False},
 ]
 
@@ -106,8 +107,8 @@ def annotate(request, rebuttal, index):
 
     context = {
             "review_sentences": review_sentences,
+            "rebuttal_sentences": rebuttal_sentences,
             "rebuttal_sentence": rebuttal_sentences[index],
-            "rebuttal_statuses": ["Incomplete" for _ in range(len(rebuttal_sentences))],
             "label_rows": LABEL_ROWS,
             "no_align_reasons": NO_ALIGN_REASONS,
             "form": form,
@@ -117,6 +118,7 @@ def annotate(request, rebuttal, index):
                 "forum_id": relevant_comment_pair.forum_id,
                 "rebuttal_sid": relevant_comment_pair.rebuttal_sid,
                 "review_sid": relevant_comment_pair.review_sid,
+            "rebuttal_statuses": ["Incomplete" for _ in range(len(rebuttal_sentences))],
                 "rebuttal_index": index}
             }
     template = loader.get_template('tower/annotate.html')

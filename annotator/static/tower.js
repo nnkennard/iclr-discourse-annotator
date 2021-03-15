@@ -1,6 +1,4 @@
 // Initialization
-
-goToTab("tab:align:0")
 document.getElementById("submitBtn").disabled = "true"
 document.getElementById("initials").value = getUrlVars().initials
 // Utils
@@ -28,34 +26,31 @@ function getUrlVars() {
     return vars;
   }
 
+function switchRebuttalPage(new_index) {
+    parts = window.location.href.split("/")
+    new_url = parts.slice(0,5).join("/") + "/" + new_index + "/" + parts.slice(6)
+    window.location.replace(new_url)
+}
+
 
 
 // Global vars
 
-rebuttal_sentences = getJsonified("rebuttal_sentences");
 review_sentences = getJsonified("review_sentences");
 metadata = getJsonified("metadata");
+num_rebuttal_sentences = metadata["rebuttal_statuses"].length
+document.getElementById("nav:" + metadata["rebuttal_index"].toString()).classList.add("is-active")
 
-highlighted = new Array(rebuttal_sentences.length);
-for (var i = 0; i < highlighted.length; i++) {
-    highlighted[i] = new Array(review_sentences.length).fill(0);
-}
+highlighted = new Array(review_sentences.length).fill(0);
+new Array(review_sentences.length).fill(0);
 
-done = new Array(rebuttal_sentences.length).fill(0);
+is_done = metadata["rebuttal_statuses"][metadata["rebuttal_index"]]
 
 // Tab switching
 
-function switchTab() {
-    current_tab_name = document.getElementById("currentTab").innerText
-    if (current_tab_name.startsWith("tab:align")){
-        goToTab(current_tab_name.replace("align", "label"))
-    } else {
-        goToTab(current_tab_name.replace("label", "align"))
-    }
-}
 
 function navSwitch(button_element){
-    goToTab(button_element.id.replace("nav", "tab:align"))
+    switchRebuttalPage(last(button_element.id.split(":")))
 }
 
 function goToTab(goto_tab_name) {
@@ -67,14 +62,6 @@ function goToTab(goto_tab_name) {
     
 }
 
-function navButtonToggle(old_tab_name, new_tab_name){
-    old_button = document.getElementById("nav:" + old_tab_name.substring(10))
-    new_button = document.getElementById("nav:" + new_tab_name.substring(10))
-    if (old_button.classList.contains("is-active")){
-        old_button.classList.remove("is-active")
-    }
-    new_button.classList.add("is-active")
-}
 
 function toggleModal(){
     modal = document.getElementById("rebuttalmodal")
@@ -88,13 +75,16 @@ function toggleModal(){
 
 // Validation
 
+function validate(){
+    // Is an alignment required? If so, given?
+    // Is an explanation required? If so, given?
+
+
+}
+
 
 function someHighlighted(rebuttal_index){
     return sum(highlighted[rebuttal_index]) > 0
-}
-
-function isAllDone(){
-    return sum(done) == done.length
 }
 
 function validateAlignment(button_element){
@@ -170,12 +160,11 @@ function validateAll() {
     }
 }
 
-function populatePreviewBoxes(rebuttal_idx){
-    console.log("Populating preview boxes", rebuttal_idx)
+function populatePreviewBoxes(){
     highlighted_sentences = ""
-    for (i in highlighted[rebuttal_idx]){
-        if(highlighted[rebuttal_idx][i]){
-sentence_text = document.getElementById("sentence:"+rebuttal_idx+":"+i).innerText;
+    for (i in highlighted){
+        if(highlighted[i]){
+sentence_text = document.getElementById("sentence:"+i).innerText;
         highlighted_sentences += "\n" + sentence_text;
         }
         
@@ -184,10 +173,8 @@ sentence_text = document.getElementById("sentence:"+rebuttal_idx+":"+i).innerTex
         highlighted_sentences = highlighted_sentences.substring(1);
     }
     console.log(highlighted_sentences)
-    document.getElementById('reviewbox:'+rebuttal_idx).innerText = highlighted_sentences
-    document.getElementById('label:reviewbox:'+rebuttal_idx).innerText = highlighted_sentences
-    flashElement('reviewbox:'+rebuttal_idx)
-    flashElement('label:reviewbox:'+rebuttal_idx)
+    document.getElementById('reviewbox').innerText = highlighted_sentences
+    flashElement('reviewbox')
 }
 
 function flashElement(id){
@@ -195,34 +182,17 @@ function flashElement(id){
     document.getElementById(id).style="display:block"
 }
 
-function markDone(rebuttal_index){
-    button = document.getElementById("nav:" + rebuttal_index)
-    button.classList.add("is-success")
-    done[parseInt(rebuttal_index)] = 1
-}
-
-function markNotDone(rebuttal_index){
-    button = document.getElementById("nav:" + rebuttal_index)
-    if (button.classList.contains("is-success")){
-        button.classList.remove("is-success")
-    }
-    done[parseInt(rebuttal_idx)] = 0
-}
-
-
 function clicked(ele) {
     // e.g. "sentence:1:2" for rebuttal index 1 and review index 2
-    parts = ele.id.split(":")
-    review_idx = parseInt(parts[2]);
-    rebuttal_idx = parseInt(parts[1]);
-    markNotDone(parts[1])
-    highlighted[rebuttal_idx][review_idx] = 1 - highlighted[rebuttal_idx][review_idx];
-    if (highlighted[rebuttal_idx][review_idx]) {
+    review_idx = parseInt(last(ele.id.split(":")));
+    is_done = false
+    highlighted[review_idx] = 1 - highlighted[review_idx];
+    if (highlighted[review_idx]) {
         ele.style = "background-color:#d4efdf"
     } else {
         ele.style = ""
     }
-    populatePreviewBoxes(rebuttal_idx)
+    populatePreviewBoxes()
     
 }
 
@@ -244,7 +214,7 @@ function copyPrevious(copy_btn){
             sentence_element.style = ""
         }
     }
-    populatePreviewBoxes(rebuttal_index)
+    populatePreviewBoxes()
 }
 
 
@@ -260,22 +230,25 @@ function selectRelation(keycode, index){
 
 function checkKey(e) {
 
-    index = parseInt(last(document.getElementById("currentTab").innerText.split(":")))
+    index = metadata["rebuttal_index"]
 
     e = e || window.event;
 
-    if (e.keyCode == '37') {
+    if (e.key == 'ArrowLeft') {
        new_tab_index = index -1;
     }
-    else if (e.keyCode == '39') {
+    else if (e.key == 'ArrowRight') {
       new_tab_index = index + 1
     } else {
         selectRelation(e.keyCode, index)
         return
     }
 
-    new_tab_name = "tab:align:"+ ((new_tab_index + rebuttal_sentences.length) % rebuttal_sentences.length).toString()
-    goToTab(new_tab_name)
+    console.log(new_tab_index)
+
+    new_tab_name = ((new_tab_index + num_rebuttal_sentences) % num_rebuttal_sentences).toString()
+    console.log("new name ", new_tab_name)
+    switchRebuttalPage(new_tab_name)
 
 }
 

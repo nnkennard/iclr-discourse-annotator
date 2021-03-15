@@ -33,7 +33,7 @@ class Command(BaseCommand):
             json_obj = self._load_data("".join([options["input_dir"], "/",
                 dataset, ".json"]))
             for pair in tqdm(json_obj["review_rebuttal_pairs"]):
-                num_sentences = len(pair["review_text"]["sentences"])
+                num_sentences = len(pair["rebuttal_text"]["sentences"])
                 for rebuttal_index in range(num_sentences):
                     example=Example(
                         example_index=pair["index"],
