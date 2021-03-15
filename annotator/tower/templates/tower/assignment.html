@@ -1,0 +1,36 @@
+<head>
+  <title> {{ name }}'s annotation assignments </title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
+   ">
+<body>
+
+  <div class="container">
+
+  <h2> Hello, {{ name }}!</h2>
+
+  If you are not {{ name }}, please return to the <a href="/tower/">index</a> to
+  find your own assignment page. <br> <br>
+
+   <table class="table">
+      <tr>
+         <td> Reviewer </td>
+         <td> Title </td>
+         <td> Status </td>
+      </tr>
+      {% for example in examples %}
+      <tr>
+         <td> {{ example.reviewer }} </td>
+         <td><a href="/tower/{{ example.rebuttal_sid }}/0/?initials={{ initials }}">
+            {{ example.title }}</a>
+         </td>
+         <td> {{ example.is_done}} </td>
+      </tr>
+      </li>
+      {% endfor %}
+   </table>
+
+   </div>
+</body>
+
+

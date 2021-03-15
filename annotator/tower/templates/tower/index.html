@@ -1,0 +1,28 @@
+<head>
+   <title> Annotation Center </title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
+   ">
+<body>
+   <div class="container">
+   <table class="table">
+      <tr>
+         <td> Annotator </td>
+         <td> Initials </td>
+         <td> Link </td>
+      </tr>
+      {% for annotator in annotators %}
+      <tr>
+         <td> {{ annotator.name }} </td>
+         <td> {{ annotator.initials }} </td>
+         <td><a href="/tower/assignments/{{ annotator.initials }}">
+            Link</a>
+         </td>
+      </tr>
+      </li>
+      {% endfor %}
+   </table>
+</div>
+</body>
+
+

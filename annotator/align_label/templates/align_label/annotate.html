@@ -98,40 +98,8 @@
 							    </label> <br>
               					{% endfor %}
               					<br>
-              					<button class="button is-outline" id="validate:align:{{forloop.counter0}}"
-              					 onclick="validateAlignment(this)"> Confirm and validate alignment</button>
-          					</article>
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
-  		<div class="tab" id="tab:label:{{forloop.counter0}}">
-  		<section class="section" id="sec:label:{{forloop.counter0}}">
-			<div class="container">
-				<div class="tile is-ancestor">
-					<div class="tile is-parent is-5">
-						<article class="tile is-child white post" id="label:review:{{forloop.counter0}}">
-							<h4 class="title is-4"> Selected context </h4>
 
-							You annotated these sentences in the review:
-              				<div class="box" >
-              					<span id="label:reviewbox:{{ forloop.counter0 }}"></span>
-              				</div>
-              				as the context for this sentence in the rebuttal: <br> <br>
-							<div class="box" id="label:rebuttalbox:{{forloop.counter0 }}">
-                				{{ rebuttal_sentence.text }}
-              				</div>
-
-              				<button class="button is-outline" id="goback:align-{{forloop.counter0}}"
-              					 onclick="switchTab()"> Go back and change alignment</button>
-						</article>
-					</div>
-					<div class="tile is-parent is-5">
-						<article class="tile is-child white post" id="label:review:{{forloop.counter0}}">
-							<h4 class="title is-4"> Relation label </h4>
-
-							<table>
+              					<table>
 									{% for label_row in label_rows %}
 								<tr onclick="rowClicked(this)" id="tablerow:{{ rebuttal_index }}:{{forloop.counter0}}">
 					                <td>
@@ -140,27 +108,21 @@
 										id="label:radios:{{ rebuttal_index }}:{{forloop.counter0}}"
 										value="{{label_row.label}}" checked="{{ label_row.checked }}"></td>
 					                <td> {{ label_row.label }} </td>
-					                <td class="{{label_row.color}}"> {{ label_row.subcategory }}</td>
+					                <td class="{{label_row.color}}" style="width:200px"> {{ label_row.subcategory }}</td>
 					                <td > {{ label_row.category }} </td>
               					</tr>
 									{% endfor %}
 							</table>
 
-						</article>
-					</div>
-					<div class="tile is-parent is-2">
-						<article class="tile is-child white post" id="label:review-{{forloop.counter0}}">
-							<h4 class="title is-4"> Finalize </h4>
-							<label for="label:info-{{ forloop.counter0 }}">Any additional information (200 chars) </label>
-							<textarea class="textarea" id="label:info:{{ forloop.counter0 }}"> </textarea>
-							<button class="button is-outline" id="validate:align:{{forloop.counter0}}"
-              					 onclick="validateLabel(this)"> Confirm and validate label</button>
-						</article>
+
+              					<button class="button is-outline" id="validate:align:{{forloop.counter0}}"
+              					 onclick="validateAlignment(this)"> Confirm and validate alignment</button>
+          					</article>
+						</div>
 					</div>
 				</div>
-			</div>
-		</section>	
-  		</div>
+			</section>
+		</div>
   		{% endwith %}
 	{% endfor %}
 </div>
