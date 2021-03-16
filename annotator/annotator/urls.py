@@ -21,5 +21,6 @@ urlpatterns = [
     path('align_label/', include('align_label.urls')),
     path('review_quality/', include('review_quality.urls')),
     path('tower/', include('tower.urls')),
+    path('harbor/', include('harbor.urls')),
     path('admin/', admin.site.urls),
 ]

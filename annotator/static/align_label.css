@@ -121,13 +121,8 @@ td {
   background: #f6ddcc;
 }
 
-
-/* Hide all steps by default: */
-.tab {
-  display: none;
-}
-
 .sentence:hover {
     background-color:  #fcf3cf;
 }
 
+a, a:hover { text-decoration: underline; }

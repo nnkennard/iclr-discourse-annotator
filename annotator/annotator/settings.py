@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'align_label.apps.AlignLabelConfig',
     'review_quality.apps.ReviewQualityConfig',
     'tower.apps.TowerConfig',
+    'harbor.apps.HarborConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

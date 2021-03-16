@@ -4,14 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
    ">
 <body>
-
-  <div class="container">
-
-  <h2> Hello, {{ name }}!</h2>
-
-  If you are not {{ name }}, please return to the <a href="/tower/">index</a> to
-  find your own assignment page. <br> <br>
-
+   <div class="container">
    <table class="table">
       <tr>
          <td> Reviewer </td>
@@ -21,10 +14,10 @@
       {% for example in examples %}
       <tr>
          <td> {{ example.reviewer }} </td>
-         <td><a href="/tower/annotate/{{ initials }}/{{ example.rebuttal_sid }}/0/">
+         <td><a href="/review_quality/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
             {{ example.title }}</a>
          </td>
-         <td> {{ example.is_done}} </td>
+         <td> {{example.status}} </td>
       </tr>
       </li>
       {% endfor %}

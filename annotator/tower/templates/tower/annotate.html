@@ -12,31 +12,34 @@
          <section class="section" id="sec:title">
             <div class="container">
                <div class="tile is-ancestor">
-                  <div class="tile is-parent is-7 white">
+                  <div class="tile is-parent is-9 white">
                      <article class="tile is-child white post">
                         <h2 class="title is-3"> {{ metadata.paper_title }} </h2>
-                        {{ metadata.reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> &nbsp;
-                        <button class="button is-outline is-small" id="showmodal" onclick="toggleModal()"> See full rebuttal </button>
-                        <br> <br>
+                     </article>
+                  </div>
+                  <div class="tile is-parent is-3 white">
+                     <article class="tile is-child white post">
+                        Reviewer: {{ metadata.reviewer }} <br>
+                        Annotator: {{ page_keys.initials }} <br>
+                        <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"  target="_blank"> Original forum on OpenReview</a>
+                        <a onclick="toggleModal()">See full rebuttal</a>
+
+                     </article>
+                  </div>
+
+               </div>
+
+               <div class="tile is-ancestor">
+                  <div class="tile is-parent is-12 white">
+                     <article class="tile is-child white post">
                         {% for rebuttal_sentence in metadata.rebuttal_statuses %}
                         <button class="button is-outline" id="nav:{{forloop.counter0}}"
                            onclick="navSwitch(this)" style="width:20px"> {{ forloop.counter0 }}</button>
                         {% endfor %}
                      </article>
                   </div>
-                  <div class="tile is-parent is-5 white">
-                     <article class="tile is-child white post">
-                        <input class="input" id="initials" type="text" style="width:200px">
-                        <label for="initials"> Your canonical initials </label> <br> <br>
-                        <input class="input" id="comments" type="text" style="width:200px">
-                        <label for="comments"> Overall comments (200 chars) </label> <br> <br>
-                        <button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button> <br><br>
-                        <form action="/align_label/submitted/" method="post">
-                           {% csrf_token %}
-                           <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
-                        </form>
-                     </article>
-                  </div>
+                  
+                  
                </div>
             </div>
          </section>
@@ -70,7 +73,6 @@
                         </div>
                         Please click to highlight the sentences that form the context for the current rebuttal sentence. <br>
                         If no such context exists, please indicate why:<br><br>
-
                         <h5 class="title is-5"> Alignment labels </h5>
                         {% for reason in no_align_reasons %}
                         <label for="align:radios:{{ metadata.rebuttal_index }}:{{ forloop.counter0 }}">
@@ -80,7 +82,6 @@
                         </label> <br>
                         {% endfor %}
                         <br>
-
                         <h5 class="title is-5"> Relation labels </h5>
                         <table>
                            {% for label_row in label_rows %}
@@ -99,13 +100,20 @@
                         </table>
                         <button class="button is-outline" id="validate:align:{{forloop.counter0}}"
                            onclick="validateAlignment(this)"> Confirm and validate alignment</button>
+                        <input class="input" id="comments" type="text" style="width:200px">
+                        <label for="comments"> Overall comments (200 chars) </label> <br> <br>
+                        <button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button> <br><br>
+                        <form action="/align_label/submitted/" method="post">
+                           {% csrf_token %}
+                           <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
+                        </form>
                      </article>
                   </div>
                </div>
             </div>
          </section>
       </div>
-      <div class="modal" id="rebuttalmodal">
+      <div class="modal" id="rebuttalmodal" tabindex="-1" role="dialog">
          <div class="modal-background"></div>
          <div class="modal-card">
             <header class="modal-card-head">
@@ -113,26 +121,18 @@
                <button class="delete" aria-label="close" onclick="toggleModal()"></button>
             </header>
             <section class="modal-card-body">
-            {% for rebuttal_sentence in rebuttal_sentences %}
-
+               {% for rebuttal_sentence in rebuttal_sentences %}
                {% if forloop.counter0 == metadata.rebuttal_index %}
-
-
                <span style="background-color:#d5f5e3">
                {{ rebuttal_sentence.text | linebreaksbr }} </span>
-
-
                {% else %}
-
                {{ rebuttal_sentence.text | linebreaksbr }} 
-
                {% endif %}
-      
-            {% endfor %}
-            <br>
-         </section>
+               {% endfor %}
+               <br>
+            </section>
          </div>
-         </div>
+      </div>
       <script src="{% static '/tower.js' %}"></script>
    </body>
 </html>

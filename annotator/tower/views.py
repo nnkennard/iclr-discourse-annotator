@@ -93,7 +93,7 @@ def get_htmlified_sentences(supernote_id):
     return final_sentences
 
 
-def annotate(request, rebuttal, index):
+def annotate(request, rebuttal, initials, index):
 
     relevant_comment_pair = Example.objects.get(
             rebuttal_sid=rebuttal, rebuttal_index=index)
@@ -106,6 +106,10 @@ def annotate(request, rebuttal, index):
     form = AnnotationForm()
 
     context = {
+            "page_keys": {
+                "rebuttal_index": index,
+                "initials": initials,
+                },
             "review_sentences": review_sentences,
             "rebuttal_sentences": rebuttal_sentences,
             "rebuttal_sentence": rebuttal_sentences[index],

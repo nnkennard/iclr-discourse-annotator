@@ -1,6 +1,6 @@
 // Initialization
 document.getElementById("submitBtn").disabled = "true"
-document.getElementById("initials").value = getUrlVars().initials
+//document.getElementById("initials").value = getUrlVars().initials
 // Utils
 
 function last(l){
@@ -28,7 +28,8 @@ function getUrlVars() {
 
 function switchRebuttalPage(new_index) {
     parts = window.location.href.split("/")
-    new_url = parts.slice(0,5).join("/") + "/" + new_index + "/" + parts.slice(6)
+    new_url = parts.slice(0,7).join("/") + "/" + new_index + "/" + parts.slice(8)
+    console.log(new_url)
     window.location.replace(new_url)
 }
 
@@ -234,6 +235,8 @@ function checkKey(e) {
 
     e = e || window.event;
 
+    console.log(e)
+
     if (e.key == 'ArrowLeft') {
        new_tab_index = index -1;
     }
@@ -244,10 +247,7 @@ function checkKey(e) {
         return
     }
 
-    console.log(new_tab_index)
-
     new_tab_name = ((new_tab_index + num_rebuttal_sentences) % num_rebuttal_sentences).toString()
-    console.log("new name ", new_tab_name)
     switchRebuttalPage(new_tab_name)
 
 }
