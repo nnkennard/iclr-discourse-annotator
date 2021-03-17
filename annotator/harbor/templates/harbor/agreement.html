@@ -1,0 +1,49 @@
+<head>
+  <title> Inter-annotator agreement dashboard </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+</head>
+
+<body>
+   <div class="container">
+      <h2 class="title is-3"> Completed annotations </h2>
+   <table class="table">
+      <tr>
+         <td> <b> Title </b> </td>
+         <td> <b> Reviewer </b> </td>
+         <td> <b> Annotators </b> </td>
+         <td> <b> Agreement </b> </td>
+      </tr>
+      {% for row in completed %}
+      <tr>
+         <td> {{ row.title }} </td>
+         <td> {{ row.reviewer }} </td>
+         <td> {{ row.annotators }} </td>
+         <td> {{ row.agreement }} </td>
+      </tr>
+      {% endfor %}
+   </table>
+
+
+      <h2 class="title is-3"> Partial annotations </h2>
+
+   <table class="table">
+      <tr>
+         <td> <b> Title </b> </td>
+         <td> <b> Reviewer </b> </td>
+         <td> <b> Done </b> </td>
+         <td> <b> Pending </b> </td>
+      </tr>
+      {% for row in partial %}
+      <tr>
+         <td> {{ row.title }} </td>
+         <td> {{ row.reviewer }} </td>
+         <td> {{ row.completed }} </td>
+         <td> {{ row.incomplete }} </td>
+      </tr>
+      {% endfor %}
+   </table>
+
+   </div>
+</body>
+
+

@@ -40,6 +40,15 @@
 }
 
 
+td {
+  padding-top: 2px;
+  padding-right: 2px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+
+
+
 .lightblue {
   background: #d3e0ea;
 }

@@ -1,21 +1,30 @@
 <head>
-  <title> {{ name }}'s annotation assignments </title>
+  <title> {{ annotator.name }}'s annotation assignments </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
 </head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css
-   ">
+
 <body>
    <div class="container">
    <table class="table">
       <tr>
+         <td> Index </td>
+         <td> Status </td>
          <td> Reviewer </td>
          <td> Title </td>
-         <td> Status </td>
       </tr>
       {% for example in examples %}
       <tr>
-         <td> {{ example.reviewer }} </td>
-         <td><a href="/review_quality/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
-            {{ example.title }}</a>
+         <td> {{ forloop.counter0 | add:1 }} </td>
+
+         {% if example.status == "Completed" %}
+         <td> {{ example.status }} </td>
+         {% else %}
+         <td> <b>{{ example.status }}</b> </td>
+         {% endif %}
+
+         <td> {{example.reviewer}} </td>
+         <td><a href="/harbor/annotate/{{ annotator.initials }}/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
+            {{ example.title}}</a>
          </td>
          <td> {{example.status}} </td>
       </tr>

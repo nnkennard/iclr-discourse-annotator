@@ -1,26 +1,25 @@
+
+function getJsonified(label) {
+    return JSON.parse(document.getElementById(label).textContent)
+}
+
 function validate(){
-    console.log(document.getElementById("metadata").textContent)
     radio_buttons = document.getElementsByClassName("radio");
-    labels = Array()
+    ratings = {}
     for (radio_button of radio_buttons){
         if (radio_button.checked){
-            labels.push(radio_button.name+"|"+radio_button.value)
+            ratings[radio_button.name] = radio_button.value
         }
     }
-    console.log(labels)
-    if (labels.length < 10){
+    if (ratings.length < getJsonified("num_questions")){
     	alert("Some labels are missing! Please complete and run Validate again.")
     	return
     }
-    if (document.getElementById("initials").value.length == 0){
-    	alert("Please add your initials and run Validate again.")
-   		return
-    }
     result = {
-            "labels": labels,
-            "annotator": document.getElementById("initials").value,
+            "review_id": getJsonified("review_id"),
+            "ratings": JSON.stringify(ratings),
+            "annotator": getJsonified("annotator_initials"),
             "comment": document.getElementById("comments").value,
-            "metadata": JSON.parse(document.getElementById("metadata").textContent),
         }
     document.getElementById("id_annotation").value = JSON.stringify(result)
 }

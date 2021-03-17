@@ -1,5 +1,3 @@
-
-
 <html>
    <head>
       <title> Review Quality Annotation </title>
@@ -7,115 +5,97 @@
    </head>
    <body>
       {% load static %}
-      {{ metadata | json_script:"metadata"}}
-      <link rel="stylesheet" type="text/css" href="{% static '/align_label.css' %}">
-      <script src="{% static '/review_quality.js' %}"></script>
+      {{ review_id | json_script:"review_id"}}
+      {{ annotator.initials | json_script:"annotator_initials"}}
+      {{ num_questions | json_script:"num_questions"}}
+      <link rel="stylesheet" type="text/css" href="{% static '/harbor/harbor.css' %}">
+      <script src="{% static '/harbor/harbor.js' %}"></script>
       <div class='lightblue'>
-         <div class='container'>
-            <section class="section" id="sec:text">
-               <div class="tile is-ancestor">
-                  <div class="tile is-parent">
-                     <article class="tile is-child white post" id="text:review">
-                        <h2 class="title is-3"> {{ metadata.paper_title }} </h2>
-                        {{ metadata.reviewer }} &nbsp; <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_sid }}"> Original forum on OpenReview</a> <br> <br>
-                      </article>
-
-                     <article class="tile is-child is-4 white post" id="text:review">
-                      <label for="initials"> Initials </label><input class="input" type="text" id="initials">
-                      <label for="comments"> Comments </label><input class="input" type="text" id="comments">
-                      <br><br>
-
-
-                      <div class="columns">
-                        <div class="column is-4"><button class="button is-outline" id="validate:all" onclick="validate()"> Validate</button></div>
-                        <div class="column is-8">
-                          <form action="/review_quality/submitted/" method="post">
-              {% csrf_token %}
-              {{ form }}
-              <br>
-              <button id="submitBtn" class="button" type="submit" value="Submit"> Submit </button>
-            </form>
-                        </div>
-                      </div>
-                           
-                     </article>
-                  </div>
-               </div>
-            </section>
-            <section class="section" id="sec:text">
-               <div class="tile is-ancestor">
-                  <div class="tile is-parent is-6">
-                     <article class="tile is-child white post" id="text:review">
-                        <h2 class=" title is-h2"> Review </h2>
-                        {% for review_sentence in review_sentences %}
-                        {{ review_sentence.text | linebreaksbr }}
-                        {% endfor %}
-                     </article>
-                  </div>
-                  <div class="tile is-parent is-6 ">
-                     <article class="tile is-child white post" id="text:rebuttal">
-                        <h2 class=" title is-h2"> Ratings </h2>
-                        <table>
-                           {% for question in questions %}
-                           <tr>
-                              <td colspan="3"> <b> {{ question.kw }} </b> </td>
-                           </tr>
-                           
-                           <tr>
-                              <td>
-                                {{question.min}}
-                              </td><td style="width: 200px;">
-                                 <div class="control">
-                                    {% with '12345'|center:5 as range %}
-                                    {% for i in range %}
-                                    <input class="radio" type="radio" name="{{question.kw}}" value="{{ i }}">
-                                    {{ i }}
-                                    {% endfor %}
-                                    {% endwith %}
-                                 </div>
-                               </td>
-                               <td>
-                                 {{question.max}}
-                              </td>
-                           </tr>
-                           <tr>
-                              <td colspan="3"> {{ question.text }} </td>
-                           </tr>
-                           <tr><td colspan="3"></td></tr>
-                           {% endfor %}
-			   <tr>
-				   <td colspan="3">
-					   <b>Is this review mentioned in the meta-review?</b>
-
-				   </td>
-			</tr>
-			<tr>
-				   <td colspan="3">
-    <label for="radios-0">
-      <input type="radio" class="radio" name="metareview" id="metareviews-0" value="no-mention" checked="checked">
-      Not at all <br>
-    </label>
-    <label for="radios-1">
-      <input type="radio" class="radio" name="metareview" id="metareviews-1" value="yes-disagree">
-      Yes, but meta-review disagrees with the review <br>
-    </label>
-    <label for="radios-2">
-      <input type="radio" class="radio" name="metareview" id="metareviews-2" value="yes-neither">
-      Yes, and meta-review neither agrees nor disagrees with the review <br>
-	</div>
-    <label for="radios-3">
-      <input  type="radio" class="radio" name="metareview" id="metareviews-3" value="yes-agree">
-      Yes, and meta-review agrees with the review <br>
-    </label>
-				</td>
-			   </tr>
-                        </table>
-                     </article>
-                  </div>
-               </div>
-            </section>
+      <div class='container'>
+      <section class="section" id="sec:text">
+         <div class="tile is-ancestor">
+            <div class="tile is-parent">
+               <article class="tile is-child white post" id="text:review">
+                  <h2 class="title is-3"> {{ paper_title }} </h2>
+                  Reviewer: {{ reviewer }} |
+                  Annotator: {{ annotator.name }} |
+                  <a href="https://openreview.net/forum?id={{ forum }}&noteId={{ review_id }}" target="blank"> Original forum on OpenReview</a> <br> <br>
+               </article>
+            </div>
          </div>
+      </section>
+      <section class="section" id="sec:text">
+         <div class="tile is-ancestor">
+            <div class="tile is-parent is-6">
+               <article class="tile is-child white post" id="text:review">
+                  <h2 class=" title is-h2"> Review </h2>
+
+                  {{ review_text | linebreaksbr }}
+               </article>
+            </div>
+            <div class="tile is-parent is-6 ">
+               <article class="tile is-child white post" id="text:rebuttal">
+                  <h2 class=" title is-h2"> Ratings </h2>
+                  <table>
+                     {% for question in likert_questions %}
+                     <tr>
+                        <td colspan="3"> <b> {{ question.keyword }} </b> </td>
+                     </tr>
+                     <tr>
+                        <td colspan="3"> {{ question.question }} </td>
+                     </tr>
+                     <tr>
+                        <td>
+                           {{question.min_label}}
+                        </td>
+                        <td style="width: 200px;">
+                           <div class="control">
+                              {% with '12345'|center:5 as range %}
+                              {% for i in range %}
+                              <input class="radio" type="radio"
+                                 name="{{question.keyword}}" value="{{ i }}">
+                              {{ i }}
+                              {% endfor %}
+                              {% endwith %}
+                           </div>
+                        </td>
+                        <td>
+                           {{question.max_label}}
+                        </td>
+                     </tr>
+                     {% endfor %}
+                     {% for question in mc_questions %}
+                     <tr>
+                        <td colspan="3"> <b> {{ question.keyword }} </b> </td>
+                     </tr>
+                     <tr>
+                        <td colspan="3"> {{ question.question }} </td>
+                     </tr>
+                     <tr>
+                        <td colspan="3">
+                           {% for option in question.options_with_keywords %}
+                           <input class="radio" type="radio"
+                              name="{{option.kw}}" value="{{ question.keyword }}">
+                           {{ option.description }} <br>
+                           {% endfor %}
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </table>
+
+                  <label for="comments"> Comments </label><input class="input" type="text" id="comments"> <br> <br> 
+                  <button class="button is-outline" id="validate:all" onclick="validate()"> Validate</button>
+                  <form action="/harbor/submitted/" method="post">
+                           {% csrf_token %}
+                           {{ form }} <br> <br>
+                           <button id="submitBtn" class="button" type="submit" value="Submit"> Submit </button>
+                        </form>
+                        
+               </article>
+               </div>
+               </div>
+      </section>
+      </div>
       </div>
    </body>
 </html>
-
