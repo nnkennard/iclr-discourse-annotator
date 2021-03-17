@@ -1,4 +1,3 @@
-
 function getJsonified(label) {
     return JSON.parse(document.getElementById(label).textContent)
 }
@@ -11,7 +10,7 @@ function validate(){
             ratings[radio_button.name] = radio_button.value
         }
     }
-    if (ratings.length < getJsonified("num_questions")){
+    if (Object.keys(ratings).length < getJsonified("num_questions")){
     	alert("Some labels are missing! Please complete and run Validate again.")
     	return
     }
@@ -22,4 +21,5 @@ function validate(){
             "comment": document.getElementById("comments").value,
         }
     document.getElementById("id_annotation").value = JSON.stringify(result)
+    document.getElementById("submitBtn").removeAttribute("disabled");
 }
