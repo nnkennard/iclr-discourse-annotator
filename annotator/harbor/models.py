@@ -35,7 +35,7 @@ class Annotation(models.Model):
     review_id = models.CharField(max_length=30)
     annotator_initials = models.CharField(max_length=5)
     ratings = models.CharField(max_length=1000)
-    comment = models.CharField(max_length=200)
+    comment = models.CharField(max_length=500)
 
 
 class Assignment(models.Model):

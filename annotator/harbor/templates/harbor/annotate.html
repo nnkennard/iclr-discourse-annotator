@@ -83,7 +83,7 @@
                      {% endfor %}
                   </table>
 
-                  <label for="comments"> Comments </label><input class="input" type="text" id="comments"> <br> <br> 
+                  <label for="comments"> Comments </label><textarea class="textarea" id="comments"> </textarea><br> <br> 
                   <button class="button is-outline" id="validate:all" onclick="validate()"> Validate</button>
                   <form action="/harbor/submitted/" method="post">
                            {% csrf_token %}
