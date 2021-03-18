@@ -1,0 +1,29 @@
+<head>
+   <title> Annotation Center </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+</head>
+<body>
+   <div class="container text-center">
+     <div class="column is-one-third is-offset-one-third has-text-centered">
+   <table class="table" style="width:100%">
+      <tr>
+         <td> Annotator </td>
+         <td> Initials </td>
+         <td> Link </td>
+      </tr>
+      {% for annotator in annotators %}
+      <tr>
+         <td> {{ annotator.name }} </td>
+         <td> {{ annotator.initials }} </td>
+         <td><a href="/dune/assignments/{{ annotator.initials }}">
+            Link</a>
+         </td>
+      </tr>
+      </li>
+      {% endfor %}
+   </table>
+     </div>
+</div>
+</body>
+
+

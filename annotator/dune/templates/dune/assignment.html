@@ -1,0 +1,37 @@
+<head>
+  <title> {{ annotator.name }}'s annotation assignments </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+</head>
+
+<body>
+   <div class="container">
+   <table class="table">
+      <tr>
+         <td> Index </td>
+         <td> Status </td>
+         <td> Reviewer </td>
+         <td> Title </td>
+      </tr>
+      {% for example in examples %}
+      <tr>
+         <td> {{ forloop.counter0 | add:1 }} </td>
+
+         {% if example.status == "Completed" %}
+         <td> {{ example.status }} </td>
+         {% else %}
+         <td> <b>{{ example.status }}</b> </td>
+         {% endif %}
+
+         <td> {{example.reviewer}} </td>
+         <td><a href="/dune/annotate/{{ annotator.initials }}/{{ example.rebuttal_id }}">
+            {{ example.title}}</a>
+         </td>
+      </tr>
+      </li>
+      {% endfor %}
+   </table>
+
+   </div>
+</body>
+
+
