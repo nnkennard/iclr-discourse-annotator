@@ -144,11 +144,7 @@ def spearman_wrapper(ann1, ann2):
     labels1 = get_likert_labels_in_order(ann1)
     labels2 = get_likert_labels_in_order(ann2)
     assert len(labels1) == len(labels2)
-
-    val = sum([int(x == y) for x, y in zip(get_likert_labels_in_order(ann1),
-                           get_likert_labels_in_order(ann2))]) / len(labels1)
-    print(val)
-    return(val)
+    return '{0:.3f}'.format(stats.spearmanr(labels1, labels2)[0])
     
 def get_completed_row(review_id, annotator1, annotator2):
     ann1 = Annotation.objects.filter(review_id=review_id, annotator_initials=annotator1).order_by('-id')[0]
