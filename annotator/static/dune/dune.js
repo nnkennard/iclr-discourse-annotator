@@ -98,7 +98,16 @@ function getRadios(){
 }
 
 function validateAll(){
-  if (isSentencesAreAlignedChecked() && !someHighlighted()) {
+
+
+  labels = getRadios();
+  console.log(labels)
+  
+  if (!('align:radios' in labels)){
+    window.alert("Please select one of the alignment radio buttons.")
+  } else if (!('label:radios' in labels)){
+    window.alert("Please select one of the relation radio buttons.")
+  } else if (isSentencesAreAlignedChecked() && !someHighlighted()) {
     window.alert("You have indicated that sentences are highlighted, but none are highlighted. Please fix.")
   } else if (!isSentencesAreAlignedChecked() && someHighlighted()){
     window.alert("You have highlighted sentences, but selected a 'no context' option as well. Please fix.")
@@ -114,6 +123,7 @@ function validateAll(){
             "relation_label": labels["label:radios"],
             "comment": document.getElementById("comments").value,
             "metadata": metadata,
+            "num_rebuttal_sentences": num_rebuttal_sentences,
             "time_to_annotate":seconds,
         }
         console.log(result)

@@ -5,6 +5,13 @@
   <body> 
   	<div class="container">
   		<br>
-  		Submitted, thanks! <a href="/dune/">Back to index</a>
+      Submitted, thanks! <br>
+      <a href="/dune/assignments/{{ next_sentence_info.initials }}">Back to
+        index</a> <br>
+      {% if next_sentence_info.valid %}
+      <a href="/dune/annotate/{{ next_sentence_info.initials }}/{{ next_sentence_info.rebuttal_id }}/{{ next_sentence_info.rebuttal_sentence_index }}">
+        Go to next sentence
+      </a>
+      {% endif %}
   		</div> </body>
 </html>

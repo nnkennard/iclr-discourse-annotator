@@ -155,6 +155,7 @@ def submitted(request):
     if form.is_valid():
         annotation_obj = json.loads(form.cleaned_data["annotation"])
         metadata = annotation_obj["metadata"]
+        print(annotation_obj["metadata"])
 
         aligned_review_sentences = "|".join(sorted(str(i) for i, val in
                 enumerate(annotation_obj["alignment_labels"]) if val))
@@ -172,7 +173,22 @@ def submitted(request):
            )
         annotation.save()
 
+        maybe_next_index = annotation_obj["metadata"]["rebuttal_index"] + 1
+        if (maybe_next_index ==
+            annotation_obj["num_rebuttal_sentences"]):
+            next_sentence_info = {"valid":False,
+                    "initials":metadata["initials"]}
+        else:
+            next_sentence_info = {
+                    "rebuttal_sentence_index":maybe_next_index,
+                    "initials":metadata["initials"],
+                    "rebuttal_id":metadata["rebuttal_id"],
+                    "valid": True}
+
     template = loader.get_template('dune/submitted.html')
-    return HttpResponse(template.render({}, request))
+    return HttpResponse(
+            template.render(
+                {"next_sentence_info":next_sentence_info},
+                request))
 
 
