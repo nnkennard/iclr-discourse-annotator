@@ -1,0 +1,88 @@
+--- 
+alignment_errors: 
+  -
+    kw: cant-determine
+    label: "Cannot determine context"
+  -
+    kw: glob-context
+    label: "Global context"
+  -
+    kw: no-context
+    label: "No context"
+  -
+    kw: rebuttal-context
+    label: "Context is in rebuttal"
+  -
+    kw: some-align
+    label: "Aligned sentences have been highlighted"
+
+relations: 
+  -
+    name: Answer 
+    color: red2
+    labels: 
+      - 
+        kw: direct
+        label: Direct
+      - 
+        kw: elaborate
+        label: Elaborate
+      - 
+        kw: followup
+        label: "Follow-up question"
+  -
+    name: Change
+    color: yellow
+    labels: 
+      - 
+        kw: already-completed
+        label: "Already completed"
+      - 
+        kw: by-cr
+        label: "Promised by CR"
+      - 
+        kw: no-time-frame
+        label: "Promised, no time frame"
+  -
+    name: Non-compliance
+    color: orange1
+    labels: 
+      - 
+        kw: premise-wrong
+        label: "Premise wrong"
+      - 
+        kw: cant-fix
+        label: "Can't fix"
+      - 
+        kw: already-answered
+        label: "Already answered"
+  -
+    name: Politeness
+    color: blue1
+    labels: 
+      - 
+        kw: thank
+        label: Thanking
+      - 
+        kw: ack
+        label: Acknowledgement
+  -
+    name: Structuring
+    color: green3
+    labels: 
+      - 
+        kw: quote
+        label: Quote
+      - 
+        kw: subheading
+        label: Subheading
+      - 
+        kw: summary
+        label: Summary
+  -
+    name: Error 
+    color: white
+    labels: 
+      - 
+        kw: nota
+        label: "None of the above"

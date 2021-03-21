@@ -38,7 +38,13 @@ class Command(BaseCommand):
         max_interleaved_index = max(i["interleaved_index"]
             for i in Example.objects.all().values("interleaved_index"))
 
-        for i in range(max_interleaved_index): # This is picking a forum
+        for annotator in Annotator.objects.all():
+            assignment = AnnotatorAssignment(
+                    rebuttal_id="example_rebuttal",
+                    annotator_initials=annotator.initials)
+            assignment.save()
+
+        for i in range(1, max_interleaved_index): # This is picking a forum
             examples = Example.objects.all().filter(interleaved_index=i)
             rebuttal_ids = set([example.rebuttal_id for example in examples])
             
@@ -50,9 +56,9 @@ class Command(BaseCommand):
                             rebuttal_sentence_index=0)
                 for ann in this_forum_annotators:
                     for example in maybe_examples:
-                        print(ann, example.rebuttal_id)
                         assignment = AnnotatorAssignment(
                                 rebuttal_id=example.rebuttal_id,
                                 annotator_initials=ann
                                 )
                         assignment.save()
+        

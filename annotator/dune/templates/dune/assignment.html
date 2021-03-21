@@ -6,6 +6,12 @@
 <body>
    <div class="container">
    <table class="table">
+      <br>
+
+      <h2 class="title is-3"> Hello, {{ annotator.name }}! </h2>
+
+      If you are not {{ annotator.name }}, go to <a href="/dune/">this page</a> to find your assignments. <br> <br>
+
       <tr>
          <td> Index </td>
          <td> Status </td>
@@ -15,7 +21,6 @@
       {% for example in examples %}
       <tr>
          <td> {{ forloop.counter0 | add:1 }} </td>
-
          {% if example.status == "Completed" %}
          <td> {{ example.status }} </td>
          {% else %}
@@ -23,7 +28,7 @@
          {% endif %}
 
          <td> {{example.reviewer}} </td>
-         <td><a href="/dune/annotate/{{ annotator.initials }}/{{ example.rebuttal_id }}">
+         <td><a href="/dune/annotate/{{ annotator.initials }}/{{ example.rebuttal_id }}/0/">
             {{ example.title}}</a>
          </td>
       </tr>

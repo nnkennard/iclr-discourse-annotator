@@ -43,7 +43,7 @@ class AnnotatorAssignment(models.Model):
     class Meta:
         app_label = "dune"
 
-    annotator_initials = models.CharField(max_length=4)
+    initials = models.CharField(max_length=4)
     rebuttal_id = models.CharField(max_length=30)
 
 # Annotation models
@@ -54,7 +54,7 @@ class AlignmentAnnotation(models.Model):
 
     rebuttal_id = models.CharField(max_length=30)
     rebuttal_sentence_index = models.IntegerField()
-    annotator_initials = models.CharField(max_length=4)
+    initials = models.CharField(max_length=4)
 
     is_valid = models.BooleanField()
     
@@ -71,5 +71,5 @@ class AlignmentPairAnnotation(models.Model):
         app_label = "dune"
 
     rebuttal_id = models.CharField(max_length=30)
-    annotator_initials = models.CharField(max_length=4)
+    initials = models.CharField(max_length=4)
     comment = models.CharField(max_length=200)

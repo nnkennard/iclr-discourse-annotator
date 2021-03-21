@@ -1,0 +1,131 @@
+<html>
+   <head>
+      <title> Alignment Annotation </title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+   </head>
+   <body>
+      {% load static %}
+      {{ metadata | json_script:"metadata"}}
+      {{ text.rebuttal_sentences | length | json_script:"num_rebuttal_sentences"}}
+      {{ text.review_sentences | json_script:"review_sentences"}}
+      {{ other_annotations | json_script:"other_annotations"}}
+
+      <link rel="stylesheet" type="text/css" href="{% static 'dune/dune.css' %}">
+      <div class='lightblue'>
+         <section class="section"> <!-- Title section --> 
+            <div class="container">
+               <div class="tile is-ancestor">
+                  <div class="tile is-parent is-9 white">
+                     <article class="tile is-child white post">
+                        <h2 class="title is-3"> {{ metadata.paper_title }} </h2>
+                        <!-- Navigation --> 
+                        {% for status in other_annotations.statuses %}
+                           <button class="button is-outlined" id="nav:{{forloop.counter0}}"
+                           onclick="navSwitch(this)" style="width:20px"> {{ forloop.counter0 }}</button>
+                        {% endfor %}
+                     </article>
+                  </div>
+                  <div class="tile is-parent is-3 white"> <!-- Info section --> 
+                     <article class="tile is-child white post">
+                        Reviewer: {{ metadata.reviewer }} <br>
+                        Annotator: {{ metadata.initials }} <br>
+                        <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_id }}"  target="_blank"> Original forum on OpenReview</a> <br>
+                        <a onclick="toggleModal()">See full rebuttal</a>
+                     </article>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section class="section">
+            <div class="container">
+               <div class="tile is-ancestor">
+                  <div class="tile is-parent is-6">
+                     <article class="tile is-child white post"> <!-- Review --> 
+                        <h4 class="title is-4"> Review </h4>
+                           {% for review_sentence in text.review_sentences %}
+                              <span class="sentence"
+                              id="sentence:{{ review_sentence.idx }}"
+                              onclick="clicked(this)">
+                              {{ review_sentence.text | linebreaksbr }} </span>
+                           {% endfor %}
+                     </article>
+                  </div>
+                  <div class="tile is-parent is-6">
+                     <article class="tile is-child white post" id="align:rebuttal:{{forloop.counter0}}"> <!-- Rebuttal --> 
+                        For the rebuttal sentence highlighted below: <br> <br>
+                        <div class="box" >
+                           <span id="rebuttalbox:{{forloop.counter0 }}">
+                           {{ text.rebuttal_sentence.text}}</span>
+                        </div>
+                        Please select the sentences that form its context. &nbsp;
+                        <button class="button is-outline is-small" id="copyBtn" onclick="copyPrevious()"> Copy previous </button>
+                        <br><br>
+                        You have selected: <br> <br>
+                        <div class="box" >
+                           <span id="reviewbox"></span>
+                        </div>
+                        Please click to highlight the sentences that form the context for the current rebuttal sentence. <br>
+                        If no such context exists, please indicate why:<br><br>
+                        <h5 class="title is-5"> Alignment labels </h5>
+                        {% for reason in labels.alignment_errors %}
+                        <label for="align:radios:{{ reason.kw }}">
+                        <input class="radio" type="radio" name="align:radios"
+                           id="align:radios:{{ reason.kw }}" value="{{ reason.kw }}">
+                        {{ reason.label }}
+                        </label> <br>
+                        {% endfor %}
+                        <br>
+                        <h5 class="title is-5"> Relation labels </h5>
+                        <table>
+                           {% for category in labels.relations %}
+                           {% for label_row in category.labels %}
+                           <tr onclick="rowClicked(this)" id="tablerow:{{label_row.kw}}">
+                              <td>
+                                 <input type="radio" class="radio" 
+                                    name="label:radios"
+                                    id="label:radios:{{label_row.kw}}"
+                                    value="{{label_row.kw}}">
+                              </td>
+                              <td  style="width:250px"> {{ label_row.label }} </td>
+                              <td class="{{ category.color}}" style="width:250px">  {{ category.name }}</td>
+                           </tr>
+                           {% endfor %}
+                           {% endfor %}
+                        </table>
+                        <input class="input" id="comments" type="text" style="width:200px">
+                        <label for="comments"> Overall comments (200 chars) </label> <br> <br>
+                        <button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button> <br><br>
+                        <form action="/dune/submitted/" method="post">
+                           {% csrf_token %}
+                           <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
+                        </form>
+                     </article>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+      <div class="modal" id="rebuttalmodal" tabindex="-1" role="dialog">
+         <div class="modal-background"></div>
+         <div class="modal-card">
+            <header class="modal-card-head">
+               <p class="modal-card-title">Full rebuttal text</p>
+               <button class="delete" aria-label="close" onclick="toggleModal()"></button>
+            </header>
+            <section class="modal-card-body">
+               {% for rebuttal_sentence in text.rebuttal_sentences %}
+               {% if forloop.counter0 == metadata.rebuttal_index %}
+               <span style="background-color:#d5f5e3">
+               {{ rebuttal_sentence.text | linebreaksbr }} </span>
+               {% else %}
+               {{ rebuttal_sentence.text | linebreaksbr }} 
+               {% endif %}
+               {% endfor %}
+               <br>
+            </section>
+         </div>
+      </div>
+      <script src="{% static 'dune/dune.js' %}"></script>
+   </body>
+</html>
+
