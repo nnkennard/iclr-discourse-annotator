@@ -15,6 +15,7 @@
       <tr>
          <td> Index </td>
          <td> Status </td>
+         <td> Number done </td>
          <td> Reviewer </td>
          <td> Title </td>
       </tr>
@@ -26,8 +27,8 @@
          {% else %}
          <td> <b>{{ example.status }}</b> </td>
          {% endif %}
-
-         <td> {{example.reviewer}} </td>
+         <td> {{ example.num_done }}</td>
+         <td> {{ example.reviewer }} </td>
          <td><a href="/dune/annotate/{{ annotator.initials }}/{{ example.rebuttal_id }}/0/">
             {{ example.title}}</a>
          </td>

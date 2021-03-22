@@ -29,6 +29,7 @@ def make_presentation_example(assignment):
     example = examples[0]
     return {
             "reviewer": example.reviewer,
+            "num_done": str(len(maybe_done)) + " / " + str(len(examples)),
             "title": example.title,
             "rebuttal_id": example.rebuttal_id,
             "status": status}
