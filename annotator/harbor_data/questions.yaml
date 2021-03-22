@@ -1,0 +1,73 @@
+---
+-
+  title: Importance
+  text: "Did the reviewer discuss the importance of the research question?"
+  keyword: importance
+  type: binary
+-
+  title: Originality
+  text: "Did the reviewer discuss the originality of the paper?"
+  keyword: originality
+  type: binary
+-
+  title: Method
+  text: "Did the reviewer clearly identify the strengths and weaknesses of the method (study design, data collection and data analysis)?"
+  keyword: method
+  type: likert
+  min: "Not at all"
+  max: "Comprehensive"
+-
+  title: Presentation
+  text: "Did the reviewer make specific useful comments on the writing, organisation, tables and figures of the manuscript?"
+  keyword: presentation
+  type: binary
+-
+  title: Constructiveness
+  text: "Were the reviewer’s comments constructive?"
+  keyword: constructiveness
+  type: likert
+  min: "Not at all"
+  max: "Very constructive"
+-
+  title: Evidence
+  text: "Did the reviewer supply appropriate evidence using examples from the paper to substantiate their comments?"
+  keyword: evidence
+  type: likert
+  min: "No comments substantiated"
+  max: "All comments substantiated"
+-
+  title: Interpretation of results
+  text: "Did the reviewer comment on the author’s interpretation of the results?"
+  keyword: interpretation
+  type: binary
+-
+  title: Reproducibility
+  text: "Did the reviewer comment on the reproducibility of the results?"
+  keyword: reproducibility
+  type: binary
+-
+  title: Overall
+  text: "How would you rate the quality of this review overall?"
+  keyword: overall
+  type: likert
+  min: "Poor"
+  max: "Excellent"
+-
+  title: "Meta-review mention"
+  text: "Are the contents of this review included in the meta-review?"
+  keyword: metareview
+  type: multi
+  options:
+    -
+      keyword: "ignored"
+      text: "No, this review was ignored"
+    -
+      keyword: "similar"
+      text: "Yes, the meta reviewer makes similar comments"
+    -
+      keyword: "disagree"
+      text: "Yes, and the meta reviewer disagrees"
+    -
+      keyword: "quote"
+      text: "Yes, and the meta reviewer quotes"
+      

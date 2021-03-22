@@ -10,36 +10,11 @@ import json
 
 from scipy import stats
 
-LikertQuestion = collections.namedtuple("LikertQuestion",
-        "keyword question min_label max_label".split())
-MultipleChoiceQuestion = collections.namedtuple("MultipleChoiceQuestion",
-        "keyword question options_with_keywords")
+import yaml
 
-LIKERT_QUESTIONS = [
-    LikertQuestion("importance", "Did the reviewer discuss the importance of the research question?", "Not at all", "Discussed extensively"),
-    LikertQuestion("originality", "Did the reviewer discuss the originality of the paper?", "Not at all", "Discussed extensively with references" ),
-    LikertQuestion("method", "Did the reviewer clearly identify the strengths and weaknesses of the method (study design, data colletion and data analysis)?", "Not at all", "Comprehensive" ),
-    LikertQuestion("presentation", "Did the reviewer make specific useful comments on the writing, organisation, tables and figures of the manuscript?", "Not at all",  "Extensive"),
-    LikertQuestion("constructiveness", "Were the reviewer’s comments constructive?", "Not at all",  "Very constructive"),
-    LikertQuestion("evidence", "Did the reviewer supply appropriate evidence using examples from the paper to substantiate their comments?", "No comments substantiated",  "All comments substantiated"),
-    LikertQuestion("interpretation", "Did the reviewer comment on the author’s interpretation of the results?", "Not at all",  "Discussed extensively"),
-    LikertQuestion("reproducibility", "Did the reviewer comment on the reproducibility of the results?", "Not at all",  "Discussed extensively"),
-    LikertQuestion("overall", "How would you rate the quality of this review overall?", "Poor", "Excellent" ),
- ]
-
-mc_questions_pre = [("no", "Not at all"),
-             ("yes-disagree", "Yes, but meta-review disagrees with the review"),
-             ("yes-neither", "Yes, and meta-review neither agrees nor disagrees with the review"),
-             ("yes-agree", "Yes, and meta-review agrees with the review")
-            ]
-mc_questions_dict = [{"kw":kw, "description":desc}
-        for kw, desc in mc_questions_pre]
-
-MC_QUESTIONS = [
-        MultipleChoiceQuestion(
-            "metareview", "Is this review mentioned in the meta-review?",
-            mc_questions_dict)
-]
+def get_questions():
+    with open("harbor_data/questions.yaml", 'r') as f:
+        return yaml.safe_load(f)
 
 
 def index(request):
@@ -102,9 +77,7 @@ def annotate(request, review_id, annotator_initials):
             "forum": review.forum,
             "review_id": review.review_id,
             "review_text": review_sentences,
-            "likert_questions": LIKERT_QUESTIONS,
-            "mc_questions": MC_QUESTIONS,
-            "num_questions": len(LIKERT_QUESTIONS) + len(MC_QUESTIONS),
+            "questions": get_questions(),
             "form": form,
             "annotator":{"name": name, "initials": annotator_initials}
             }

@@ -37,50 +37,82 @@
                <article class="tile is-child white post" id="text:rebuttal">
                   <h2 class=" title is-h2"> Ratings </h2>
                   <table>
-                     {% for question in likert_questions %}
-                     <tr>
-                        <td colspan="3"> <b> {{ question.keyword }} </b> </td>
+                    {% for question in questions %}
+                    {% if question.type == 'likert' %} <!-- Likert questions -->
+
+                    <tr>
+                        <td colspan="3"> <b> {{ question.title }} </b> </td>
                      </tr>
                      <tr>
-                        <td colspan="3"> {{ question.question }} </td>
+                        <td colspan="3"> {{ question.text }} </td>
                      </tr>
                      <tr>
                         <td>
-                           {{question.min_label}}
+                           {{question.min}}
                         </td>
                         <td style="width: 200px;">
                            <div class="control">
                               {% with '12345'|center:5 as range %}
                               {% for i in range %}
                               <input class="radio" type="radio"
-                                 name="{{question.keyword}}" value="{{ i }}">
+                                 name="{{question.title}}" value="{{ i }}">
                               {{ i }}
                               {% endfor %}
                               {% endwith %}
                            </div>
                         </td>
                         <td>
-                           {{question.max_label}}
+                           {{question.max}}
                         </td>
-                     </tr>
-                     {% endfor %}
-                     {% for question in mc_questions %}
+                    
+                    {% elif question.type == 'binary' %} <!-- Binary questions -->
+
                      <tr>
-                        <td colspan="3"> <b> {{ question.keyword }} </b> </td>
+                        <td colspan="3"> <b> {{ question.title }} </b> </td>
                      </tr>
                      <tr>
-                        <td colspan="3"> {{ question.question }} </td>
+                        <td colspan="3"> {{ question.text }} </td>
+                     </tr>
+                     <tr>
+                        <td>
+                        </td>
+                        <td style="width: 200px;">
+                           <div class="control">
+                              <input class="radio" type="radio"
+                                 name="{{question.keyword}}" value="{{ 0 }}"> No
+                              &nbsp; &nbsp; &nbsp;
+                              &nbsp; &nbsp; &nbsp;
+                              &nbsp; &nbsp; &nbsp;
+                              &nbsp; &nbsp; 
+                              <input class="radio" type="radio"
+                                 name="{{question.keyword}}" value="{{ 1 }}"> Yes
+
+                           </div>
+                        </td>
+                        <td>
+                        </td>
+                    
+                    {% else %} <!-- Multiple choice questions -->
+
+                     <tr>
+                        <td colspan="3"> <b> {{ question.title }} </b> </td>
+                     </tr>
+                     <tr>
+                        <td colspan="3"> {{ question.text }} </td>
                      </tr>
                      <tr>
                         <td colspan="3">
-                           {% for option in question.options_with_keywords %}
+                           {% for option in question.options %}
                            <input class="radio" type="radio"
-                              name="{{option.kw}}" value="{{ question.keyword }}">
-                           {{ option.description }} <br>
+                              name="{{option.keyword}}" value="{{ option.keyword }}">
+                           {{ option.text }} <br>
                            {% endfor %}
                         </td>
                      </tr>
-                     {% endfor %}
+                    
+                    {% endif %}
+               
+                    {% endfor %}
                   </table>
 
                   <label for="comments"> Comments </label><textarea class="textarea" id="comments"> </textarea><br> <br> 
