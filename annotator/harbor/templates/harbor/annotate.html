@@ -80,10 +80,7 @@
                            <div class="control">
                               <input class="radio" type="radio"
                                  name="{{question.keyword}}" value="{{ 0 }}"> No
-                              &nbsp; &nbsp; &nbsp;
-                              &nbsp; &nbsp; &nbsp;
-                              &nbsp; &nbsp; &nbsp;
-                              &nbsp; &nbsp; 
+                              
                               <input class="radio" type="radio"
                                  name="{{question.keyword}}" value="{{ 1 }}"> Yes
 
@@ -104,7 +101,7 @@
                         <td colspan="3">
                            {% for option in question.options %}
                            <input class="radio" type="radio"
-                              name="{{option.keyword}}" value="{{ option.keyword }}">
+                              name="{{question.keyword}}" value="{{ option.keyword }}">
                            {{ option.text }} <br>
                            {% endfor %}
                         </td>
