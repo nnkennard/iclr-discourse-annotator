@@ -13,13 +13,21 @@
   title: Method
   text: "Did the reviewer clearly identify the strengths and weaknesses of the method (study design, data collection and data analysis)?"
   keyword: method
-  type: likert
-  min: "Not at all"
-  max: "Comprehensive"
+  type: binary
 -
   title: Presentation
   text: "Did the reviewer make specific useful comments on the writing, organisation, tables and figures of the manuscript?"
   keyword: presentation
+  type: binary
+-
+  title: Interpretation of results
+  text: "Did the reviewer comment on the author’s interpretation of the results?"
+  keyword: interpretation
+  type: binary
+-
+  title: Reproducibility
+  text: "Did the reviewer comment on the reproducibility of the results?"
+  keyword: reproducibility
   type: binary
 -
   title: Constructiveness
@@ -35,16 +43,7 @@
   type: likert
   min: "No comments substantiated"
   max: "All comments substantiated"
--
-  title: Interpretation of results
-  text: "Did the reviewer comment on the author’s interpretation of the results?"
-  keyword: interpretation
-  type: binary
--
-  title: Reproducibility
-  text: "Did the reviewer comment on the reproducibility of the results?"
-  keyword: reproducibility
-  type: binary
+
 -
   title: Overall
   text: "How would you rate the quality of this review overall?"
@@ -59,17 +58,17 @@
   type: multi
   options:
     -
-      keyword: "ignored"
+      keyword: "no"
       text: "No, this review was ignored"
     -
-      keyword: "similar"
-      text: "Yes, the meta reviewer makes similar comments"
+      keyword: "maybe"
+      text: "Maybe, the meta review includes comments similar to those in this review"
     -
-      keyword: "disagree"
-      text: "Yes, and the meta reviewer disagrees"
+      keyword: "yes-disagree"
+      text: "Yes, and the meta reviewer refers to or quotes the review and disagrees"
     -
-      keyword: "quote"
-      text: "Yes, and the meta reviewer quotes"
+      keyword: "yes-agree"
+      text: "Yes, and the meta reviewer refers to or quotes the review and agrees"
     -
       keyword: "nota"
       text: "None of the above"
