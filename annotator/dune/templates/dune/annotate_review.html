@@ -1,0 +1,97 @@
+
+
+<html>
+   <head>
+      <title> Alignment Annotation </title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+   </head>
+   <body>
+      {% load static %}
+      <link rel="stylesheet" type="text/css" href="{% static 'dune/dune.css' %}">
+      <div class='lightblue'>
+      <section class="section">
+         <!-- Title section -->
+         <div class="container">
+            <div class="tile is-ancestor">
+               <div class="tile is-parent is-9 white">
+                  <article class="tile is-child white post">
+                     <h2 class="title is-3"> {{ metadata.paper_title }} </h2>
+                     <!-- Navigation -->
+                  </article>
+               </div>
+               <div class="tile is-parent is-3 white">
+                  <!-- Info section -->
+                  <article class="tile is-child white post">
+                     Reviewer: {{ metadata.reviewer }} <br>
+                     Annotator: {{ metadata.initials }} <br>
+                     <a href="https://openreview.net/forum?id={{ metadata.forum_id }}&noteId={{ metadata.rebuttal_id }}"  target="_blank"> Original forum on OpenReview</a> <br>
+                     <a onclick="toggleModal()">See full rebuttal</a>
+                  </article>
+               </div>
+            </div>
+         </div>
+      </section>
+      <section>
+         <div class="container">
+         <div class="tile is-parent white">
+            <article class="tile is-child white post">
+               <table>
+                  {% for sentence in text.review_sentences %}
+                  <tr>
+                     <td style="width:60%">
+                        {{ sentence.text }} <br><br><br>
+                     </td>
+                     <td>
+                        <div class="select" id="arg-{{ forloop.counter0 }}">
+                           <select>
+                              <option> Arg type </option>
+                              {% for arg in arg_types %}
+                              <option> {{ arg }} </option>
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </td>
+                     <td>
+                        <div class="select" id="aspect1-{{ forloop.counter0 }}">
+                           <select>
+                              <option> Aspect </option>
+                              {% for aspect in aspects %}
+                              <option> {{ aspect }} </option>
+                              {% endfor %}
+                           </select>
+                           <br>
+                           <div class="control">
+                              <input type="radio" name="polarity-1-{{forloop.counter0}}" value="-1"> Neg
+                              <input type="radio" name="polarity-1-{{forloop.counter0}}" checked="checked" value="0"> Neu
+                              <input type="radio" name="polarity-1-{{forloop.counter0}}" value="1"> Pos
+                           </div>
+                        </div>
+                     </td>
+                     <td>
+                     <button class="button" id="addAspect-{{ forloop.counter0 }}" onclick="addAspect(this)">Add aspect</button>
+                     <div class="select" id="aspect2-{{ forloop.counter0 }}" style="display:none">
+                     <select>
+                     <option> Aspect </option>
+                     {% for aspect in aspects %}
+                     <option> {{ aspect }} </option>
+                     {% endfor %}
+                     </select>
+                           <br>
+                           <div class="control">
+                              <input type="radio" name="polarity-2-{{forloop.counter0}}" value="-1"> Neg
+                              <input type="radio" name="polarity-2-{{forloop.counter0}}" checked="checked" value="0"> Neu
+                              <input type="radio" name="polarity-2-{{forloop.counter0}}" value="1"> Pos
+                           </div>
+                     </div>
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </table>
+            </article>
+            </div>
+         </div>
+      </section>
+      <script src="{% static 'dune/review.js' %}"></script>
+   </body>
+</html>
+

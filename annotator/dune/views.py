@@ -9,6 +9,10 @@ import collections
 import json
 import yaml
 
+ARG_TYPES = "Evaluative Request Question Fact Non-arg Summary".split()
+ASPECTS = "Motivation/Impact,Originality,Soundness,Substance,Replicability,Meaningful Comp.,Clarity".split(",")
+POLARITIES = "P-Positive U-Neutral N-Negative".split()
+
 def get_labels():
     with open("dune_data/labels.yaml", 'r') as f:
         return yaml.safe_load(f)
@@ -192,4 +196,17 @@ def submitted(request):
                 {"next_sentence_info":next_sentence_info},
                 request))
 
+def annotate_review(request, rebuttal, initials):
 
+    example = Example.objects.get(
+            rebuttal_id=rebuttal,
+            rebuttal_sentence_index=0)
+    review_sentences = get_htmlified_sentences(example.review_id)
+    template = loader.get_template('dune/annotate_review.html')
+    return HttpResponse(
+            template.render(
+                {"text": {"review_sentences": review_sentences},
+                "arg_types": ARG_TYPES,
+                "aspects": ASPECTS,
+                "polarities": POLARITIES},
+                request))
