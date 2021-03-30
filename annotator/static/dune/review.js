@@ -13,3 +13,10 @@ function addAspect(clickedButton) {
 	clickedButton.style="display:none"
 
 }
+
+function addGrounding(clickedButton) {
+	sentence_index = last(clickedButton.id.split("-"))
+	document.getElementById("grounding-" + sentence_index).style="display:block"
+	clickedButton.style="display:none"
+
+}

@@ -11,6 +11,7 @@ import yaml
 
 ARG_TYPES = "Evaluative Request Question Fact Non-arg Summary".split()
 ASPECTS = "Motivation/Impact,Originality,Soundness,Substance,Replicability,Meaningful Comp.,Clarity".split(",")
+GROUNDING = "Whole paper,Method,Analysis,References".split(",")
 POLARITIES = "P-Positive U-Neutral N-Negative".split()
 
 def get_labels():
@@ -209,6 +210,7 @@ def annotate_review(request, rebuttal, initials):
                 "arg_types": ARG_TYPES,
                 "aspects": ASPECTS,
                 "polarities": POLARITIES,
+                "groundings": GROUNDING,
                 "metadata":{
                     "paper_title": example.title,
                     "initials": initials,

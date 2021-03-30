@@ -86,6 +86,17 @@
                            </div>
                      </div>
                      </td>
+                     <td>
+                     <button class="button" id="addGrounding-{{ forloop.counter0 }}" onclick="addGrounding(this)">Add grounding</button>
+                     <div class="select" id="grounding-{{ forloop.counter0 }}" style="display:none">
+                     <select>
+                     <option> Grounding </option>
+                     {% for grounding in groundings %}
+                     <option> {{ grounding }} </option>
+                     {% endfor %}
+                     </select>
+                     </div>
+                     </td>
                   </tr>
                   {% endfor %}
                </table>
