@@ -4,6 +4,7 @@ from dune.models import *
 import json
 import random
 from tqdm import tqdm
+import yaml
 
 random.seed(43)
 
@@ -30,7 +31,7 @@ class Command(BaseCommand):
         annotators_file = options["annotators_file"]
         Annotator.objects.all().delete()
         with open(annotators_file, 'r') as f:
-            obj = json.load(f)
+            obj = yaml.safe_load(f)
             for annotator in obj["annotators"]:
                 ann = Annotator(name=annotator["name"],
                 initials=annotator["initials"])

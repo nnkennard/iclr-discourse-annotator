@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         
-        result = input("Are you sure you want to delete all reviews and repopulate the database? Y/N >")
+        result = input("Are you sure you want to delete all reviews and rebuttals and repopulate the database? Y/N >")
         if not result == "Y":
             return
 
@@ -62,12 +62,11 @@ class Command(BaseCommand):
 
         interleaved_list = ["example_forum"] + interleaved_list
 
-
         for dataset in DATASETS:
             input_file = "".join([
                 options["review_dir"], "/", dataset, ".json"])
             json_obj = self._load_data(input_file)
-            for pair in tqdm(json_obj["review_rebuttal_pairs"]):
+            for pair in tqdm(json_obj["review_rebuttal_pairs"][:50]):
                 enter_pair(pair, dataset, interleaved_list)
 
         with open(options["review_dir"] + "/mini_example.json", 'r') as f:
