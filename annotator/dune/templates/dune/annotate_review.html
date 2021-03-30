@@ -39,7 +39,9 @@
                   {% for sentence in text.review_sentences %}
                   <tr>
                      <td style="width:60%">
-                        {{ sentence.text }} <br><br><br>
+                        <div style="min-height:80px">
+                        {{ sentence.text }}
+                     </div>
                      </td>
                      <td>
                         <div class="select" id="arg-{{ forloop.counter0 }}">

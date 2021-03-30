@@ -208,5 +208,12 @@ def annotate_review(request, rebuttal, initials):
                 {"text": {"review_sentences": review_sentences},
                 "arg_types": ARG_TYPES,
                 "aspects": ASPECTS,
-                "polarities": POLARITIES},
-                request))
+                "polarities": POLARITIES,
+                "metadata":{
+                    "paper_title": example.title,
+                    "initials": initials,
+                    "reviewer": example.reviewer,
+                    "forum_id": example.forum_id,
+                    "rebuttal_id": rebuttal,
+                    "review_id": example.review_id}
+            }, request))
