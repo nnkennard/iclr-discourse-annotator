@@ -110,7 +110,6 @@ def get_likert_labels_in_order(annotation):
         if k == "metareview" or v == "metareview":
             continue
         likert_map[k] = v
-    assert len(likert_map) == 9
     return [likert_map[k] for k in sorted(likert_map.keys())]
 
 def spearman_wrapper(ann1, ann2):
@@ -124,7 +123,8 @@ def get_completed_row(review_id, annotator1, annotator2):
     ann2 = Annotation.objects.filter(review_id=review_id, annotator_initials=annotator2).order_by('-id')[0]
     review = Review.objects.get(review_id=ann1.review_id)
     annotators = ", ".join(sorted([ann1.annotator_initials, ann2.annotator_initials]))
-    spearman = spearman_wrapper(ann1, ann2)
+    #spearman = spearman_wrapper(ann1, ann2)
+    spearman = "n/a"
     return CompletedRow(review.title, review.reviewer, annotators, spearman)._asdict()
 
 

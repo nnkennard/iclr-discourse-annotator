@@ -1,0 +1,89 @@
+{
+  "index": 0,
+  "review_sid": "example_review",
+  "rebuttal_sid": "example_rebuttal",
+  "review_text": {
+    "text": "This is a review. This is the second sentence of the review. This is the final sentence of the review.",
+    "sentences": [
+      {
+        "start_index": 0,
+        "end_index": 17,
+        "suffix": ""
+      },
+      {
+        "start_index": 18,
+        "end_index": 60,
+        "suffix": ""
+      },
+      {
+        "start_index": 61,
+        "end_index": 102,
+        "suffix": ""
+      }
+    ]
+  },
+  "rebuttal_text": {
+    "text": "This is a rebuttal. It contains three sentences. This is one of them.",
+    "sentences": [
+      {
+        "start_index": 0,
+        "end_index": 19,
+        "suffix": ""
+      },
+      {
+        "start_index": 20,
+        "end_index": 48,
+        "suffix": ""
+      },
+      {
+        "start_index": 49,
+        "end_index": 69,
+        "suffix": ""
+      }
+    ]
+  },
+  "title": "An Example Review-Rebuttal Pair for Debugging This Tool",
+  "review_author": "AnonReviewer2",
+  "forum": "example_forum",
+  "labels": {
+    "rating": 10,
+    "confidence": 5
+  },
+  "exact_matches": [
+    {
+      "review_sentence": 0,
+      "rebuttal_sentence": 0,
+      "review_offset": 0,
+      "rebuttal_offset": 0,
+      "size": 10
+    },
+    {
+      "review_sentence": 1,
+      "rebuttal_sentence": 0,
+      "review_offset": 0,
+      "rebuttal_offset": 0,
+      "size": 7
+    },
+    {
+      "review_sentence": 1,
+      "rebuttal_sentence": 2,
+      "review_offset": 0,
+      "rebuttal_offset": 0,
+      "size": 7
+    },
+    {
+      "review_sentence": 2,
+      "rebuttal_sentence": 0,
+      "review_offset": 0,
+      "rebuttal_offset": 0,
+      "size": 7
+    },
+    {
+      "review_sentence": 2,
+      "rebuttal_sentence": 2,
+      "review_offset": 0,
+      "rebuttal_offset": 0,
+      "size": 7
+    }
+  ]
+}

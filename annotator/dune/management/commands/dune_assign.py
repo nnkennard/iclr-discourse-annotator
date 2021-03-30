@@ -41,14 +41,16 @@ class Command(BaseCommand):
         for annotator in Annotator.objects.all():
             assignment = AnnotatorAssignment(
                     rebuttal_id="example_rebuttal",
-                    annotator_initials=annotator.initials)
+                    initials=annotator.initials)
             assignment.save()
 
-        for i in range(1, max_interleaved_index): # This is picking a forum
+        for i in tqdm(range(1, max_interleaved_index)): # This is picking a forum
             examples = Example.objects.all().filter(interleaved_index=i)
             rebuttal_ids = set([example.rebuttal_id for example in examples])
             
             this_forum_annotators = next(ann_gen)
+            if 'NNK' not in this_forum_annotators:
+                this_forum_annotators = list(this_forum_annotators) + ["NNK"]
 
             for rebuttal_id in rebuttal_ids:
                 maybe_examples = Example.objects.all().filter(
@@ -58,7 +60,7 @@ class Command(BaseCommand):
                     for example in maybe_examples:
                         assignment = AnnotatorAssignment(
                                 rebuttal_id=example.rebuttal_id,
-                                annotator_initials=ann
+                                initials=ann
                                 )
                         assignment.save()
         
