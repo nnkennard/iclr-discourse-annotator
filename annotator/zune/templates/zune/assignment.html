@@ -30,7 +30,7 @@
 
          <td> {{ example.review_status }} </td>
 
-         {% if example.status == "Complete" %}
+         {% if example.review_status == "Complete" %}
          <td>  <a href="/zune/ann_rebuttal/{{ annotator.initials }}/{{ example.rebuttal_id }}/0/">
             Rebuttal </a> </td>
          {% else %}

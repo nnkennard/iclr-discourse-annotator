@@ -122,7 +122,7 @@ review_relations:
           - Grounding
   -
     name: "Non-argumentative"
-    subcagetories:
+    subcategories:
       -
         name: Social
       -
@@ -158,6 +158,6 @@ review_relations:
   -
     name: Polarity
     subcategories:
-      - Neg
-      - Neu
-      - Pos
+      - "N-Negative"
+      - "U-Neutral"
+      - "P-Positive"
