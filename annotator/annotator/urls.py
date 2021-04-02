@@ -23,5 +23,6 @@ urlpatterns = [
     #path('tower/', include('tower.urls')),
     path('harbor/', include('harbor.urls')),
     path('dune/', include('dune.urls')),
+    path('zune/', include('zune.urls')),
     path('admin/', admin.site.urls),
 ]

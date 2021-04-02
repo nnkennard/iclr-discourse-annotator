@@ -10,7 +10,7 @@
 
       <h2 class="title is-3"> Hello, {{ annotator.name }}! </h2>
 
-      If you are not {{ annotator.name }}, go to <a href="/dune/">this page</a> to find your assignments. <br> <br>
+      If you are not {{ annotator.name }}, go to <a href="/zune/">this page</a> to find your assignments. <br> <br>
 
       <tr>
          <td> Index </td>
@@ -26,22 +26,18 @@
       {% for example in examples %}
       <tr>
          <td> {{ forloop.counter0 | add:1 }} </td>
-         <td><a href="/dune/annotate_review/{{ annotator.initials }}/{{ example.rebuttal_id }}/"> Review </a></td>
+         <td><a href="/zune/ann_review/{{ annotator.initials }}/{{ example.review_id }}/"> Review </a></td>
+
+         <td> {{ example.review_status }} </td>
 
          {% if example.status == "Complete" %}
-         <td> {{ example.status }} </td>
-         {% else %}
-         <td> <b>{{ example.status }}</b> </td>
-         {% endif %}
-
-         {% if example.status == "Complete" %}
-         <td>  <a href="/dune/annotate/{{ annotator.initials }}/{{ example.rebuttal_id }}/0/">
+         <td>  <a href="/zune/ann_rebuttal/{{ annotator.initials }}/{{ example.rebuttal_id }}/0/">
             Rebuttal </a> </td>
          {% else %}
          <td> <i> Rebuttal </i> </td>
          {% endif %}
 
-         <td> {{ example.num_done }}</td>
+         <td> {{ example.rebuttal_status }}</td>
 
          <td> {{ example.reviewer }} </td>
          <td>

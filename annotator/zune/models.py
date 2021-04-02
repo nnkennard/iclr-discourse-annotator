@@ -1,11 +1,10 @@
 from django.db import models
 
-
-# Data models
+# ===== Example models
 
 class Example(models.Model):
     class Meta:
-        app_label = "dune"
+        app_label = "zune"
 
     dataset = models.CharField(max_length=30)
     example_index = models.IntegerField()
@@ -17,40 +16,23 @@ class Example(models.Model):
     reviewer = models.CharField(max_length=30)
     interleaved_index = models.IntegerField()
 
-    rebuttal_sentence_index = models.IntegerField()
+    num_rebuttal_sentences = models.IntegerField()
 
 
 class Sentence(models.Model):
     class Meta:
-        app_label = "dune"
+        app_label = "zune"
 
     comment_id = models.CharField(max_length=30)
     sentence_idx = models.IntegerField()
     text = models.CharField(max_length=1000)
     suffix = models.CharField(max_length=10)
 
-# Annotator models
+# ===== Annotation models    
 
-class Annotator(models.Model):
+class RebuttalSentenceAnnotation(models.Model):
     class Meta:
-        app_label = "dune"
-        
-    initials = models.CharField(max_length=4)
-    name = models.CharField(max_length=50)
-
-
-class AnnotatorAssignment(models.Model):
-    class Meta:
-        app_label = "dune"
-
-    initials = models.CharField(max_length=4)
-    rebuttal_id = models.CharField(max_length=30)
-
-# Annotation models
-
-class AlignmentAnnotation(models.Model):
-    class Meta:
-        app_label = "dune"
+        app_label = "zune"
 
     rebuttal_id = models.CharField(max_length=30)
     rebuttal_sentence_index = models.IntegerField()
@@ -64,23 +46,46 @@ class AlignmentAnnotation(models.Model):
     alignment_errors = models.CharField(max_length=200)
 
     time_to_annotate = models.IntegerField()
-
+    time_of_submission = models.IntegerField()
 
 
 class ReviewAnnotation(models.Model):
     class Meta:
-        app_label = "dune"
+        app_label = "zune"
 
-    rebuttal_id = models.CharField(max_length=30)
+    review_id = models.CharField(max_length=30)
+    overall_comment = models.CharField(max_length=30)
+    is_valid = models.BooleanField()
+    errors = models.CharField(max_length=200)
     initials = models.CharField(max_length=4)
-    sentence_labels = models.CharField(max_length=200)
+
+    time_to_annotate = models.IntegerField()
+    time_of_submission = models.IntegerField()
 
 
-
-class AlignmentPairAnnotation(models.Model):
+class ReviewSentenceAnnotation(models.Model):
     class Meta:
-        app_label = "dune"
+        app_label = "zune"
 
-    rebuttal_id = models.CharField(max_length=30)
+    review_id = models.CharField(max_length=30)
+    review_sentence_index = models.IntegerField()
     initials = models.CharField(max_length=4)
-    comment = models.CharField(max_length=200)
+    labels = models.CharField(max_length=200)
+
+# ===== Annotator models
+
+class Annotator(models.Model):
+    class Meta:
+        app_label = "zune"
+        
+    initials = models.CharField(max_length=4)
+    name = models.CharField(max_length=50)
+
+
+class AnnotatorAssignment(models.Model):
+    class Meta:
+        app_label = "zune"
+
+    initials = models.CharField(max_length=4)
+    review_id = models.CharField(max_length=30)
+    rebuttal_id = models.CharField(max_length=30)

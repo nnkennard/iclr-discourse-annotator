@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     #'tower.apps.TowerConfig',
     'harbor.apps.HarborConfig',
     'dune.apps.DuneConfig',
+    'zune.apps.ZuneConfig',
+    #'prune.apps.PruneConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
