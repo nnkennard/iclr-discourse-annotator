@@ -46,7 +46,7 @@ class RebuttalSentenceAnnotation(models.Model):
     alignment_errors = models.CharField(max_length=200)
 
     time_to_annotate = models.IntegerField()
-    time_of_submission = models.IntegerField()
+    start_time = models.IntegerField()
 
 
 class ReviewAnnotation(models.Model):
@@ -60,7 +60,7 @@ class ReviewAnnotation(models.Model):
     initials = models.CharField(max_length=4)
 
     time_to_annotate = models.IntegerField()
-    time_of_submission = models.IntegerField()
+    start_time = models.IntegerField()
 
 
 class ReviewSentenceAnnotation(models.Model):

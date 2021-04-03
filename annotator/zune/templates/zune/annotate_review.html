@@ -7,12 +7,12 @@
       {% load static %}
       {{ metadata | json_script:"metadata"}}
       {{ text.review_sentences | length | json_script:"num_review_sentences"}}
+      {{ menu_map | json_script:"menu_map"}}
       <link rel="stylesheet" type="text/css" href="{% static 'zune/zune.css' %}">
       <div class='lightblue'>
       <section class="section">
          <!-- Title section -->
          <div class="container">
-
             <div class="tile is-ancestor">
                <div class="tile is-parent is-9 white">
                   <article class="tile is-child white post">
@@ -23,10 +23,13 @@
                <div class="tile is-parent is-3 white">
                   <!-- Info section -->
                   <article class="tile is-child white post">
-                     Reviewer: {{ metadata.reviewer }} <br>
-                     Annotator: {{ metadata.initials }} <br>
+                     Reviewer: {{ metadata.reviewer }} 
+                     <br>
+                     Annotator: {{ metadata.initials }} 
+                     <br>
                      <a href="https://openreview.net/forum?id={{
-                       metadata.forum_id }}&noteId={{ metadata.review_id }}"  target="_blank"> Original forum on OpenReview</a> <br>
+                        metadata.forum_id }}&noteId={{ metadata.review_id }}"  target="_blank"> Original forum on OpenReview</a>
+                     <br>
                   </article>
                </div>
             </div>
@@ -35,64 +38,118 @@
       {% for sentence in text.review_sentences %}
       <section>
          <div class="container">
-            <div class="tile is-ancestor">
-            <div class="tile is-parent white">
-               <article class="tile is-child white post">
-
-
-                  <table>
-
-
-                     {% for i in '01'|make_list %}
-                     <tr>
+         <div class="tile is-ancestor">
+         <div class="tile is-parent white">
+            <article class="tile is-child white post">
+               <table>
+                  {% for i in '01'|make_list %}
+                  <tr>
+                     {% if i == '0' %}
+                     <td rowspan=2>
+                        {{ forloop.parentloop.counter }}.
+                     </td>
+                     <td style="width:75%" rowspan=2>
+                        <div style="min-height:60px">
+                           {{ sentence.text }}
+                        </div>
+                     </td>
+                     {% endif %}
+                     <td>
+                        <!-- Argument type -->
                         {% if i == '0' %}
-                        <td rowspan=2>
-                           {{ forloop.parentloop.counter }}.
-                        </td>
-                        <td style="width:75%" rowspan=2>
-                           <div style="min-height:60px">
-                              {{ sentence.text }}
-                           </div>
-                        </td>
+                        <div class="select is-small" id="arg-{{i}}-{{ forloop.parentloop.counter0 }}">
+                           {% else %}
+                           <div class="select is-small" style="display:none" id="arg-{{i}}-{{ forloop.parentloop.counter0 }}">
                         {% endif %}
-                        <td>
-                           <!-- Argument type -->
-                           <div class="select is-small">
-                              <select onchange="argChange(this)" id="arg-{{i}}-{{ forloop.parentloop.counter0 }}">
-                                 {% for arg in labels.top %}
+                              <select onchange="argChange(this)" id="arg-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                                 {% for arg in labels.arg %}
                                  <option> {{ arg }} </option>
                                  {% endfor %}
                               </select>
                            </div>
-                        </td>
-                     </tr>
+                           {% if i == '1' %}
+                           <button class="button is-small" onclick="addArg(this)" id='addArgBtn-{{ forloop.parentloop.counter0 }}'> Add argument </button>
+                           {% endif %}
+                     </td>
+                     <td>
+                     <div class="select is-small" id="fine-{{i}}-{{ forloop.parentloop.counter0 }}" style="display:none">
+                     <select id="fine-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                     {% for label in labels.fine %}
+                     <option> {{ label }} </option>
                      {% endfor %}
-
-                  </table>
-               </article>
+                     </select>
+                     </div>
+                     </td>
+                     <td>
+                     <div class="select is-small" id="asp-{{i}}-{{ forloop.parentloop.counter0 }}" style="display:none">
+                     <select id="asp-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                     {% for asp in labels.asp %}
+                     <option> {{ asp }} </option>
+                     {% endfor %}
+                     </select>
+                     </div>
+                     </td>
+                     <td>
+                     <div class="select is-small" id="pol-{{i}}-{{ forloop.parentloop.counter0 }}" style="display:none">
+                     <select id="pol-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                     {% for pol in labels.pol %}
+                     <option> {{ pol }} </option>
+                     {% endfor %}
+                     </select>
+                     </div>
+                     </td>
+                     <td>
+                     <div class="select is-small" id="struc-{{i}}-{{ forloop.parentloop.counter0 }}" style="display:none">
+                     <select id="struc-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                     {% for struc in labels.struc %}
+                     <option> {{ struc }} </option>
+                     {% endfor %}
+                     </select>
+                     </div>
+                     </td>
+                     <td>
+                     {% if i == '0' %}
+                     <div class="select is-small">
+                     {% else %}
+                     <div class="select is-small"  id="gro-{{i}}-{{ forloop.parentloop.counter0 }}" style="display:none">
+                     {% endif %}
+                     <select id="gro-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                     {% for gro in labels.gro %}
+                     <option> {{ gro }} </option>
+                     {% endfor %}
+                     </select>
+                     </div>
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </table>
+            </article>
             </div>
             </div>
          </div>
       </section>
       <br>
+      <br>
       {% endfor %}
       <section class="section">
-         <!-- Title section -->
          <div class="container">
             <div class="tile is-ancestor">
                <div class="tile is-parent is-6 white">
                   <article class="tile is-child white post">
-                      <input class="input" id="comments" type="text" style="width:200px">
-                        <label for="comments"> Overall comments (200 chars) </label> 
-                        &nbsp; <button class="button is-outline" id="validate:all" onclick="validateAll()">Validate</button> <br><br>
+                     <input class="input" id="comments" type="text" style="width:200px">
+                     <label for="comments"> Overall comments (200 chars) </label> 
+                     &nbsp; 
+                     <button class="button is-outline" id="validate:all" onclick="validateAll()">Validate</button>
+                     <br>
+                     <br>
                   </article>
                </div>
                <div class="tile is-parent is-6 white">
                   <article class="tile is-child white post">
-                        <form action="/zune/submitted/" method="post">
-                           {% csrf_token %}
-                           <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
-                        </form>
+                     <form action="/zune/submitted/" method="post">
+                        {% csrf_token %}
+                        <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
+                     </form>
                   </article>
                </div>
             </div>
@@ -101,4 +158,3 @@
       <script src="{% static 'zune/review.js' %}"></script>
    </body>
 </html>
-

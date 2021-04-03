@@ -1,6 +1,9 @@
 --- 
 alignment_errors: 
   -
+    kw: some-align
+    label: "Aligned sentences have been highlighted"
+  -
     kw: cant-determine
     label: "Cannot determine context"
   -
@@ -12,127 +15,22 @@ alignment_errors:
   -
     kw: rebuttal-context
     label: "Context is in rebuttal"
-  -
-    kw: some-align
-    label: "Aligned sentences have been highlighted"
 
-relations: 
-  -
-    name: Answer 
-    color: red2
-    labels: 
-      - 
-        kw: direct
-        label: Direct
-      - 
-        kw: elaborate
-        label: Elaborate
-      - 
-        kw: followup
-        label: "Follow-up question"
-  -
-    name: Change
-    color: yellow
-    labels: 
-      - 
-        kw: already-completed
-        label: "Already completed"
-      - 
-        kw: by-cr
-        label: "Promised by CR"
-      - 
-        kw: no-time-frame
-        label: "Promised, no time frame"
-  -
-    name: Non-compliance
-    color: orange1
-    labels: 
-      - 
-        kw: premise-wrong
-        label: "Premise wrong"
-      - 
-        kw: cant-fix
-        label: "Can't fix"
-      - 
-        kw: already-answered
-        label: "Already answered"
-  -
-    name: Politeness
-    color: blue1
-    labels: 
-      - 
-        kw: thank
-        label: Thanking
-      - 
-        kw: ack
-        label: Acknowledgement
-  -
-    name: Structuring
-    color: green3
-    labels: 
-      - 
-        kw: quote
-        label: Quote
-      - 
-        kw: subheading
-        label: Subheading
-      - 
-        kw: summary
-        label: Summary
-  -
-    name: Error 
-    color: white
-    labels: 
-      - 
-        kw: nota
-        label: "None of the above"
 
-review_relations:
+
+review_categories:
   - 
     name: Argumentative
+    short: arg
     subcategories:
-      - 
-        name: Request
-        subcategories:
-          -
-            name: Task
-            subcategories:
-              - Something
-              - sth
-              - other
-          -
-            name: Text
-            subcategories:
-              - Something
-              - the
-              - other
-        optional_others:
-          - Aspect
-          - Grounding
-      -
-        name: Evaluative
-        required_others:
-          - Aspect
-        optional_others:
-          - Aspect
-          - Grounding
-      -
-        name: Fact
-        optional_others:
-          - Grounding
-  -
-    name: "Non-argumentative"
-    subcategories:
-      -
-        name: Social
-      -
-        name: Structuring
-        subcategories:
-          - Summary
-          - Heading
-          - Quote
+      - Request
+      - Evaluative
+      - Fact
+      - Social
+      - Structuring
   -
     name: Aspect
+    short: asp
     subcategories:
       - Motivation/Impact
       - Originality
@@ -143,6 +41,7 @@ review_relations:
       - Clarity
   -
     name: Grounding
+    short: gro
     subcategories:
       - Introduction
       - Motivation
@@ -157,7 +56,121 @@ review_relations:
       - Other
   -
     name: Polarity
+    short: pol
     subcategories:
       - "N-Negative"
       - "U-Neutral"
       - "P-Positive"
+  -
+    name: Task
+    short: task
+    subcategories:
+      - "something"
+      - "something else"
+      - "another thing"
+  -
+    name: Text
+    short: text
+    subcategories:
+      - "something"
+      - "something else"
+      - "another thing"
+  -
+    name: "Structuring"
+    short: struc
+    subcategories:
+      - Summary
+      - Heading
+      - Quote
+
+rebuttal_relations:
+  -
+    name: Accept
+    subcategories:
+      -
+        name: Evaluative
+        subcategories:
+          - "accept-praise"
+          - "concede-criticism"
+      -
+        name: "Request:Task"
+        subcategories:
+          - "newly-done"
+          - "by-cr"
+          - "future"
+      -
+        name: "Request:Text"
+        subcategories: 
+          - "direct"
+          - "detailed"
+  -
+    name: Reject
+    subcategories:
+      -
+        name: Evaluative
+        subcategories:
+          - "mitigate"
+          - "reject-criticism"
+      -
+        name: "Request:Task"
+        subcategories:
+          - "infeasible"
+          - "invalid"
+      -
+        name: "Request:Text"
+        subcategories:
+          - "refute"
+
+rebuttal_relation_descriptions:
+  "accept-praise": "Accept praise"
+  "concede-criticism": "Concede criticism"
+  "newly-done": "Already done (since submission)"
+  "by-cr": "Promised by camera-ready deadline"
+  "future": "Accepted but left to future work"
+  "direct": "Direct answer"
+  "detailed": "Detailed answer"
+  "mitigate": "Mitigate praise"
+  "reject-criticism": "Disagree with basis of criticism"
+  "done-original": "Already done (in original submission)"
+  "infeasible": "Not feasible"
+  "invalid": "Request is not valid"
+  "refute": "Refute validity of question"
+
+allowed_menus:
+  -
+    name: "Request"
+    required:
+      - "arg"
+      - "fine"
+    allowed:
+      - "asp"
+      - "pol"
+      - "gro"
+  -
+    name: "Evaluative"
+    required:
+      - "arg"
+      - "asp"
+    allowed:
+      - "pol"
+      - "gro"
+  -
+    name: "Fact"
+    required:
+      - "arg"
+    allowed:
+      - "asp"
+      - "gro"
+  -
+    name: "Structuring"
+    required:
+      - "arg"
+      - "struc"
+    allowed:
+      - "gro"
+  -
+    name: "Social"
+    required:
+      - "arg"
+    allowed:
+      - "gro"
