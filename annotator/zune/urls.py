@@ -13,4 +13,5 @@ urlpatterns = [
          name='ann_review'),
     #path('agreement/', views.agreement, name='agreement'),
     path('submitted/', views.submitted, name='submitted'),
+    path('rebuttal_submitted/', views.rebuttal_submitted, name='rebuttal_submitted'),
 ]

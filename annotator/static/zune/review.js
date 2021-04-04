@@ -71,9 +71,13 @@ function validateArgument(sentence_index, argument_index){
             return null
         }
     }
-    for (menu of menu_map[arg_value]["required"] + menu_map[arg_value]["allowed"]){
-        labels[menu] = menu_value
+    for (menu of [].concat(menu_map[arg_value]["required"], menu_map[arg_value]["allowed"])){
+        menu_value = document.getElementById(menu + "-d-" + argument_index + "-" + sentence_index).value
+        if (!menu_value.startsWith("--")) {
+            labels[menu] = menu_value
+        }
     }
+    console.log(labels)
     return labels
 }
 

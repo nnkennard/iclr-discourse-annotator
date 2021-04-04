@@ -120,6 +120,24 @@ rebuttal_relations:
         name: "Request:Text"
         subcategories:
           - "refute"
+  -
+    name: Other
+    subcategories:
+      - 
+        name: Social
+        subcategories:
+          - "politeness"
+      - 
+        name: Structuring
+        subcategories:
+          - "summary"
+          - "subheading"
+      -
+        name: Other
+        subcategories:
+          - "other"
+          - "multiple"
+
 
 rebuttal_relation_descriptions:
   "accept-praise": "Accept praise"
@@ -135,6 +153,11 @@ rebuttal_relation_descriptions:
   "infeasible": "Not feasible"
   "invalid": "Request is not valid"
   "refute": "Refute validity of question"
+  "politeness": "General politeness"
+  "summary": "Summary"
+  "subheading": "Subheading"
+  "other": "Other"
+  "multiple": "Multiple labels apply"
 
 allowed_menus:
   -

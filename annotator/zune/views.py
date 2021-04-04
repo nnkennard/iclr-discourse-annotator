@@ -110,10 +110,18 @@ def format_labels():
     allowed_menus[obj["name"]]["allowed"] = obj["allowed"]
     allowed_menus[obj["name"]]["required"] = obj["required"]
 
-  return label_map, allowed_menus
+  rebuttal_relations = []
+  for obj in LABELS["rebuttal_relations"]:
+    name = obj["name"]
+    for subobj in obj["subcategories"]:
+      for subsub in subobj["subcategories"]:
+        rebuttal_relations.append((name, subobj["name"], subsub,
+          LABELS["rebuttal_relation_descriptions"][subsub]))
+
+  return label_map, allowed_menus, rebuttal_relations
 
 
-FORMATTED_LABELS, ALLOWED_MENUS = format_labels()
+FORMATTED_LABELS, ALLOWED_MENUS, REBUTTAL_RELATIONS = format_labels()
 
 
 def get_annotation_context(initials, rebuttal_id, review_id, index):
@@ -137,7 +145,6 @@ def get_annotation_context(initials, rebuttal_id, review_id, index):
     previous_annotation = maybe_previous_annotation[0].aligned_review_sentences
   else:
     previous_annotation = ""
-
 
   review_annotation_map = {}
 
@@ -166,7 +173,8 @@ def annotate_rebuttal(request, rebuttal, initials, index):
   example = Example.objects.get(rebuttal_id=rebuttal)
   context = get_annotation_context(initials, rebuttal, example.review_id, index)
   context.update({
-      "labels": get_labels(),
+      "alignment_errors": LABELS["alignment_errors"],
+      "labels": REBUTTAL_RELATIONS,
       "form": AnnotationForm(),
       "metadata": {
           "paper_title": example.title,
@@ -222,15 +230,68 @@ def submitted(request):
     )
     review_annotation.save()
 
-    for i, sentence_annotation in enumerate(annotation_obj["labels"]):
+    arg_map = collections.defaultdict(list)
+    for key in annotation_obj["labels"]:
+      sent, arg_no = key.split("-")
+      arg_map[int(sent)].append(int(arg_no))
+
+
+    for sent_index in sorted(arg_map.keys()):
+      assert set(arg_map[sent_index]).issubset(set(range(2)))
+      label_list = [
+        annotation_obj["labels"][str(sent_index) + "-" + str(i)]
+        for i in sorted(arg_map[sent_index])
+      ]
+
       sentence_annotation = ReviewSentenceAnnotation(
           review_id=metadata["review_id"],
-          review_sentence_index=i,
+          review_sentence_index=sent_index,
           initials=metadata["initials"],
-          labels=json.dumps(sentence_annotation))
+          labels=json.dumps(label_list))
       sentence_annotation.save()
 
     template = loader.get_template('zune/submitted.html')
   return HttpResponse(
       template.render({"initials": annotation_obj["metadata"]["initials"]},
+                      request))
+
+def rebuttal_submitted(request):
+  form = AnnotationForm(request.POST)
+  if form.is_valid():
+    annotation_obj = json.loads(form.cleaned_data["annotation"])
+    metadata = annotation_obj["metadata"]
+    print(annotation_obj["relation_label"])
+    annotation = RebuttalSentenceAnnotation(
+        rebuttal_id=metadata["rebuttal_id"],
+        rebuttal_sentence_index=metadata["rebuttal_index"],
+        initials=metadata["initials"],
+        is_valid=True,
+        aligned_review_sentences="|".join(
+          [str(i) for i, j in enumerate(annotation_obj["alignment_labels"]) if j]),
+        relation_label=annotation_obj["relation_label"],
+        comment=annotation_obj["comments"],
+        alignment_errors=annotation_obj["alignment_errors"],
+        time_to_annotate=annotation_obj["time_to_annotate"],
+        start_time=annotation_obj["start_time"],
+    )
+    annotation.save()
+
+    maybe_next_index = annotation_obj["metadata"]["rebuttal_index"] + 1
+    if (maybe_next_index ==
+        annotation_obj["num_rebuttal_sentences"]):
+      next_sentence_info = {"valid":False,
+                "initials":metadata["initials"]}
+    else:
+      next_sentence_info = {
+                "rebuttal_sentence_index":maybe_next_index,
+                "initials":metadata["initials"],
+                "rebuttal_id":metadata["rebuttal_id"],
+                "valid": True}
+
+
+
+    template = loader.get_template('zune/rebuttal_submitted.html')
+  return HttpResponse(
+      template.render({"initials": annotation_obj["metadata"]["initials"],
+          "next_sentence_info":next_sentence_info},
                       request))
