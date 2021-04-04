@@ -135,6 +135,7 @@ rebuttal_relations:
         subcategories:
           - "summary"
           - "subheading"
+          - "quote"
       -
         name: Other
         subcategories:
@@ -161,6 +162,7 @@ rebuttal_relation_descriptions:
   "subheading": "Subheading"
   "other": "Other"
   "multiple": "Multiple labels apply"
+  "quote": "Quote or paraphrase"
 
 allowed_menus:
   -
