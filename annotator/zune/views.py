@@ -4,6 +4,7 @@ from django.template import loader
 
 from .models import *
 from .forms import AnnotationForm
+from .agreement_lib import *
 
 import collections
 import json
@@ -102,8 +103,8 @@ def format_labels():
     label_map[obj["short"]] = ["-- " + obj["name"]] + obj["subcategories"]
 
   label_map["fine"] = sum([["-- Fine"],
-                          ["Task:" + x for x in label_map["task"][1:]],
-                          ["Text:" + x for x in label_map["text"][1:]]], [])
+                          ["Manuscript:" + x for x in label_map["manu"][1:]],
+                          ["Rebuttal:" + x for x in label_map["rebu"][1:]]], [])
 
   allowed_menus = collections.defaultdict(dict)
   for obj in LABELS["allowed_menus"]:
@@ -295,9 +296,9 @@ def rebuttal_submitted(request):
                       request))
 
 def agreement(request):
-  review_annotations = ReviewSentenceAnnotation.objects.all()
-  info = {"baba": len(review_annotations)}
-  template = loader.get_template('zune/rebuttal_submitted.html')
+  label_list = agreement_calculation()
+  info = {"baba": label_list}
+  template = loader.get_template('zune/agreement.html')
   return HttpResponse(
           template.render({"info":info},
                       request))

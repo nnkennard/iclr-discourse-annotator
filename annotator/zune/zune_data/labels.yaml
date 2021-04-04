@@ -64,16 +64,16 @@ review_categories:
       - "U-Neutral"
       - "P-Positive"
   -
-    name: Task
-    short: task
+    name: Manuscript
+    short: manu
     subcategories:
       - Typo
       - Edit
       - Result
       - Experiment
   -
-    name: Text
-    short: text
+    name: Rebuttal
+    short: rebu
     subcategories:
       - "Simple answer"
       - Clarification
@@ -96,13 +96,13 @@ rebuttal_relations:
           - "accept-praise"
           - "concede-criticism"
       -
-        name: "Request:Task"
+        name: "Request:Manuscript"
         subcategories:
           - "newly-done"
           - "by-cr"
           - "future"
       -
-        name: "Request:Text"
+        name: "Request:Rebuttal"
         subcategories: 
           - "direct"
           - "detailed"
@@ -115,12 +115,12 @@ rebuttal_relations:
           - "mitigate"
           - "reject-criticism"
       -
-        name: "Request:Task"
+        name: "Request:Manuscript"
         subcategories:
           - "infeasible"
           - "invalid"
       -
-        name: "Request:Text"
+        name: "Request:Rebuttal"
         subcategories:
           - "refute"
   -
