@@ -65,16 +65,17 @@ review_categories:
     name: Task
     short: task
     subcategories:
-      - "something"
-      - "something else"
-      - "another thing"
+      - Typo
+      - Edit
+      - Result
+      - Experiment
   -
     name: Text
     short: text
     subcategories:
-      - "something"
-      - "something else"
-      - "another thing"
+      - "Simple answer"
+      - Clarification
+      - Explanation
   -
     name: "Structuring"
     short: struc
