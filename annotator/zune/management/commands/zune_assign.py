@@ -43,6 +43,20 @@ class Command(BaseCommand):
                     initials=annotator.initials)
             assignment.save()
 
+            # Janky stuff for pilot
+            for i in range(1, max_interleaved_index):
+                examples = Example.objects.filter(interleaved_index=i)
+                for example in examples:
+                    assignment = AnnotatorAssignment(
+                        rebuttal_id=example.rebuttal_id,
+                        review_id=example.review_id,
+                        initials=annotator.initials)
+                    assignment.save()
+
+        return
+
+
+
         for i in tqdm(range(1, max_interleaved_index)): # This is picking a forum
             examples = Example.objects.all().filter(interleaved_index=i)
             rebuttal_ids = set([example.rebuttal_id for example in examples])

@@ -65,7 +65,7 @@ class Command(BaseCommand):
     for dataset in DATASETS:
       input_file = "".join([options["review_dir"], "/", dataset, ".json"])
       json_obj = self._load_data(input_file)
-      for pair in tqdm(json_obj["review_rebuttal_pairs"][:50]):
+      for pair in tqdm(json_obj["review_rebuttal_pairs"][:5]):
         enter_pair(pair, dataset, interleaved_list)
 
     with open(options["review_dir"] + "/mini_example.json", 'r') as f:
