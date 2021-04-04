@@ -53,7 +53,9 @@ review_categories:
       - Appendices
       - "Paper cited in manuscript"
       - "Paper not cited in manuscript"
+      - "Whole manuscript"
       - Other
+
   -
     name: Polarity
     short: pol

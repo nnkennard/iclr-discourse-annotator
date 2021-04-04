@@ -288,10 +288,18 @@ def rebuttal_submitted(request):
                 "rebuttal_id":metadata["rebuttal_id"],
                 "valid": True}
 
-
-
     template = loader.get_template('zune/rebuttal_submitted.html')
   return HttpResponse(
       template.render({"initials": annotation_obj["metadata"]["initials"],
           "next_sentence_info":next_sentence_info},
                       request))
+
+def agreement(request):
+  review_annotations = ReviewSentenceAnnotation.objects.all()
+  info = {"baba": len(review_annotations)}
+  template = loader.get_template('zune/rebuttal_submitted.html')
+  return HttpResponse(
+          template.render({"info":info},
+                      request))
+
+
