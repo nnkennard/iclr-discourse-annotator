@@ -85,7 +85,6 @@ function validateArgument(sentence_index, argument_index){
             labels[menu] = menu_value
         }
     }
-    console.log(labels)
     return labels
 }
 

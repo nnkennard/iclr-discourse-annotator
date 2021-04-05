@@ -89,8 +89,9 @@
                         <center>
                         <div class="select">
                            <select id="label:select" onchange="relSelectChange(this)">
+                              <option> Please select a relation </option>
                               {% for item in labels %}
-                              <option> {{ item.2 }}</option>
+                              <option> {{ item.2 }} </option>
                               {% endfor %}
                            </select>
                         </div>

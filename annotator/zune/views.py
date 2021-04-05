@@ -45,11 +45,12 @@ def make_presentation_example(assignment):
     review_status = "Complete"
   else:
     review_status = "Not completed"
-
-  rebuttal_annotations = RebuttalSentenceAnnotation.objects.filter(
+  
+  num_completed = len(set(x["rebuttal_sentence_index"]
+                      for x in RebuttalSentenceAnnotation.objects.filter(
       rebuttal_id=assignment.rebuttal_id,
       initials=assignment.initials).order_by("id").values(
-          "rebuttal_sentence_index").distinct()
+          "rebuttal_sentence_index")))
 
   return {
       "reviewer":
@@ -58,7 +59,7 @@ def make_presentation_example(assignment):
           review_status,
       "rebuttal_status":
           " / ".join([
-              str(len(rebuttal_annotations)),
+              str(num_completed),
               str(example.num_rebuttal_sentences),
           ]),
       "title":
