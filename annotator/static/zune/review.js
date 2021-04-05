@@ -33,6 +33,14 @@ function concealItem(original_dropdown, key){
     document.getElementById(original_dropdown.id.replace("arg-d", key)).style="display:none"
 }
 
+
+function strucChange(dropdown){
+    if (dropdown.value == "Summary") {
+        document.getElementById(dropdown.id.replace("struc", "gro")).value = "Whole manuscript"
+    }
+}
+
+
 menu_map = getJsonified("menu_map")
 all_menus = ["arg", "asp", "pol", "gro", "fine", "struc"]
 full_menu_name_map = {

@@ -149,7 +149,6 @@ TAG_TYPE_MAP = {
 
 function getReviewLabelTags(review_index) {
     tags = ""
-    console.log(other_annotations.review_annotations[review_index])
     for (argx of other_annotations.review_annotations[review_index]) {
         for (category in argx) {
             label = argx[category]
@@ -188,6 +187,9 @@ function copyPrevious() {
     for (i in highlighted) {
         updateHighlight(i)
     }
+    elementToChange = document.getElementById("label:radios:" + other_annotations.previous_label)
+    elementToChange.checked = true;
+    relRadioChange(elementToChange)
     populatePreviewBox()
 }
 
@@ -218,7 +220,6 @@ function relRadioChange(changed_radio){
 function relSelectChange(sel_element){
     document.getElementById("label:radios:" + sel_element.value).checked = "true"
 }
-
 
 window.addEventListener('beforeunload', function(e) {
     if (CURRENT_STATUS == "STARTED") {

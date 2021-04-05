@@ -144,8 +144,10 @@ def get_annotation_context(initials, rebuttal_id, review_id, index):
       rebuttal_sentence_index=index - 1).order_by("-id")
   if maybe_previous_annotation:
     previous_annotation = maybe_previous_annotation[0].aligned_review_sentences
+    previous_label = maybe_previous_annotation[0].relation_label
   else:
     previous_annotation = ""
+    previous_label = ""
 
   review_annotation_map = {}
 
@@ -164,6 +166,7 @@ def get_annotation_context(initials, rebuttal_id, review_id, index):
       },
       "other_annotations": {
           "statuses": statuses,
+          "previous_label": previous_label,
           "previous_alignment": previous_annotation,
           "review_annotations": review_annotations
       }

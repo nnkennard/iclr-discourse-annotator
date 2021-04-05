@@ -99,7 +99,7 @@
                      </td>
                      <td>
                      <div class="select is-small" id="struc-{{i}}-{{ forloop.parentloop.counter0 }}" style="display:none">
-                     <select id="struc-d-{{i}}-{{ forloop.parentloop.counter0 }}">
+                     <select id="struc-d-{{i}}-{{ forloop.parentloop.counter0 }}" onchange="strucChange(this)">
                      {% for struc in labels.struc %}
                      <option> {{ struc }} </option>
                      {% endfor %}
