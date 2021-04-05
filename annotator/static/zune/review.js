@@ -1,5 +1,5 @@
 document.getElementById("submitBtn").disabled = "true"
-
+document.getElementById("tok_merge_prev_0").disabled = "true"
 function getJsonified(label) {
     return JSON.parse(document.getElementById(label).textContent)
 }
@@ -97,11 +97,20 @@ function tokenErrorClicked(clickedButton){
     }
     for (bla of ["0", "1"]){
         for (menu of all_menus){
-            document.getElementById(menu+"-d-"+bla+"-"+sentence_index).style=new_style
+            element = document.getElementById(menu+"-d-"+bla+"-"+sentence_index)
+            if (clickedButton.checked){
+                element.disabled = "true"
+            } else {
+                element.removeAttribute("disabled")
+            }
         }
     }
-    document.getElementById("addArgBtn-"+sentence_index).style=new_style
-
+    argBtn = document.getElementById("addArgBtn-"+sentence_index)
+    if (clickedButton.checked){
+                argBtn.disabled = "true"
+            } else {
+                argBtn.removeAttribute("disabled")
+            }
 }
 
 function validateAll() {
@@ -118,8 +127,11 @@ function validateAll() {
                     all_labels[i.toString() + "-" + bla] = res
                 }
             } else if (bla == "0"){
-                alert("Please enter an argument value for sentence " + (i + 1).toString())
+                console.log(document.getElementById("tok_merge_prev_" + i.toString()))
+                if (!(document.getElementById("tok_merge_prev_" + i.toString()).checked)){
+                  alert("Please enter an argument value for sentence " + i.toString())
                 return
+                }
             }
         }
     }
