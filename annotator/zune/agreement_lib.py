@@ -86,25 +86,11 @@ def get_jaccard():
               get_label_list(reb_id, idx, anns[1]),
               ))
     return maybe_avg(jaccard_list)
-      
-
-
-def rebuttal_link_agreement():
-  pairs_to_consider = get_rebuttal_annotation_pairs()
-  values_1, values_2 = [], []
-  for (reb_id, idx), annotators in pairs_to_consider.items():
-      if len(annotators) < 2:
-          continue
-      else:
-          anns = annotators[:2]
-      values_1.append(get_rebuttal_label(reb_id, idx, anns[0]))
-      values_2.append(get_rebuttal_label(reb_id, idx, anns[1]))
-  return cohen_kappa_score(values_1, values_2)
 
 def agreement_calculation():
     review_label_list, agreers = review_label_agreement()
     rebuttal_label_kappa = rebuttal_label_agreement()
-    rebuttal_link_agreement_val = rebuttal_link_agreement()
+    rebuttal_link_agreement_val = get_jaccard()
 
     return (arg_agreement(review_label_list), agreers, rebuttal_label_kappa,
             rebuttal_link_agreement_val)
