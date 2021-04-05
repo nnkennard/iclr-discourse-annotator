@@ -88,6 +88,22 @@ function validateArgument(sentence_index, argument_index){
     return labels
 }
 
+function tokenErrorClicked(clickedButton){
+    sentence_index = last(clickedButton.id.split("_"))
+    if (clickedButton.checked){
+        new_style="display:none"
+    } else {
+        new_style="display:block"
+    }
+    for (bla of ["0", "1"]){
+        for (menu of all_menus){
+            document.getElementById(menu+"-d-"+bla+"-"+sentence_index).style=new_style
+        }
+    }
+    document.getElementById("addArgBtn-"+sentence_index).style=new_style
+
+}
+
 function validateAll() {
     all_labels = {}
     arguments_to_validate = Array()

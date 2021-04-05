@@ -47,11 +47,15 @@
                      <td rowspan=2>
                         {{ forloop.parentloop.counter0 }}.
                      </td>
-                     <td style="width:75%" rowspan=2>
-                        <div style="min-height:60px">
+                     <td style="width:75%">
+                        <div>
                            {{ sentence.text }}
                         </div>
                      </td>
+                     {% else %}
+                     <td>
+                     <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="tokenErrorClicked(this)"> <small>Tokenization error (merge with previous 'sentence') </small>                 
+                      </td>
                      {% endif %}
                      <td>
                         <!-- Argument type -->
