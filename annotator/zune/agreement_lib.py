@@ -64,7 +64,7 @@ def rebuttal_label_agreement():
 
 def get_label_list(reb_id, idx, annotator):
     return get_latest_annotation(reb_id, idx,
-            annotator).aligned_review_sentences().split("|")
+            annotator).aligned_review_sentences.split("|")
 
 def jaccard(l1, l2):
     if not l1 and not l2:
