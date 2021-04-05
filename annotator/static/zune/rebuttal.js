@@ -100,11 +100,20 @@ function getLabel(){
             labels[radio_button.name] = radio_button.value;
         }
     }
-    return labels["label:radios"]
+    if ("label:radios" in labels){
+        return labels["label:radios"]
+    } else {
+        return null;
+    }
 }
 
 function validateAll() {
 
+    relation_label = getLabel();
+    if (relation_label === null){
+        window.alert("Please select a relation label. If none applies, please select 'Other'.")
+        return
+    }
     if (isSentencesAreAlignedChecked() && !someHighlighted()) {
         window.alert("You have indicated that sentences are highlighted, but none are highlighted. Please fix.")
     } else if (!isSentencesAreAlignedChecked() && someHighlighted()) {
@@ -116,7 +125,7 @@ function validateAll() {
         result = {
             "alignment_labels": highlighted,
             "alignment_errors": document.getElementById("errors").value,
-            "relation_label": getLabel(),
+            "relation_label": relation_label,
             "comments": document.getElementById("comments").value,
             "metadata": metadata,
             "num_rebuttal_sentences": num_rebuttal_sentences,
@@ -124,7 +133,6 @@ function validateAll() {
             "start_time": start_time,
         }
         document.getElementById("id_annotation").value = JSON.stringify(result)
-        alert("Good to go! Please review then submit")
         CURRENT_STATUS = "VALIDATED"
     }
 }
@@ -201,6 +209,14 @@ function updateHighlight(review_index) {
     } else {
         sentence_element.style = ""
     }
+}
+
+function relRadioChange(changed_radio){
+    document.getElementById("label:select").value = changed_radio.value;
+}
+
+function relSelectChange(sel_element){
+    document.getElementById("label:radios:" + sel_element.value).checked = "true"
 }
 
 

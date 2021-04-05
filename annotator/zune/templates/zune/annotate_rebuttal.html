@@ -85,7 +85,17 @@
                         <br>
                         <br>
                         Please describe the relation between this rebuttal sentence and its context: <br><br>
-                        
+
+                        <center>
+                        <div class="select">
+                           <select id="label:select" onchange="relSelectChange(this)">
+                              {% for item in labels %}
+                              <option> {{ item.2 }}</option>
+                              {% endfor %}
+                           </select>
+                        </div>
+                        </center>
+                        <br> <br>
                         <table>
                         {% for item in labels %}
                         <tr>
@@ -95,7 +105,7 @@
                               <input type="radio" class="radio" 
                                     name="label:radios"
                                     id="label:radios:{{item.2}}"
-                                    value="{{item.2}}">
+                                    value="{{item.2}}" onclick="relRadioChange(this)">
                            </td>
                            <td>{{item.3}}</td>
                         </tr>
