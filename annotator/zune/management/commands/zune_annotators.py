@@ -29,7 +29,7 @@ class Command(BaseCommand):
       return
 
     annotators_file = options["annotators_file"]
-    Annotator.objects.all().delete()
+    #Annotator.objects.all().delete()
     with open(annotators_file, 'r') as f:
       obj = yaml.safe_load(f)
       for annotator in obj["annotators"]:

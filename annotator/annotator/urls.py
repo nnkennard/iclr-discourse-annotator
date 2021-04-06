@@ -26,3 +26,9 @@ urlpatterns = [
     path('zune/', include('zune.urls')),
     path('admin/', admin.site.urls),
 ]
+
+
+urlpatterns += [
+    path('accounts/', include('django.contrib.auth.urls')),
+]
+
