@@ -90,11 +90,6 @@ function validateArgument(sentence_index, argument_index){
 
 function tokenErrorClicked(clickedButton){
     sentence_index = last(clickedButton.id.split("_"))
-    if (clickedButton.checked){
-        new_style="display:none"
-    } else {
-        new_style="display:block"
-    }
     for (bla of ["0", "1"]){
         for (menu of all_menus){
             element = document.getElementById(menu+"-d-"+bla+"-"+sentence_index)
@@ -128,7 +123,14 @@ function validateAll() {
                 }
             } else if (bla == "0"){
                 console.log(document.getElementById("tok_merge_prev_" + i.toString()))
-                if (!(document.getElementById("tok_merge_prev_" + i.toString()).checked)){
+                if (document.getElementById("tok_merge_prev_" + i.toString()).checked){
+                    all_labels[i.toString() + "-0"] = all_labels[(i-1).toString() + "-0"]
+                    key_1 = (i-1).toString() + "-1"
+                    if (key_1 in all_labels){
+                        all_labels[i.toString+"-1"] = all_labels[key_1]
+                    }
+
+                } else {
                   alert("Please enter an argument value for sentence " + i.toString())
                 return
                 }
