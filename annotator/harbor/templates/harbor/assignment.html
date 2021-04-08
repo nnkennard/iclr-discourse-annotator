@@ -8,6 +8,7 @@
    <table class="table">
       <tr>
          <td> Index </td>
+         <td> Conference </td>
          <td> Status </td>
          <td> Reviewer </td>
          <td> Title </td>
@@ -16,6 +17,8 @@
       <tr>
          <td> {{ forloop.counter0 | add:1 }} </td>
 
+         <td> {{example.conference}} </td>
+
          {% if example.status == "Completed" %}
          <td> {{ example.status }} </td>
          {% else %}
@@ -23,7 +26,7 @@
          {% endif %}
 
          <td> {{example.reviewer}} </td>
-         <td><a href="/harbor/annotate/{{ annotator.initials }}/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
+         <td>  <a href="/harbor/annotate/{{ annotator.initials }}/{{ example.review_sid }}/{{ example.rebuttal_sid }}">
             {{ example.title}}</a>
          </td>
       </tr>

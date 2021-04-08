@@ -9,15 +9,21 @@
       <tr>
          <td> Annotator </td>
          <td> Initials </td>
-         <td> Link </td>
+
+         {% for conference in conferences %}
+         <td> {{conference}} </td>
+         {% endfor %}
       </tr>
       {% for annotator in annotators %}
       <tr>
          <td> {{ annotator.name }} </td>
          <td> {{ annotator.initials }} </td>
-         <td><a href="/harbor/assignments/{{ annotator.initials }}">
-            Link</a>
+         {% for conference in conferences %}
+         <td> 
+           <a href="/harbor/assignments/{{ annotator.initials }}/{{ conference }}/">
+             {{conference}} </a>
          </td>
+         {% endfor %}
       </tr>
       </li>
       {% endfor %}

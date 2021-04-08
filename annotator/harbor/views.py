@@ -19,11 +19,12 @@ def get_questions():
 
 def index(request):
     template = loader.get_template('harbor/index.html')
-    context = {"annotators": Annotator.objects.all()}
+    conferences = sorted(set(x.conference for x in Review.objects.all()))
+    context = {"annotators": Annotator.objects.all(), "conferences":conferences}
     return HttpResponse(template.render(context, request))
 
 
-def assignments(request, annotator_initials):
+def assignments(request, annotator_initials, conference):
     name = Annotator.objects.get(initials=annotator_initials).name
     assignment_list = Assignment.objects.filter(
             annotator_initials=annotator_initials).order_by("review_id")
@@ -32,17 +33,19 @@ def assignments(request, annotator_initials):
     for assignment in assignment_list:
         review = Review.objects.get(
             review_id=assignment.review_id)
-        maybe_done = Annotation.objects.filter(
-        review_id=review.review_id,
-        annotator_initials=annotator_initials)
-        if maybe_done:
-            is_done = "Completed"
-        else:
-            is_done = "Incomplete"
-        examples.append({"reviewer": review.reviewer,
-                        "title": review.title,
-                        "review_sid": review.review_id,
-                         "status": is_done})
+        if review.conference == conference:
+            maybe_done = Annotation.objects.filter(
+            review_id=review.review_id,
+            annotator_initials=annotator_initials)
+            if maybe_done:
+                is_done = "Completed"
+            else:
+                is_done = "Incomplete"
+            examples.append({"reviewer": review.reviewer,
+                            "title": review.title,
+                            "conference": review.conference,
+                            "review_sid": review.review_id,
+                             "status": is_done})
     annotator = {
             "name": name,
             "initials": annotator_initials

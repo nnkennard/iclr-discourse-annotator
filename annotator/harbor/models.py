@@ -22,6 +22,7 @@ class Review(models.Model):
     class Meta:
         app_label = "harbor"
 
+    conference = models.CharField(max_length=30)
     review_id = models.CharField(max_length=30)
     reviewer = models.CharField(max_length=30)
     forum = models.CharField(max_length=30)
