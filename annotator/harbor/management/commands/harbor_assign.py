@@ -20,8 +20,6 @@ class Command(BaseCommand):
             return
 
         Assignment.objects.all().delete()
-        print(Review.objects.all())
-        print(Annotator.objects.all())
 
         for review in Review.objects.all():
             for annotator in Annotator.objects.all():

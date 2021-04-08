@@ -78,6 +78,14 @@ def annotate(request, review_id, annotator_initials):
             review_id=review_id).order_by('chunk_index')) 
 
     name = Annotator.objects.get(initials=annotator_initials).name
+    if review.forum_url:
+        forum_url = review.forum_url
+    else:
+        forum_url =  "".join([
+        "https://openreview.net/forum?id=",
+        review.forum,
+        "&noteId=", review.review_id,
+        ' target="blank"'])
 
     form = AnnotationForm()
     context = {
@@ -86,6 +94,7 @@ def annotate(request, review_id, annotator_initials):
             "forum": review.forum,
             "review_id": review.review_id,
             "review_text": review_sentences,
+            "forum_url": forum_url,
             "questions": get_questions(),
             "form": form,
             "annotator":{"name": name, "initials": annotator_initials}

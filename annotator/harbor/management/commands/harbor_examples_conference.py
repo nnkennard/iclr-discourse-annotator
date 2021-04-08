@@ -31,11 +31,16 @@ class Command(BaseCommand):
             title = pair["title"]
             if title is None:
                 title = "No title"
+            if 'forum_url' in pair:
+                forum_link = pair["forum_url"]
+            else:
+                forum_link = ""
             review=Review(
                 conference=options["conference"],
                 review_id=pair["review_sid"],
                 reviewer=pair["review_author"],
                 forum=pair["forum"],
+                forum_url=forum_link,
                 title=title,
             )
             review.save()

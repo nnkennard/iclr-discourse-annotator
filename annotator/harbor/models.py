@@ -27,6 +27,7 @@ class Review(models.Model):
     reviewer = models.CharField(max_length=30)
     forum = models.CharField(max_length=30)
     title = models.CharField(max_length=300)
+    forum_url = models.CharField(max_length=300)
 
 
 class Annotation(models.Model):
