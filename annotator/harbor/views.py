@@ -23,6 +23,12 @@ def index(request):
     context = {"annotators": Annotator.objects.all(), "conferences":conferences}
     return HttpResponse(template.render(context, request))
 
+def old_assignments(request, annotator_initials):
+    return HttpResponse("""
+    Please return to <a href="http://161.35.142.56:8000/harbor/">
+    http://161.35.142.56:8000/harbor/ </a> and make a selection based on
+    conference""")
+ 
 
 def assignments(request, annotator_initials, conference):
     name = Annotator.objects.get(initials=annotator_initials).name
