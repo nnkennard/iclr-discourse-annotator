@@ -1,0 +1,35 @@
+---
+annotators:
+- name: Akhilesh
+  initials: MAD
+- name: Ankita
+  initials: AN
+- name: Aparna
+  initials: AV
+- name: Jahnavi
+  initials: JT
+- name: Komal
+  initials: KG
+- name: Lakshya
+  initials: LA
+- name: Mayur
+  initials: MS
+- name: Ruturaj
+  initials: RG
+- name: Siddhartha
+  initials: SM
+- name: Somin
+  initials: SW
+staff:
+- name: Neha
+  initials: NNK
+- name: Tim
+  initials: TJO
+- name: Pranay
+  initials: PKY
+- name: Matthew
+  initials: MC
+- name: Chhandak
+  initials: CB
+- name: Akshay
+  initials: AS

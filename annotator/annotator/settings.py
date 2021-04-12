@@ -31,13 +31,8 @@ ALLOWED_HOSTS = ["161.35.142.56", "localhost", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-    #'align_label.apps.AlignLabelConfig',
-    #'review_quality.apps.ReviewQualityConfig',
-    #'tower.apps.TowerConfig',
     'harbor.apps.HarborConfig',
-    'dune.apps.DuneConfig',
-    'zune.apps.ZuneConfig',
-    #'prune.apps.PruneConfig',
+    'orda.apps.OrdaConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
