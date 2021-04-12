@@ -47,7 +47,7 @@ review_categories:
       - "U-Neutral"
       - "P-Positive"
   -
-    name: Request
+    name: "Request type"
     short: req
     subcategories:
       - Typo
@@ -57,67 +57,12 @@ review_categories:
       - Clarification
       - Explanation
   -
-    name: "Structuring"
+    name: "Structuring type"
     short: struc
     subcategories:
       - Summary
       - Heading
       - Quote
-
-rebuttal_relations:
-  -
-    category: Maybe-arg
-    relations:
-      - done
-      - by-cr
-  -
-    category: Accept
-    relations:
-      - answer
-      - future
-      - accept-praise
-      - concede-criticism
-  -
-    category: Reject
-    relations:
-      - refute-question
-      - reject-request
-      - contradict-assertion
-      - reject-criticism
-      - mitigate-praise
-      - mitigate-criticism
-  -
-    category: Non-arg
-    relations:
-      - structuring
-      - social
-      - summary
-  -
-    category: Error
-    relations:
-      - multiple
-      - other
-
-
-
-rebuttal_relation_descriptions:
-  done: "Task done"
-  by-cr: "Task will be done"
-  answer: "Answer"
-  future: "Accept for future work"
-  accept-praise: "Accept praise"
-  concede-criticism: "Concede criticism"
-  refute-question: "Refute question"
-  reject-request: "Reject request"
-  contradict-assertion: "Contradict assertion"
-  reject-criticism: "Reject criticism"
-  mitigate-praise: "Mitigate praise"
-  mitigate-criticism: "Mitigate criticism"
-  structuring: "Structuring"
-  social: "Social"
-  summary: "Summary"
-  multiple: " Multiple"
-  other: "Other"
 
 allowed_menus: # Arg is required for all
   -
@@ -146,3 +91,92 @@ allowed_menus: # Arg is required for all
     name: "Social"
     required:
     allowed:
+
+rebuttal_relations:
+  - 
+    key: done
+    description: "Task done"
+    category: Maybe-arg
+    followup: manu-edit
+  - 
+    key: by-cr
+    description: "Task will be done"
+    category: Maybe-arg
+    followup: manu-edit
+  - 
+    key: answer
+    description: "Answer"
+    category: Accept
+    followup:
+  - 
+    key: future
+    description: "Accept for future work"
+    category: Accept
+    followup:
+  - 
+    key: accept-praise
+    description: "Accept praise"
+    category: Accept
+    followup:
+  - 
+    key: concede-criticism
+    description: "Concede criticism"
+    category: 
+    followup:
+  - 
+    key: refute-question
+    description: "Refute question"
+    category: Reject
+    followup:
+  - 
+    key: reject-request
+    description: "Reject request"
+    category:
+    followup:
+  - 
+    key:  contradict-assertion
+    description: "Contradict assertion"
+    category: Reject
+    followup:
+  - 
+    key: reject-criticism
+    description: "Reject criticism"
+    category: Reject
+    followup:
+  - 
+    key: mitigate-praise
+    description: "Mitigate praise" 
+    category: Reject
+    followup:
+  - 
+    key: mitigate-criticism
+    description: "Mitigate criticism"
+    category: Reject
+    followup:
+  - 
+    key: structuring
+    description: "Structuring"
+    category: Non-arg
+    followup:
+  - 
+    key: social
+    description: "Social"
+    category: Non-arg
+    followup:
+  - 
+    key: summary
+    description: "Summary"
+    category: Non-arg
+    followup:
+  - 
+    key: multiple
+    description: "Multiple"
+    category: Error
+    followup:
+  - 
+    key: other
+    description: "Other"
+    category: Error
+    followup:
+
+

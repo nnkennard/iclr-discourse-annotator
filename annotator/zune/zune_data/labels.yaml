@@ -16,6 +16,13 @@ alignment_errors:
     kw: rebuttal-context
     label: "Context is in rebuttal"
 
+processing_errors:
+  -
+    kw: tok-merge-previous
+    label: "Should be merged with previous sentence"
+  -
+    kw: cant-determine
+    label: "Cannot determine context"
 
 
 review_categories:

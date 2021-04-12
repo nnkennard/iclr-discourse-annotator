@@ -39,6 +39,12 @@ class Command(BaseCommand):
     for i in tqdm(range(1, max_interleaved_index + 1)):
       this_forum_annotators = next(ann_gen)
       for example in Example.objects.all().filter(interleaved_index=i):
+        num_rebuttal_sentences = len(
+                Sentence.objects.all().filter(comment_id=example.rebuttal_id))
         for ann in this_forum_annotators:
-          assignment = AnnotatorAssignment(example=example, initials=ann)
+          assignment = AnnotatorAssignment(
+                  example=example, initials=ann,
+                  num_rebuttal_sentences=num_rebuttal_sentences,
+                  num_completed_sentences=0, is_review_complete=False,
+                  is_review_valid=False)
           assignment.save()

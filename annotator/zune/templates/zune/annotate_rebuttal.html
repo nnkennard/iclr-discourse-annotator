@@ -59,8 +59,13 @@
                         For the rebuttal sentence highlighted below: <br> <br>
                         <div class="box" >
                            <span id="rebuttalbox:{{forloop.counter0 }}">
-                           {{ text.rebuttal_sentence.text}}</span>
+                           {{ text.rebuttal_sentence.text }}</span>
                         </div>
+
+                        <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="standardTokenizationError(this)"> <small>Standard tokenization error (merge with previous 'sentence') </small>
+                        <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="egregiousTokenizationError(this)"> <small>Egregious tokenization error (merge with previous 'sentence') </small>
+                        <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="outOfOrder(this)"> <small>Sentences out of order </small>
+
                         <table>
                            <tr>
                               <td>Please click to highlight the review sentences that form the context for the current rebuttal sentence.</td>

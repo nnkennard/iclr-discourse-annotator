@@ -221,6 +221,31 @@ function relSelectChange(sel_element){
     document.getElementById("label:radios:" + sel_element.value).checked = "true"
 }
 
+function flipAllControls(clickedElement){
+    sentence_index = last(clickedButton.id.split("_"))
+    if (clickedButton.checked){
+        new_style="display:none"
+    } else {
+        new_style="display:block"
+    }
+    for (bla of ["0", "1"]){
+        for (menu of all_menus){
+            element = document.getElementById(menu+"-d-"+bla+"-"+sentence_index)
+            if (clickedButton.checked){
+                element.disabled = "true"
+            } else {
+                element.removeAttribute("disabled")
+            }
+        }
+    }
+    argBtn = document.getElementById("addArgBtn-"+sentence_index)
+    if (clickedButton.checked){
+                argBtn.disabled = "true"
+            } else {
+                argBtn.removeAttribute("disabled")
+            }
+}
+
 window.addEventListener('beforeunload', function(e) {
     if (CURRENT_STATUS == "STARTED") {
         e.preventDefault(); //per the standard

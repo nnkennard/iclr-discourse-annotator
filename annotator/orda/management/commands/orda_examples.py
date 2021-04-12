@@ -17,8 +17,8 @@ def enter_pair(pair, dataset, interleaved_list):
       rebuttal_id=pair["rebuttal_sid"],
       title=pair["title"],
       reviewer=pair["review_author"],
-      num_rebuttal_sentences=len(pair["rebuttal_text"]["sentences"]),
       interleaved_index=interleaved_index,
+      num_rebuttal_sentences=len(pair["rebuttal_text"]["sentences"]),
   )
   example.save()
 
@@ -29,7 +29,7 @@ def enter_pair(pair, dataset, interleaved_list):
       sentence_text = text[
           sentence_info["start_index"]:sentence_info["end_index"]]
       sentence = Sentence(comment_id=pair[review_or_rebuttal + "_sid"],
-                          sentence_idx=i,
+                          sentence_index=i,
                           text=sentence_text,
                           suffix=sentence_info["suffix"])
       sentence.save()
@@ -63,8 +63,10 @@ class Command(BaseCommand):
     interleaved_list = ["example_forum"] + interleaved_list
 
     for dataset in DATASETS:
+      print("".join([options["review_dir"], "/", dataset, ".json"]))
       input_file = "".join([options["review_dir"], "/", dataset, ".json"])
       json_obj = self._load_data(input_file)
+      print(len(json_obj["review_rebuttal_pairs"]))
       for pair in tqdm(json_obj["review_rebuttal_pairs"]):
         enter_pair(pair, dataset, interleaved_list)
 
