@@ -93,7 +93,7 @@ function checkNeedsExplanationButDoesntHave() {
 }
 
 function checkNeedsSubtypeButDoesntHave(label) {
-    if (label.startsWith("done") || label.startsWith("by_cr") || label.startsWith("reject-request") ){
+    if (label.startsWith("done") || label.startsWith("by-cr") || label.startsWith("reject-request") ){
         if (!label.includes("_")){
             window.alert("Please select the subtype for the selected relation label")
             return 0
