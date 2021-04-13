@@ -12,7 +12,8 @@ import json
 
 def index(request):
   template = loader.get_template('orda/index.html')
-  context = {"annotators": Annotator.objects.all()}
+  context = {"annotators": Annotator.objects.filter(is_staff=False),
+  "staff":Annotator.objects.filter(is_staff=True)}
   return HttpResponse(template.render(context, request))
 
 

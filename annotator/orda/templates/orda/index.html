@@ -32,6 +32,23 @@
                      </li>
                      {% endfor %}
                   </table>
+                  <table class="table">
+                     <tr>
+                        <td> Staff </td>
+                        <td> Initials </td>
+                        <td> Link </td>
+                     </tr>
+                     {% for staff_member in staff %}
+                     <tr>
+                        <td> {{ staff_member.name }} </td>
+                        <td> {{ staff_member.initials }} </td>
+                        <td><a href="/orda/assignments/{{ annotator.initials }}">
+                           Link</a>
+                        </td>
+                     </tr>
+                     </li>
+                     {% endfor %}
+                  </table>
                </center>
             </div>
          </div>

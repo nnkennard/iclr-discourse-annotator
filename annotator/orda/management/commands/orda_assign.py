@@ -29,7 +29,7 @@ class Command(BaseCommand):
     if not result == "Y":
       return
 
-    #AnnotatorAssignment.objects.all().delete()
+    AnnotatorAssignment.objects.all().delete()
     for ann in Annotator.objects.filter():
        assignment = AnnotatorAssignment(
                   example=Example.objects.get(interleaved_index=0),
@@ -46,7 +46,7 @@ class Command(BaseCommand):
         for i in Example.objects.all().values("interleaved_index"))
 
     # This is picking a forum
-    for i in tqdm(range(1, max_interleaved_index + 1)):
+    for i in tqdm(range(40, max_interleaved_index + 1)):
       this_forum_annotators = next(ann_gen)
       for example in Example.objects.all().filter(interleaved_index=i):
         num_rebuttal_sentences = len(
