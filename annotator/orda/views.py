@@ -71,7 +71,7 @@ def review_submitted(request):
         review_id=rev_ann_info["review_id"],
         overall_comment=rev_ann_info["overall_comment"],
         is_valid=rev_ann_info["is_valid"],
-        errors=json.dumps(rev_ann_info["errors"]),
+        errors=rev_ann_info["errors"],
         initials=rev_ann_info["initials"],
         time_to_annotate=rev_ann_info["time_to_annotate"],
         start_time=rev_ann_info["start_time"],

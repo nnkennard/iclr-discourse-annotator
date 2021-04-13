@@ -111,8 +111,6 @@ def make_presentation_example(assignment):
 
 
 def get_this_annotator_assignments(initials, batch_size=30):
-  # Get all assignments
-  # Separate completed assignments over 24 hours ago (Add to count)
 
   all_assignments = AnnotatorAssignment.objects.filter(
       initials=initials).order_by("id")
