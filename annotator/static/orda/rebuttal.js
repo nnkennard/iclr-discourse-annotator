@@ -233,7 +233,11 @@ function copyPrevious() {
     for (i in highlighted) {
         updateHighlight(i);
     }
-    elementToChange = document.getElementById("label:radios:" + other_annotations.previous_label)
+    label = other_annotations.previous_label
+    if (label.includes("_")){
+        label = label.split("_")[0]
+    }
+    elementToChange = document.getElementById("label:radios:" + label)
     elementToChange.checked = true;
     relRadioChange(elementToChange)
     populatePreviewBox()
