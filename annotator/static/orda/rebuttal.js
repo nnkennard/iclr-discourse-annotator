@@ -1,14 +1,39 @@
-STATUSES = ["NOT_STARTED", "STARTED", "VALIDATED"] // Change to not started if clicked sentence clicked any radio button, entered text
-
-CURRENT_STATUS = "NOT_STARTED"
-
-
-// Timing stuff
+// ==== Common, needs to be factored out
 const start_time = Date.now();
 
 function getElapsedTime() {
     return Math.floor(Date.now() - start_time / 1000);
 }
+
+function getJsonified(label) {
+    return JSON.parse(document.getElementById(label).textContent);
+}
+
+function last(l) {
+    return l[l.length - 1];
+}
+
+function sum(l) {
+    return l.reduce(function(a, b) {
+        return parseInt(a) + parseInt(b);
+    }, 0)
+
+}
+
+// ==== End common stuff
+
+
+
+
+
+
+
+
+
+
+STATUSES = ["NOT_STARTED", "STARTED", "VALIDATED"] // Change to not started if clicked sentence clicked any radio button, entered text
+
+CURRENT_STATUS = "NOT_STARTED"
 
 
 // Initialization
@@ -34,25 +59,10 @@ function maybeDisableCopyPrevious() {
     }
 }
 
-// Utils
-function last(l) {
-    return l[l.length - 1];
-}
-
-function sum(l) {
-    return l.reduce(function(a, b) {
-        return parseInt(a) + parseInt(b);
-    }, 0)
-
-}
-
 function someHighlighted() {
     return sum(highlighted) > 0
 }
 
-function getJsonified(label) {
-    return JSON.parse(document.getElementById(label).textContent)
-}
 
 function toggleModal() {
     modal = document.getElementById("rebuttalmodal")

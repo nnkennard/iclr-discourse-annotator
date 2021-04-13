@@ -33,7 +33,8 @@ review_categories:
     short: asp
     subcategories:
       - Motivation/Impact
-      - Originality/Substance
+      - Originality
+      - Substance
       - Soundness/Correctness
       - Replicability
       - Meaningful Comparison

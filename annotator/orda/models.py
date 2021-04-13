@@ -58,7 +58,7 @@ class ReviewAnnotation(models.Model):
     review_id = models.CharField(max_length=30)
     overall_comment = models.CharField(max_length=30)
     is_valid = models.BooleanField()
-    errors = models.CharField(max_length=200) # Egregious tokenization error
+    errors = models.CharField(max_length=500) # Egregious tokenization error
     initials = models.CharField(max_length=4)
 
     time_to_annotate = models.IntegerField()

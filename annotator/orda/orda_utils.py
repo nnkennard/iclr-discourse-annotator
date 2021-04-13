@@ -1,5 +1,42 @@
 from .models import *
 
+import collections
+import yaml
+
+
+def format_labels():
+  with open("orda/orda_data/labels.yaml", 'r') as f:
+    LABELS = yaml.safe_load(f)
+  label_map = collections.defaultdict(list)
+
+  for obj in LABELS["review_categories"]:
+    label_map[obj["short"]] = ["-- " + obj["name"]] + obj["subcategories"]
+
+  allowed_menus = collections.defaultdict(dict)
+  for obj in LABELS["allowed_menus"]:
+    if obj["allowed"] is not None:
+      allowed_menus[obj["name"]]["allowed"] = obj["allowed"]
+    else:
+      allowed_menus[obj["name"]]["allowed"] = []
+    if obj["required"] is not None:
+      allowed_menus[obj["name"]]["required"] = obj["required"]
+    else:
+      allowed_menus[obj["name"]]["required"] = []
+
+  rebuttal_relation_map = collections.defaultdict(list)
+  for obj in LABELS["rebuttal_relations"]:
+    rebuttal_relation_map[obj["category"]].append((obj["key"], obj["description"]))
+    
+  rebuttal_relations = []
+  for category in "Accept Reject Maybe-arg Non-arg Error".split():
+    rebuttal_relations.append((category, rebuttal_relation_map[category]))
+
+  return label_map, allowed_menus, rebuttal_relations
+
+
+FORMATTED_LABELS, ALLOWED_MENUS, REBUTTAL_RELATIONS = format_labels()
+
+
 def get_latest_review_annotation(assignment):
 
   ReviewAnnotation.objects.filter(
