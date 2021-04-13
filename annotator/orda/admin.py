@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+for model_name in [Example, Sentence, RebuttalSentenceAnnotation,
+        ReviewSentenceAnnotation, ReviewAnnotation, Annotator,
+        AnnotatorAssignment]:
+    admin.site.register(model_name)

@@ -119,10 +119,10 @@ function buildAnnotations(all_labels) {
             "review_id": metadata.review_id,
             "overall_comment": document.getElementById("comments").value,
             "is_valid": is_valid,
-            "errors": {
+            "errors": JSON.stringify({
                 "egregious_tokenization": document.getElementById("egregious_tok").checked,
                 "merge_prev": merge_prev,
-            },
+            }),
             "initials": metadata.initials,
             "time_to_annotate": getElapsedTime(),
             "start_time": start_time,

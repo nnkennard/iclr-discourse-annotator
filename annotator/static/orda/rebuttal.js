@@ -23,14 +23,6 @@ function sum(l) {
 // ==== End common stuff
 
 
-
-
-
-
-
-
-
-
 STATUSES = ["NOT_STARTED", "STARTED", "VALIDATED"] // Change to not started if clicked sentence clicked any radio button, entered text
 
 CURRENT_STATUS = "NOT_STARTED"
@@ -41,7 +33,6 @@ CURRENT_STATUS = "NOT_STARTED"
 review_sentences = getJsonified("review_sentences");
 other_annotations = getJsonified("other_annotations");
 metadata = getJsonified("metadata");
-num_rebuttal_sentences = getJsonified("num_rebuttal_sentences");
 
 document.getElementById("submitBtn").disabled = "true"
 document.getElementById("nav:" + metadata["rebuttal_index"].toString()).classList.add("is-focused")
@@ -84,17 +75,16 @@ function navSwitch(button_element) {
 // Validation
 
 
-
 function isSentencesAreAlignedChecked() {
-    return document.getElementById("errors").value == "Aligned sentences have been highlighted"
+    return document.getElementById("alignment_categories").value == "Aligned sentences have been highlighted"
 }
 
 function checkNeedsExplanationButDoesntHave() {
-    if (document.getElementById("comments").value.trim() == 0){
+    if (document.getElementById("comments").value.trim() == 0) {
         if (document.getElementById("label:radios:other").checked) {
             window.alert("Please specify why none of the label options apply")
             return 0
-        } else if (document.getElementById("label:radios:multiple").checked){
+        } else if (document.getElementById("label:radios:multiple").checked) {
             window.alert("Please specify which multiple label options apply")
             return 0
         }
@@ -102,16 +92,32 @@ function checkNeedsExplanationButDoesntHave() {
     return 1
 }
 
-function getLabel(){
-    radio_buttons = document.getElementsByClassName("radio");
+function checkNeedsSubtypeButDoesntHave(label) {
+    if (label.startsWith("done") || label.startsWith("by_cr") || label.startsWith("reject-request") ){
+        if (!label.includes("_")){
+            window.alert("Please select the subtype for the selected relation label")
+            return 0
+        }
+    }
+    return 1
+}
+
+function getLabel() {
     labels = {}
-        for (radio_button of radio_buttons){
-        if (radio_button.checked){
+    for (radio_button of document.getElementsByClassName("radio")) {
+        if (radio_button.checked) {
             labels[radio_button.name] = radio_button.value;
         }
     }
-    if ("label:radios" in labels){
-        return labels["label:radios"]
+    console.log(labels)
+    if ("label:radios" in labels) {
+        label = labels["label:radios"]
+        for (var subtype of ["manu", "scope"]){
+            if (subtype + "_" + label in labels) {
+                label = label + "_" + subtype + "_" + labels[subtype + "_" + label]
+            }
+        }
+        return label
     } else {
         return null;
     }
@@ -119,8 +125,32 @@ function getLabel(){
 
 function validateAll() {
 
+    result_builder = {
+
+            "review_id": metadata.review_id,
+            "rebuttal_id": metadata.rebuttal_id,
+            "rebuttal_sentence_index": metadata.rebuttal_index,
+            "initials": metadata.initials,
+            "is_valid": !(document.getElementById("egregious_tok").checked),
+            "comment": document.getElementById("comments").value,
+            "errors": {
+                "egregious_tok": document.getElementById("egregious_tok").checked,
+                "merge_prev": document.getElementById("tok_merge_prev").checked
+            },
+            "time_to_annotate": getElapsedTime(),
+            "start_time": start_time,
+
+        }
+
     relation_label = getLabel();
-    if (relation_label === null){
+    if (document.getElementById("egregious_tok").checked) {
+        result_builder.aligned_review_sentences = []
+        result_builder.relation_label = ""
+        result_builder.alignment_category = ""
+
+    } else {
+
+    if (relation_label === null) {
         window.alert("Please select a relation label. If none applies, please select 'Other'.")
         return
     }
@@ -130,41 +160,43 @@ function validateAll() {
         window.alert("You have highlighted sentences, but selected a 'no context' option as well. Please fix.")
     } else if (!checkNeedsExplanationButDoesntHave()) {
         return
-    } else {
-        document.getElementById("submitBtn").removeAttribute("disabled");
-        result = {
-            "alignment_labels": highlighted,
-            "alignment_errors": document.getElementById("errors").value,
-            "relation_label": relation_label,
-            "comments": document.getElementById("comments").value,
-            "metadata": metadata,
-            "num_rebuttal_sentences": num_rebuttal_sentences,
-            "time_to_annotate": getElapsedTime(),
-            "start_time": start_time,
-        }
-        document.getElementById("id_annotation").value = JSON.stringify(result)
-        CURRENT_STATUS = "VALIDATED"
+    } else if (!checkNeedsSubtypeButDoesntHave(relation_label)) {
+        return
+    } 
+    else {
+        result_builder.aligned_review_sentences = highlighted;
+        console.log("bababa", relation_label)
+        result_builder.relation_label = relation_label;
+        result_builder.alignment_category = document.getElementById("alignment_categories").value;
     }
+}
+    document.getElementById("submitBtn").removeAttribute("disabled");
+    document.getElementById("id_annotation").value = JSON.stringify(result_builder)
+    CURRENT_STATUS = "VALIDATED"
 }
 
 TAG_TYPE_MAP = {
-    "arg": "danger",
+    "arg": "success",
     "asp": "link",
-    "pol": "success",
-    "gro": "warning",
+    "pol": "danger",
     "fine": "primary"
 }
 
 // Label propagation
 
 function getReviewLabelTags(review_index) {
+
+    labels = JSON.parse(other_annotations.review_annotations[review_index])
     tags = ""
-    for (argx of other_annotations.review_annotations[review_index]) {
-        for (category in argx) {
-            label = argx[category]
+    console.log(other_annotations.review_annotations[review_index])
+    for (var arg_num of["0", "1"]) {
+        label_map = labels[arg_num]
+        for (var category in label_map) {
+            label_value = label_map[category]
             tag_type = TAG_TYPE_MAP[category]
-            tags += '<span class="tag is-' + tag_type + '">' + label + '</span>'
+            tags += '<span class="tag is-' + tag_type + '">' + label_value + '</span>'
         }
+
     }
 
     return '<div class="tags are-small"> ' + tags + ' </div>'
@@ -185,17 +217,17 @@ function populatePreviewBox() {
 
 
 function copyPrevious() {
-    rebuttal_index = metadata["rebuttal_index"]
+    rebuttal_index = metadata["rebuttal_sentence_index"]
     if (other_annotations.previous_alignment.length > 0) {
         highlighted = new Array(review_sentences.length).fill(0);
-        for (index_str of other_annotations.previous_alignment.split("|")) {
-            highlighted[parseInt(index_str)] = 1
+        for (index_str of JSON.parse(other_annotations.previous_alignment)) {
+            highlighted[index_str] = 1;
         }
     } else {
-        alert("No annotations available for the previous sentence.")
+        alert("No annotations available for the previous sentence.");
     }
     for (i in highlighted) {
-        updateHighlight(i)
+        updateHighlight(i);
     }
     elementToChange = document.getElementById("label:radios:" + other_annotations.previous_label)
     elementToChange.checked = true;
@@ -203,6 +235,12 @@ function copyPrevious() {
     populatePreviewBox()
 }
 
+function standardTokenizationError() {
+    if (!(document.getElementById("tok_merge_prev").checked)){
+        return;
+    }
+    copyPrevious();
+}
 
 // Interaction management
 
@@ -223,11 +261,11 @@ function updateHighlight(review_index) {
     }
 }
 
-function relRadioChange(changed_radio){
+function relRadioChange(changed_radio) {
     document.getElementById("label:select").value = changed_radio.value;
 }
 
-function relSelectChange(sel_element){
+function relSelectChange(sel_element) {
     document.getElementById("label:radios:" + sel_element.value).checked = "true"
 }
 

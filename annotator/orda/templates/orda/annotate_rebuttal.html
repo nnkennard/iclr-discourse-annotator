@@ -6,10 +6,9 @@
    <body>
       {% load static %}
       {{ metadata | json_script:"metadata"}}
-      {{ text.rebuttal_sentences | length | json_script:"num_rebuttal_sentences"}}
       {{ text.review_sentences | json_script:"review_sentences"}}
       {{ other_annotations | json_script:"other_annotations"}}
-      <link rel="stylesheet" type="text/css" href="{% static 'zune/zune.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'orda/orda.css' %}">
       <div class='lightblue'>
          <section class="section">
             <!-- Title section --> 
@@ -62,10 +61,7 @@
                            {{ text.rebuttal_sentence.text }}</span>
                         </div>
 
-                        <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="standardTokenizationError(this)"> <small>Standard tokenization error (merge with previous 'sentence') </small>
-                        <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="egregiousTokenizationError(this)"> <small>Egregious tokenization error (merge with previous 'sentence') </small>
-                        <input id="tok_merge_prev_{{ forloop.parentloop.counter0 }}" type="checkbox" onclick="outOfOrder(this)"> <small>Sentences out of order </small>
-
+                        <input id="tok_merge_prev" type="checkbox" onclick="standardTokenizationError(this)"> <small>Standard tokenization error (merge with previous 'sentence') </small> <br>
                         <table>
                            <tr>
                               <td>Please click to highlight the review sentences that form the context for the current rebuttal sentence.</td>
@@ -80,9 +76,10 @@
                         </table>
                         <br>
                         If you have not selected any sentences, please choose the reason below:<br><br>
+
                         <div class="select">
-                           <select id="errors">
-                              {% for reason in alignment_errors %}
+                           <select id="alignment_categories">
+                              {% for reason in alignment_categories %}
                               <option> {{ reason.label }} </option>
                               {% endfor %}
                            </select>
@@ -104,27 +101,38 @@
                         <br> <br>
                         <table>
                         {% for item in labels %}
-                        <tr>
-                           <td>{{item.0}}</td>
-                           <td>{{item.1}}</td>
-                           <td>
+                        <tr >
+                           <td class="{{item.1}}">{{item.0}}</td>
+                           <td class="{{item.1}}">
                               <input type="radio" class="radio" 
                                     name="label:radios"
                                     id="label:radios:{{item.2}}"
                                     value="{{item.2}}" onclick="relRadioChange(this)">
                            </td>
-                           <td>{{item.3}}</td>
+                           <td class="{{item.1}}">{{item.3}}</td>
+                           <td>
+                              {% if item.0 == 'Maybe-arg' %}
+                              Manuscript change?
+                              <label class="radio-inline"><input class="radio" type="radio" name="manu_{{item.2}}" value="Yes">  <small>Yes</small></label>
+                              <label class="radio-inline"><input class="radio" type="radio" name="manu_{{item.2}}" value="No">  <small>No</small></label>
+                              {% elif item.2 == 'reject-request' %}
+                              Out of scope?
+                              <label class="radio-inline"><input class="radio" type="radio" name="scope_{{item.2}}" value="Yes">  <small>Yes</small></label>
+                              <label class="radio-inline"><input class="radio" type="radio" name="scope_{{item.2}}" value="No">  <small>No</small></label>
+                              {% endif %}
+                              
+                           </td>
                         </tr>
 
                         {% endfor %}
                      </table>
 
                         <br>
-                      <input id="egregious_tok" type="checkbox"> Egregious tokenization error
+                      <input id="egregious_tok" type="checkbox"> Egregious tokenization error<br>
                         <input class="input" id="comments" type="text" style="width:200px">
                         <label for="comments"> Overall comments (200 chars) </label> <br> <br>
                         <button class="button is-outline" id="validate:all" onclick="validateAll()"> Validate</button> <br><br>
-                        <form action="/zune/rebuttal_submitted/" method="post">
+                        <form action="/orda/rebuttal_submitted/" method="post">
                            {% csrf_token %}
                            <input class="button is-outline" type="submit" id="submitBtn" value="Submit"> &nbsp; {{ form }}
                         </form>
@@ -154,6 +162,6 @@
             </section>
          </div>
       </div>
-      <script src="{% static 'zune/rebuttal.js' %}"></script>
+      <script src="{% static 'orda/rebuttal.js' %}"></script>
    </body>
 </html>

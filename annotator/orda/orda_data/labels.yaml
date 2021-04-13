@@ -122,7 +122,7 @@ rebuttal_relations:
   - 
     key: concede-criticism
     description: "Concede criticism"
-    category: 
+    category: Accept
     followup:
   - 
     key: refute-question
@@ -132,8 +132,8 @@ rebuttal_relations:
   - 
     key: reject-request
     description: "Reject request"
-    category:
-    followup:
+    category: Reject
+    followup: scope
   - 
     key:  contradict-assertion
     description: "Contradict assertion"
@@ -145,13 +145,13 @@ rebuttal_relations:
     category: Reject
     followup:
   - 
-    key: mitigate-praise
-    description: "Mitigate praise" 
+    key: mitigate-criticism
+    description: "Mitigate criticism"
     category: Reject
     followup:
   - 
-    key: mitigate-criticism
-    description: "Mitigate criticism"
+    key: mitigate-praise
+    description: "Mitigate praise" 
     category: Reject
     followup:
   - 
@@ -162,6 +162,11 @@ rebuttal_relations:
   - 
     key: social
     description: "Social"
+    category: Non-arg
+    followup:
+  - 
+    key: followup
+    description: "Follow-up question"
     category: Non-arg
     followup:
   - 

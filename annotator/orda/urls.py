@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('assignments/<str:initials>/', views.assignments, name='assignments'),
-    path('rebuttal/<str:initials>/<str:rebuttal_id>/<int:index>/',
+    path('rebuttal/<str:initials>/<str:review_id>/<int:index>/',
          views.annotate_rebuttal,
          name='ann_rebuttal'),
     path('review/<str:initials>/<str:review_id>/',

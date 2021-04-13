@@ -14,11 +14,11 @@
       Redirecting you in 1 second to
       {% if next_sentence_info.valid %}
         the next sentence
-        <span id="redir_url" style="display:none">/zune/ann_rebuttal/{{ next_sentence_info.initials }}/{{ next_sentence_info.rebuttal_id }}/{{ next_sentence_info.rebuttal_sentence_index }}</span>
+        <span id="redir_url" style="display:none">/orda/rebuttal/{{ next_sentence_info.initials }}/{{ next_sentence_info.review_id }}/{{ next_sentence_info.rebuttal_sentence_index }}</span>
       </a>
       {% else %}
         your assignment home (you have reached the end of this example)
-        <span id="redir_url" style="display:none">/zune/assignments/{{ next_sentence_info.initials }}</span>
+        <span id="redir_url" style="display:none">/orda/assignments/{{ next_sentence_info.initials }}</span>
       {% endif %}
   		</div> </body>
 </html>
