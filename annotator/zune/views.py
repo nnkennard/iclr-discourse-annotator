@@ -29,7 +29,9 @@ def get_htmlified_sentences(supernote_id):
 
 def index(request):
   template = loader.get_template('zune/index.html')
-  context = {"annotators": Annotator.objects.all()}
+
+  annotators = [a for a in Annotator.objects.all() if a.initials not in "NNK TJO RD PKY MC CB AS".split()]
+  context = {"annotators": annotators}
   return HttpResponse(template.render(context, request))
 
 

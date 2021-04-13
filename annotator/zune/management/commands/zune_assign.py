@@ -29,35 +29,14 @@ class Command(BaseCommand):
         if not result == "Y":
             return
 
-        AnnotatorAssignment.objects.all().delete()
-
         ann_gen = annotator_gen()
 
         max_interleaved_index = max(i["interleaved_index"]
             for i in Example.objects.all().values("interleaved_index"))
 
-        for annotator in Annotator.objects.all():
-            assignment = AnnotatorAssignment(
-                    rebuttal_id="example_rebuttal",
-                    review_id="example_review",
-                    initials=annotator.initials)
-            assignment.save()
+        max_interleaved_index = 500
 
-            # Janky stuff for pilot
-            for i in range(1, max_interleaved_index):
-                examples = Example.objects.filter(interleaved_index=i)
-                for example in examples:
-                    assignment = AnnotatorAssignment(
-                        rebuttal_id=example.rebuttal_id,
-                        review_id=example.review_id,
-                        initials=annotator.initials)
-                    assignment.save()
-
-        return
-
-
-
-        for i in tqdm(range(1, max_interleaved_index)): # This is picking a forum
+        for i in tqdm(range(60, max_interleaved_index)): # This is picking a forum
             examples = Example.objects.all().filter(interleaved_index=i)
             rebuttal_ids = set([example.rebuttal_id for example in examples])
             

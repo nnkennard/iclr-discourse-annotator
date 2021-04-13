@@ -29,7 +29,22 @@ class Command(BaseCommand):
     if not result == "Y":
       return
 
-    AnnotatorAssignment.objects.all().delete()
+    for ann in Annotator.objects.filter(is_staff=True):
+        for i in range(1, 4):
+            for example in Example.objects.filter(interleaved_index=i):
+                assignment = AnnotatorAssignment(
+                  example=example,
+                  initials=ann.initials,
+                  num_rebuttal_sentences=example.num_rebuttal_sentences,
+                  num_completed_sentences=0, is_review_complete=False,
+                  is_review_valid=False)
+                assignment.save()
+
+    return
+
+
+
+    #AnnotatorAssignment.objects.all().delete()
     for ann in Annotator.objects.filter():
        assignment = AnnotatorAssignment(
                   example=Example.objects.get(interleaved_index=0),
@@ -38,7 +53,6 @@ class Command(BaseCommand):
                   num_completed_sentences=0, is_review_complete=False,
                   is_review_valid=False)
        assignment.save()
-    return
 
     ann_gen = annotator_gen()
     max_interleaved_index = max(

@@ -26,6 +26,8 @@ class Command(BaseCommand):
         if not result == "Y":
             return
 
+        Review.objects.filter(conference=options["conference"]).delete()
+
         json_obj = self._load_data(options["review_file"])
         for pair in tqdm(json_obj["review_rebuttal_pairs"]):
             title = pair["title"]

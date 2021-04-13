@@ -29,6 +29,8 @@ class Command(BaseCommand):
         if not result == "Y":
             return
 
+        AnnotatorAssignment.objects.all().delete()
+
         for annotator in Annotator.objects.all():
             if annotator.initials in "AS CB MC PKY NNK NK PY TJO TO RD".split():
                 continue
