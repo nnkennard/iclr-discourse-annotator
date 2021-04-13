@@ -92,6 +92,10 @@ allowed_menus: # Arg is required for all
     name: "Social"
     required:
     allowed:
+  -
+    name: "Other"
+    required:
+    allowed:
 
 rebuttal_relations:
   - 
