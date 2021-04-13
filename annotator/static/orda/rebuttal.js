@@ -220,9 +220,13 @@ function copyPrevious() {
     rebuttal_index = metadata["rebuttal_sentence_index"]
     if (other_annotations.previous_alignment.length > 0) {
         highlighted = new Array(review_sentences.length).fill(0);
-        for (index_str of JSON.parse(other_annotations.previous_alignment)) {
-            highlighted[index_str] = 1;
+        old_highlighted = JSON.parse(other_annotations.previous_alignment)
+        for (index in old_highlighted ) {
+            if (old_highlighted[index]){
+                highlighted[index] = 1;
+            }
         }
+        console.log(highlighted)
     } else {
         alert("No annotations available for the previous sentence.");
     }
