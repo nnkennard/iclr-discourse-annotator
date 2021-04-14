@@ -5,6 +5,7 @@ from .forms import *
 from .models import *
 
 from .orda_utils import *
+from .agreement_lib import *
 
 import json
 # Create your views here.
@@ -187,4 +188,10 @@ def rebuttal_submitted(request):
 
 
 def agreement(request):
-  pass
+  if request.user.is_superuser:
+    template = loader.get_template('orda/agreement.html')
+    context = {"info": agreement_calculation()}
+    return HttpResponse(template.render(context, request))
+  else:
+    return HttpResponse("Please log in to see this page.")
+  
