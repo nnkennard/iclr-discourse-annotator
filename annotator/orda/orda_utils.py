@@ -60,6 +60,7 @@ def get_latest_review_annotation(example, initials):
   max_sentence_index = len(Sentence.objects.filter(comment_id=example.review_id))
   labels = []
   for i in range(max_sentence_index):
+    print("Looking for old annotation ", initials, i)
     if merge_prev[i]:
       labels.append(labels[-1])
     else:

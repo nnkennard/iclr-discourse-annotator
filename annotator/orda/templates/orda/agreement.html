@@ -11,9 +11,51 @@
 
      {{info }}
 
+     <div class="columns">
+  <div class="column">
+     Review argument agreement {{info.review_arg_agreement}} <br>
+  </div>
+  <div class="column">
+ <table class="table">
+	     <tr>
+		     <td> Annotator </td>
+		     <td> Not started </td>
+		     <td> Started </td>
+		     <td> Complete </td>
+	     </tr>
+	     {% for tup in info.annotator_counts %}
+	     <tr>
+		     <td> {{tup.0}} </td>
+		     <td> {{tup.1}} </td>
+		     <td> {{tup.2}} </td>
+		     <td> {{tup.3}} </td>
+	     </tr>
+	     {% endfor %}
+     </table>
 
 
-    <img src="{% static "orda/dashboard/milk.png" %}" alt="My image"/>
+
+  </div>
+  <div class="column">
+ <table class="table">
+	     <tr>
+		     <td> Status </td>
+		     <td> Count </td>
+	     </tr>
+	     {% for tup in info.overall_counts %}
+	     <tr>
+		     <td> {{tup.0}} </td>
+		     <td> {{tup.1}} </td>
+	     </tr>
+	     {% endfor %}
+     </table>
+
+
+  </div>
+  
+</div>
+    
+
    </div>
 </body>
 

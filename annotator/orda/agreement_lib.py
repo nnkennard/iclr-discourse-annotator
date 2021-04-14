@@ -12,6 +12,8 @@ def review_label_agreement():
   ann_counter = collections.defaultdict(set)
   review_annotations = ReviewAnnotation.objects.all()
   for r in review_annotations:
+      if r.review_id == "example_review":
+          continue
       ann_counter[r.review_id].update([r.initials])
 
   label_list = collections.defaultdict(list)
@@ -84,13 +86,67 @@ def get_jaccard():
               ))
     return maybe_avg(jaccard_list)
 
+class Status(object):
+    NOT_STARTED = "Not-started"
+    STARTED = "Started"
+    COMPLETE = "Complete"
+
+def get_category(a):
+    if a.example.review_id == "example_review":
+        return None
+    if a.is_review_complete:
+        if a.num_rebuttal_sentences == a.num_completed_sentences:
+            return Status.COMPLETE
+        else:
+            return Status.STARTED
+    else:
+        return Status.NOT_STARTED
+        
+def make_key(labels):
+    if len(labels) == 1:
+        labels.append(Status.NOT_STARTED)
+    return "|".join(sorted(labels))
+
+def get_statuses():
+    categories = collections.defaultdict(list)
+    annotator_counts = collections.defaultdict(lambda:collections.Counter())
+    for a in AnnotatorAssignment.objects.all():
+        category = get_category(a)
+        if category is None:
+            continue
+        annotator_counts[a.initials][category] += 1
+        if category == Status.NOT_STARTED:
+            continue
+        else:
+            categories[a.example.review_id].append(get_category(a))
+
+    counts = collections.Counter()
+    for k, v in categories.items():
+        counts[make_key(v)] += 1
+
+
+    updated_annotator_counts = []
+    for k, v in annotator_counts.items():
+        updated_annotator_counts.append((k, v[Status.NOT_STARTED], v[Status.STARTED], v[Status.COMPLETE]))
+
+    return counts.items(), updated_annotator_counts
+
+
 def agreement_calculation():
+
+    overall_counts, annotator_counts = get_statuses()
+
     review_label_list, agreers = review_label_agreement()
     rebuttal_label_kappa = rebuttal_label_agreement()
     rebuttal_link_agreement_val = get_jaccard()
 
-    return (arg_agreement(review_label_list), agreers, rebuttal_label_kappa,
-            rebuttal_link_agreement_val)
+
+    return {"overall_counts": overall_counts,
+            "annotator_counts": annotator_counts,
+            "review_arg_agreement": arg_agreement(review_label_list),
+            "rebuttal_label_kappa": rebuttal_label_kappa,
+            "rebuttal_link_agreement_val": rebuttal_link_agreement_val}
+
  
 def get_both_have(dict1, dict2, key):
     if key in dict1:
