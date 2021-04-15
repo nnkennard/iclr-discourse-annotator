@@ -147,6 +147,10 @@ function buildAnnotations(all_labels) {
 
         }
     }
+    if (review_builder.review_sentence_annotations.length < num_review_sentences){
+      console.log("Problem -- too few sentences")
+      console.log(review_builder.review_sentence_annotations)
+    }
     return review_builder;
 }
 
@@ -208,6 +212,7 @@ function validateAll() {
     for (var i of Array(num_review_sentences).keys()) {
 
         if (merge_prev[i]) {
+                all_labels.push({});
             // Nothing to check
         } else if (!isDropdownSet("arg", "0", i)) {
             alert("Please enter an argument value for sentence " + i.toString());
