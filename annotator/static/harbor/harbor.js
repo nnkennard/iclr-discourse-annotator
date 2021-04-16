@@ -10,7 +10,9 @@ function validate(){
             ratings[radio_button.name] = radio_button.value
         }
     }
-    if (Object.keys(ratings).length < getJsonified("num_questions")){
+    console.log(Object.keys(ratings))
+    console.log(getJsonified("num_questions"))
+    if (Object.keys(ratings).length < 10){
     	alert("Some labels are missing! Please complete and run Validate again.")
     	return
     }
