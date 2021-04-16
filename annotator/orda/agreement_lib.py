@@ -167,6 +167,8 @@ def arg_agreement(label_list):
       value_builder_1, value_builder_2 = [], []
       for (r_id, sent_i), values in label_list.items():
         labels1, labels2 = [json.loads(json.loads(z)) for z in values]
+        if not labels1:
+            continue
         value_builder_1.append(labels1["0"].get(key, "None"))
         value_builder_2.append(labels2["0"].get(key, "None"))
       kappas[key] = cohen_kappa_score(value_builder_1, value_builder_2)
