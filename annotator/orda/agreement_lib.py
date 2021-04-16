@@ -120,21 +120,25 @@ def get_statuses():
         else:
             categories[a.example.review_id].append(get_category(a))
 
+    almost_done_counter = collections.defaultdict(list)
     counts = collections.Counter()
     for k, v in categories.items():
-        counts[make_key(v)] += 1
-
+        key = make_key(v)
+        counts[key] += 1
+        if 'Complete' in key:
+            dataset = Example.objects.get(rebuttal_id=k).dataset
+            almost_done_counter[dataset] +=1
 
     updated_annotator_counts = []
     for k, v in annotator_counts.items():
         updated_annotator_counts.append((k, v[Status.NOT_STARTED], v[Status.STARTED], v[Status.COMPLETE]))
 
-    return counts.items(), updated_annotator_counts
+    return counts.items(), updated_annotator_counts, almost_done_counter
 
 
 def agreement_calculation():
 
-    overall_counts, annotator_counts = get_statuses()
+    overall_counts, annotator_counts, almost_done_counter = get_statuses()
 
     review_label_list, agreers = review_label_agreement()
     rebuttal_label_kappa = rebuttal_label_agreement()
@@ -145,7 +149,8 @@ def agreement_calculation():
             "annotator_counts": annotator_counts,
             "review_arg_agreement": arg_agreement(review_label_list),
             "rebuttal_label_kappa": rebuttal_label_kappa,
-            "rebuttal_link_agreement_val": rebuttal_link_agreement_val}
+            "rebuttal_link_agreement_val": rebuttal_link_agreement_val,
+            "almost_done_counter": almost_done_counter}
 
  
 def get_both_have(dict1, dict2, key):
