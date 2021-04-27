@@ -7,7 +7,8 @@ import subprocess
 TABLE_MAP = {
         "text": "example sentence".split(),
         "annotations": ("reviewannotation reviewsentenceannotation "
-                        "rebuttalsentenceannotation").split()
+                        "rebuttalsentenceannotation").split(),
+        "assignments": "example annotatorassignment".split(),
         }
 
 class Command(BaseCommand):
@@ -20,7 +21,7 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     data_map = {}
-    assert options["data_type"] in "text annotations".split()
+    assert options["data_type"] in TABLE_MAP
     tables = TABLE_MAP[options["data_type"]]
     for table in tables:
         table_json = subprocess.run(

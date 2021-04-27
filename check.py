@@ -66,7 +66,7 @@ def main():
 
     hashes = HASH_LIST_LOOKUP[hashes_key]
     any_file_mismatch = False
-    for dataset, correct_hash in zip(orl.DATASETS, hashes):
+    for dataset, correct_hash in zip(DATASETS, hashes):
         md5_hash = hashlib.md5()
         md5_hash.update(open(data_dir + dataset +".json", "rb").read())
         digest = md5_hash.hexdigest()

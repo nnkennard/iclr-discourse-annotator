@@ -120,20 +120,22 @@ def get_statuses():
         else:
             categories[a.example.review_id].append(get_category(a))
 
-    almost_done_counter = collections.defaultdict(list)
+    almost_done_counter = collections.Counter()
     counts = collections.Counter()
     for k, v in categories.items():
         key = make_key(v)
         counts[key] += 1
         if 'Complete' in key:
-            dataset = Example.objects.get(rebuttal_id=k).dataset
+            dataset = Example.objects.get(review_id=k).dataset
             almost_done_counter[dataset] +=1
+        if 'Complete|Complete' in key:
+            print("Two complete", key, k)
 
     updated_annotator_counts = []
     for k, v in annotator_counts.items():
         updated_annotator_counts.append((k, v[Status.NOT_STARTED], v[Status.STARTED], v[Status.COMPLETE]))
 
-    return counts.items(), updated_annotator_counts, almost_done_counter
+    return counts.items(), updated_annotator_counts, almost_done_counter.items()
 
 
 def agreement_calculation():
