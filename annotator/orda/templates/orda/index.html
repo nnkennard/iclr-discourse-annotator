@@ -23,6 +23,7 @@
                         <td> Link </td>
                      </tr>
                      {% for annotator in annotators %}
+                     {% if annotator.is_active %}
                      <tr>
                         <td> {{ annotator.name }} </td>
                         <td> {{ annotator.initials }} </td>
@@ -30,7 +31,7 @@
                            Link</a>
                         </td>
                      </tr>
-                     </li>
+                     {% endif %}
                      {% endfor %}
                   </table>
                   <table class="table">
@@ -40,6 +41,7 @@
                         <td> Link </td>
                      </tr>
                      {% for staff_member in staff %}
+                     {% if staff_member.is_active %}
                      <tr>
                         <td> {{ staff_member.name }} </td>
                         <td> {{ staff_member.initials }} </td>
@@ -47,7 +49,7 @@
                            Link</a>
                         </td>
                      </tr>
-                     </li>
+                     {% endif %}
                      {% endfor %}
                   </table>
                </center>

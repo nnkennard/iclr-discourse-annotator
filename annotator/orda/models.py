@@ -83,6 +83,7 @@ class Annotator(models.Model):
     initials = models.CharField(max_length=4)
     name = models.CharField(max_length=50)
     is_staff = models.BooleanField()
+    is_active = models.BooleanField()
 
 
 class AnnotatorAssignment(models.Model):

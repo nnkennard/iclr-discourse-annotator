@@ -18,7 +18,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('harbor/', include('harbor.urls')),
-    #path('orda/', include('orda.urls')),
+    path('orda/', include('orda.urls')),
     #path('zune/', include('zune.urls')),
     path('admin/', admin.site.urls),
 ]
